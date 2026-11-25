@@ -62,7 +62,22 @@
 
 ---
 
-## 4. โครงสร้างโฟลเดอร์และตำแหน่งไฟล์ทั้งหมด (Project Directory & File Map)
+## 4. สถาปัตยกรรม AI ที่ใช้ในระบบ (Hybrid Evidence-Grounded AI Engine)
+
+ระบบ **SentinelAI** ออกแบบด้วยสถาปัตยกรรม **Hybrid Evidence-Grounded AI Engine** (กำหนดไว้ในไฟล์ [config.py](file:///d:/fightikeeee/backend/app/core/config.py) และ [analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py)) โดยแยกส่วนการคำนวณคะแนนความเสี่ยง (**Deterministic Rule Engine**) ออกจากส่วนการสรุปและอธิบายเหตุการณ์ด้วย AI เพื่อป้องกันปัญหา AI คำนวณคะแนนเพี้ยนหรือสร้างข้อมูลเท็จ (Zero Hallucination) และรองรับการทำงาน **4 โหมด** ดังนี้:
+
+| โหมด AI (`AI_PROVIDER`) | โมเดล / เอนจินที่ใช้ | รายละเอียดการทำงานและการตั้งค่า |
+| :--- | :--- | :--- |
+| **`mock`** *(ค่าเริ่มต้น)* | **Built-in Deterministic Evidence AI Engine** | เอนจินวิเคราะห์หลักฐานเชิงพฤติกรรมในตัวเครื่อง ไม่ต้องใช้อินเทอร์เน็ตและไม่ต้องใช้ API Key สกัดหลักฐานจาก `Raw Log`, `Command Line`, `IOC Threat Intel` และ `MITRE ATT&CK` เพื่อวิเคราะห์รูปแบบการโจมตี (เช่น Ransomware, Mimikatz LSASS Dump, SQL Injection, PowerShell EncodedCommand, Brute Force, Lateral Movement, Data Exfiltration) พร้อมสร้างสรุปภาษาไทยและขั้นตอนการแก้ไขทันที |
+| **`gemini`** | **Google Gemini (`gemini-2.5-flash`)** | เชื่อมต่อ Google Gemini API โดยตั้งค่า `AI_PROVIDER=gemini` และระบุ `GEMINI_API_KEY` ในไฟล์ `.env` |
+| **`openai`** | **OpenAI (`gpt-4o-mini`)** | เชื่อมต่อ OpenAI Chat Completions API โดยตั้งค่า `AI_PROVIDER=openai` และระบุ `OPENAI_API_KEY` ในไฟล์ `.env` |
+| **`ollama`** | **Ollama Local LLM (`llama3.1`)** | เชื่อมต่อ Local LLM ที่รันภายในเครื่องหรือเซิร์ฟเวอร์องค์กร (`http://localhost:11434`) โดยตั้งค่า `AI_PROVIDER=ollama` เหมาะสำหรับงาน SOC ที่ต้องการความเป็นส่วนตัวของข้อมูลสูง (On-Premise / Air-Gapped) ไม่ส่ง Log ออกนอกองค์กร |
+
+> **ระบบ Fallback อัตโนมัติ:** หากตั้งค่าใช้ LLM ภายนอก (`gemini`, `openai`, `ollama`) แล้วเครือข่ายขัดข้องหรือ API Key ไม่พร้อมใช้งาน ระบบจะสลับกลับมาใช้ **Built-in Deterministic Evidence AI Engine** ให้อัตโนมัติเพื่อให้การวิเคราะห์ของ SOC ไม่สะดุด
+
+---
+
+## 5. โครงสร้างโฟลเดอร์และตำแหน่งไฟล์ทั้งหมด (Project Directory & File Map)
 
 ```text
 d:\fightikeeee\
@@ -138,7 +153,7 @@ d:\fightikeeee\
 
 ---
 
-## 5. เอกสารประกอบโครงการ (Project Documentation)
+## 6. เอกสารประกอบโครงการ (Project Documentation)
 - [Project Proposal & Roadmap](file:///d:/fightikeeee/docs/proposal.md)
 - [Software Requirement Specification (SRS)](file:///d:/fightikeeee/docs/requirements_srs.md)
 - [System Architecture & Temporary Session Workflow Diagram](file:///d:/fightikeeee/docs/architecture.md)
@@ -147,7 +162,7 @@ d:\fightikeeee\
 
 ---
 
-## 6. การเริ่มต้นใช้งานอย่างรวดเร็ว (Quick Start)
+## 7. การเริ่มต้นใช้งานอย่างรวดเร็ว (Quick Start)
 
 ### วิธีที่ 1: รันบนเครื่องแบบ Local (FastAPI พอร์ต 8080 + Frontend Dev Server พอร์ต 3000)
 
