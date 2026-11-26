@@ -273,7 +273,7 @@ export const SecurityAlertsPage: React.FC<SecurityAlertsPageProps> = ({
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="text-[11px] uppercase font-bold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
-                <th className="py-3 px-3">Alert ID & ห้องเจ้าของข้อมูล</th>
+                <th className="py-3 px-3">Alert ID & วันเวลาที่เกิดเหตุ</th>
                 <th className="py-3 px-3">Source & Rule ID</th>
                 <th className="py-3 px-3">Risk Score</th>
                 <th className="py-3 px-3 text-center">Severity</th>

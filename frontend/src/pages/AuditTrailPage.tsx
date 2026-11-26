@@ -86,18 +86,18 @@ export const AuditTrailPage: React.FC<{
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                Audit Logs — หน้าประวัติการดำเนินงาน · ห้องปัจจุบัน: {workspaceCode} ({workspaceName})
+                Session Audit Log — ประวัติการดำเนินงานและการตรวจสอบใน Session ปัจจุบัน
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-400/40">
-                ข้อมูลของห้อง {workspaceCode} · สิทธิ์: {userRole}
+                Temporary Session Log
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2 mt-0.5 leading-snug">
               <History className="w-6 h-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span>ประวัติการดำเนินงานและการตรวจสอบของห้อง {workspaceCode}</span>
+              <span>ประวัติการดำเนินงานและการตรวจสอบ (Session Audit Log)</span>
             </h2>
             <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-0.5">
-              บันทึกเหตุการณ์ที่เกิดขึ้นในระบบ (Log ID, Alert ID, Action, Previous Value, New Value, การเปลี่ยนแปลง Risk Score, Timestamp และ Comment)
+              บันทึกเหตุการณ์ที่เกิดขึ้นใน Session ปัจจุบัน (Log ID, Alert ID, Action, Previous Value, New Value, การเปลี่ยนแปลง Risk Score, Timestamp และ Comment)
             </p>
           </div>
           <span className="text-xs font-mono font-bold px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 shrink-0 whitespace-nowrap">
@@ -145,11 +145,11 @@ export const AuditTrailPage: React.FC<{
           </select>
         </div>
 
-        {/* Security Notice per Section 5 & 6 */}
+        {/* Security Notice per Temporary Session Workflow */}
         <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
           <Lock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span>
-            <strong>รูปแบบการบันทึก Audit Trail (เฉพาะสมาชิกห้อง {workspaceCode}):</strong> บันทึกชื่อผู้ดำเนินการจากรายชื่อสมาชิกที่ได้รับอนุญาตเข้าห้อง ({workspaceCode}) พร้อมบทบาท (<code className="font-mono font-bold text-emerald-700 dark:text-emerald-400">OWNER</code> / <code className="font-mono font-bold text-emerald-700 dark:text-emerald-400">ANALYST</code>) และเพิ่มรายการใหม่เมื่อเกิดเหตุการณ์เท่านั้น (Immutable Append-Only Log)
+            <strong>รูปแบบการบันทึก Session Audit Log:</strong> บันทึกชื่อผู้ตรวจสอบ การปรับระดับความเสี่ยง และความคิดเห็นใน Session ปัจจุบันแบบเพิ่มรายการใหม่เมื่อเกิดเหตุการณ์เท่านั้น (Immutable Append-Only Log) และจะถูกล้างเมื่อกดปุ่ม <strong>End Session</strong>
           </span>
         </div>
 
