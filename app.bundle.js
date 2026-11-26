@@ -21504,6 +21504,7 @@ const WORKFLOW_STEPS = [
 ];
 function App() {
     const [isCollapsed, setIsCollapsed] = (0, react_1.useState)(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = (0, react_1.useState)(false);
     const [darkMode, setDarkMode] = (0, react_1.useState)(false);
     const [activePage, setActivePage] = (0, react_1.useState)('dashboard');
     const [currentUser] = (0, react_1.useState)({
@@ -21669,15 +21670,15 @@ function App() {
     };
     const sevCount = (name) => summary?.severity_distribution.find((s) => s.name === name)?.value ?? 0;
     const pendingAlertsList = alerts.filter((a) => a.status === 'PENDING_REVIEW');
-    return (react_1.default.createElement("div", { className: `h-screen w-screen overflow-hidden p-2.5 sm:p-4 flex flex-col ${darkMode ? 'theme-bg-dark' : 'theme-bg-light'} text-slate-900 dark:text-slate-100 sylva-transition` },
-        react_1.default.createElement("div", { className: "sylva-shell flex-1 rounded-[30px] p-3 sm:p-4 flex overflow-hidden relative" },
-            react_1.default.createElement(Sidebar_1.Sidebar, { isCollapsed: isCollapsed, setIsCollapsed: setIsCollapsed, activePage: activePage, setActivePage: setActivePage, pendingCount: summary?.pending_review_count ?? 0, totalAlerts: summary?.total_alerts ?? alerts.length, savedReportsCount: savedReports.length }),
+    return (react_1.default.createElement("div", { className: `min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${darkMode ? 'theme-bg-dark' : 'theme-bg-light'} text-slate-900 dark:text-slate-100 sylva-transition` },
+        react_1.default.createElement("div", { className: "sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative" },
+            react_1.default.createElement(Sidebar_1.Sidebar, { isCollapsed: isCollapsed, setIsCollapsed: setIsCollapsed, mobileOpen: mobileMenuOpen, setMobileOpen: setMobileMenuOpen, activePage: activePage, setActivePage: setActivePage, pendingCount: summary?.pending_review_count ?? 0, totalAlerts: summary?.total_alerts ?? alerts.length, savedReportsCount: savedReports.length }),
             react_1.default.createElement("div", { className: "flex-1 flex flex-col overflow-hidden min-w-0" },
                 react_1.default.createElement(Header_1.Header, { darkMode: darkMode, setDarkMode: setDarkMode, alerts: alerts, onSelectAlert: (a) => handleInspectAlert(a), onQuickSearch: (q) => {
                         setSearchQuery(q);
                         setActivePage('workspace');
-                    }, latestNotification: latestNotification, onEndSession: handleEndSession }),
-                react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-1 pb-6 space-y-5" },
+                    }, latestNotification: latestNotification, onEndSession: handleEndSession, onOpenMobileMenu: () => setMobileMenuOpen(true) }),
+                react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5" },
                     activePage === 'dashboard' && (react_1.default.createElement("div", { className: "space-y-5 pt-1" },
                         react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-5" },
                             react_1.default.createElement("div", { className: "space-y-4" },
@@ -25884,7 +25885,7 @@ exports.Header = void 0;
 const react_1 = __importStar(require("react"));
 const lucide_react_1 = require("lucide-react");
 const SeverityBadge_1 = require("../components/SeverityBadge");
-const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, latestNotification, activeWorkspace, currentUser, onOpenWorkspaces, onOpenAccess, onEndSession, }) => {
+const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, latestNotification, activeWorkspace, currentUser, onOpenWorkspaces, onOpenAccess, onEndSession, onOpenMobileMenu, }) => {
     const [searchModalOpen, setSearchModalOpen] = (0, react_1.useState)(false);
     const [notificationsOpen, setNotificationsOpen] = (0, react_1.useState)(false);
     const [helpOpen, setHelpOpen] = (0, react_1.useState)(false);
@@ -25929,13 +25930,15 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 (a.src_ip || '').toLowerCase().includes(q));
         })
         : alerts.slice(0, 6);
-    return (react_1.default.createElement("header", { className: "sylva-glass-card rounded-[22px] px-5 py-3 mb-4 flex flex-wrap items-center justify-between gap-3 z-30 shrink-0" },
-        react_1.default.createElement("div", { className: "flex flex-wrap items-center gap-3" },
+    return (react_1.default.createElement("header", { className: "sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-30 shrink-0" },
+        react_1.default.createElement("div", { className: "flex flex-wrap items-center gap-2 sm:gap-3 min-w-0" },
+            onOpenMobileMenu && (react_1.default.createElement("button", { type: "button", onClick: onOpenMobileMenu, title: "\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E21\u0E19\u0E39\u0E19\u0E33\u0E17\u0E32\u0E07", className: "lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0" },
+                react_1.default.createElement(lucide_react_1.Menu, { className: "w-4 h-4" }))),
             react_1.default.createElement("span", { className: "text-sm font-extrabold text-slate-900 dark:text-white tracking-tight" },
                 "Sentinel",
                 react_1.default.createElement("span", { className: "text-emerald-600 dark:text-emerald-400" }, "AI"),
-                react_1.default.createElement("span", { className: "hidden md:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5" }, "\u00B7 SOC Alert Triage & Threat Prioritization")),
-            react_1.default.createElement("div", { className: "inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold" },
+                react_1.default.createElement("span", { className: "hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5" }, "\u00B7 AI-Assisted Security Alert Analysis")),
+            react_1.default.createElement("div", { className: "hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold" },
                 react_1.default.createElement("span", { className: "w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" }),
                 react_1.default.createElement("span", null, "\u0E2A\u0E16\u0E32\u0E19\u0E30\u0E23\u0E30\u0E1A\u0E1A: Online")),
             activeWorkspace && (react_1.default.createElement("button", { type: "button", onClick: onOpenWorkspaces, title: "\u0E04\u0E25\u0E34\u0E01\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2A\u0E25\u0E31\u0E1A\u0E2B\u0E23\u0E37\u0E2D\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E2B\u0E49\u0E2D\u0E07 Workspace", className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white cursor-pointer" },
@@ -26062,7 +26065,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sidebar = void 0;
 const react_1 = __importDefault(require("react"));
 const lucide_react_1 = require("lucide-react");
-const Sidebar = ({ isCollapsed, setIsCollapsed, activePage, setActivePage, pendingCount, totalAlerts, savedReportsCount = 0, }) => {
+const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpen, activePage, setActivePage, pendingCount, totalAlerts, savedReportsCount = 0, }) => {
     const menuItems = [
         {
             id: 'dashboard',
@@ -26095,63 +26098,89 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, activePage, setActivePage, pendi
             badgeStyle: 'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40',
         },
     ];
-    return (react_1.default.createElement("aside", { className: `sylva-transition shrink-0 flex flex-col justify-between overflow-hidden ${isCollapsed ? 'w-[76px] mr-3' : 'w-72 mr-4'}` },
-        react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${isCollapsed ? 'px-2.5 py-4 items-center' : 'p-3.5'} flex flex-col justify-between overflow-y-auto no-scrollbar` },
-            react_1.default.createElement("div", { className: "w-full" },
-                isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
-                    react_1.default.createElement("button", { onClick: () => setActivePage('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 cursor-pointer shrink-0" },
-                        react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
-                            react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
-                            react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
-                    react_1.default.createElement("button", { onClick: () => setIsCollapsed(false), title: "\u0E02\u0E22\u0E32\u0E22\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0" },
-                        react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5 rotate-180" })))) : (react_1.default.createElement("div", { className: "flex items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700/80" },
-                    react_1.default.createElement("button", { onClick: () => setActivePage('dashboard'), className: "flex items-center gap-3 text-left cursor-pointer min-w-0" },
-                        react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0" },
+    const handleNavigate = (id) => {
+        setActivePage(id);
+        if (setMobileOpen)
+            setMobileOpen(false);
+    };
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        mobileOpen && (react_1.default.createElement("div", { onClick: () => setMobileOpen && setMobileOpen(false), className: "fixed inset-0 bg-black/50 z-40 lg:hidden" })),
+        react_1.default.createElement("aside", { className: `sylva-transition shrink-0 flex flex-col justify-between overflow-hidden ${mobileOpen
+                ? 'fixed inset-y-3 left-3 z-50 w-72 flex'
+                : 'hidden lg:flex'} ${!mobileOpen && (isCollapsed ? 'lg:w-[76px] lg:mr-3' : 'lg:w-72 lg:mr-4')}` },
+            react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${!mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center' : 'p-3.5'} flex flex-col justify-between overflow-y-auto no-scrollbar` },
+                react_1.default.createElement("div", { className: "w-full" },
+                    !mobileOpen && isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
+                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 cursor-pointer shrink-0" },
                             react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
                                 react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
                                 react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
-                        react_1.default.createElement("div", { className: "min-w-0" },
-                            react_1.default.createElement("div", { className: "flex items-center gap-1.5" },
-                                react_1.default.createElement("span", { className: "text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight truncate" },
-                                    "Sentinel",
-                                    react_1.default.createElement("span", { className: "text-emerald-600 dark:text-emerald-400" }, "AI")),
-                                react_1.default.createElement("span", { className: "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-400/40 shrink-0" },
-                                    react_1.default.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }),
-                                    "Online")),
-                            react_1.default.createElement("span", { className: "text-[11px] font-semibold text-slate-500 dark:text-slate-400 block truncate" }, "SOC Intelligence Platform"))),
-                    react_1.default.createElement("button", { onClick: () => setIsCollapsed(true), title: "\u0E22\u0E48\u0E2D\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0" },
-                        react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-4 h-4" })))),
-                react_1.default.createElement("div", { className: isCollapsed ? 'flex flex-col items-center space-y-2' : 'space-y-1.5' },
-                    !isCollapsed && (react_1.default.createElement("div", { className: "px-2.5 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400" }, "MAIN MENU")),
-                    menuItems.map((item) => {
-                        const active = activePage === item.id;
-                        if (isCollapsed) {
-                            return (react_1.default.createElement("button", { key: item.id, onClick: () => setActivePage(item.id), title: item.title, className: `w-11 h-11 rounded-2xl flex items-center justify-center transition cursor-pointer border shrink-0 ${active
-                                    ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/30'
-                                    : 'bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700/80'}` }, item.icon));
-                        }
-                        return (react_1.default.createElement("button", { key: item.id, onClick: () => setActivePage(item.id), className: `w-full text-left px-3 py-2.5 rounded-2xl flex items-center justify-between gap-2 transition cursor-pointer border ${active
-                                ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/25'
-                                : 'bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 border-transparent'}` },
-                            react_1.default.createElement("div", { className: "flex items-center gap-3 min-w-0" },
-                                react_1.default.createElement("div", { className: `w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${active
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'}` }, item.icon),
-                                react_1.default.createElement("div", { className: "min-w-0" },
-                                    react_1.default.createElement("div", { className: `text-xs font-bold truncate ${active ? 'text-white' : 'text-slate-900 dark:text-white'}` }, item.title),
-                                    react_1.default.createElement("div", { className: `text-[10px] truncate ${active ? 'text-emerald-100' : 'text-slate-500 dark:text-slate-400'}` }, item.subtitle))),
-                            item.badge !== undefined && (react_1.default.createElement("span", { className: `text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${active
-                                    ? 'bg-white text-emerald-900 border-white'
-                                    : item.badgeStyle ||
-                                        'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'}` }, item.badge))));
-                    }))),
-            !isCollapsed && (react_1.default.createElement("div", { className: "mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/80 text-[11px] space-y-1" },
-                react_1.default.createElement("div", { className: "flex items-center justify-between font-bold text-slate-800 dark:text-slate-200" },
-                    react_1.default.createElement("span", null, "Wazuh SIEM & AI Engine"),
-                    react_1.default.createElement("span", { className: "inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400" },
-                        react_1.default.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" }),
-                        "Connected")),
-                react_1.default.createElement("div", { className: "text-slate-500 dark:text-slate-400" }, "Human-in-the-Loop Decision Support"))))));
+                        react_1.default.createElement("button", { onClick: () => setIsCollapsed(false), title: "\u0E02\u0E22\u0E32\u0E22\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0" },
+                            react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5 rotate-180" })))) : (react_1.default.createElement("div", { className: "flex items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700/80" },
+                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), className: "flex items-center gap-3 text-left cursor-pointer min-w-0" },
+                            react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0" },
+                                react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
+                                    react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
+                                    react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
+                            react_1.default.createElement("div", { className: "min-w-0" },
+                                react_1.default.createElement("div", { className: "flex items-center gap-1.5" },
+                                    react_1.default.createElement("span", { className: "text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight truncate" },
+                                        "Sentinel",
+                                        react_1.default.createElement("span", { className: "text-emerald-600 dark:text-emerald-400" }, "AI")),
+                                    react_1.default.createElement("span", { className: "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-400/40 shrink-0" },
+                                        react_1.default.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" }),
+                                        "Online")),
+                                react_1.default.createElement("span", { className: "text-[11px] font-semibold text-slate-500 dark:text-slate-400 block truncate" }, "SOC Intelligence Platform"))),
+                        mobileOpen ? (react_1.default.createElement("button", { onClick: () => setMobileOpen && setMobileOpen(false), title: "\u0E1B\u0E34\u0E14\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0 lg:hidden" },
+                            react_1.default.createElement(lucide_react_1.X, { className: "w-4 h-4" }))) : (react_1.default.createElement("button", { onClick: () => setIsCollapsed(true), title: "\u0E22\u0E48\u0E2D\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "hidden lg:inline-flex p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0" },
+                            react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-4 h-4" }))))),
+                    react_1.default.createElement("div", { className: !mobileOpen && isCollapsed ? 'flex flex-col items-center space-y-2' : 'space-y-1.5' },
+                        (mobileOpen || !isCollapsed) && (react_1.default.createElement("div", { className: "px-2.5 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400" }, "MAIN MENU")),
+                        menuItems.map((item) => {
+                            const active = activePage === item.id;
+                            if (!mobileOpen && isCollapsed) {
+                                return (react_1.default.createElement("button", { key: item.id, onClick: () => handleNavigate(item.id), title: item.title, className: `w-11 h-11 rounded-2xl flex items-center justify-center transition cursor-pointer border shrink-0 ${active
+                                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/30'
+                                        : 'bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border-slate-200/80 dark:border-slate-700/80'}` }, item.icon));
+                            }
+                            return (react_1.default.createElement("button", { key: item.id, onClick: () => handleNavigate(item.id), className: `w-full text-left px-3 py-2.5 rounded-2xl flex items-center justify-between gap-2 transition cursor-pointer border ${active
+                                    ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-600/25'
+                                    : 'bg-transparent text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 border-transparent'}` },
+                                react_1.default.createElement("div", { className: "flex items-center gap-3 min-w-0" },
+                                    react_1.default.createElement("div", { className: `w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${active
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200'}` }, item.icon),
+                                    react_1.default.createElement("div", { className: "min-w-0" },
+                                        react_1.default.createElement("div", { className: `text-xs font-bold truncate ${active ? 'text-white' : 'text-slate-900 dark:text-white'}` }, item.title),
+                                        react_1.default.createElement("div", { className: `text-[10px] truncate ${active ? 'text-emerald-100' : 'text-slate-500 dark:text-slate-400'}` }, item.subtitle))),
+                                item.badge !== undefined && (react_1.default.createElement("span", { className: `text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border shrink-0 ${active
+                                        ? 'bg-white text-emerald-900 border-white'
+                                        : item.badgeStyle ||
+                                            'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'}` }, item.badge))));
+                        }))),
+                (mobileOpen || !isCollapsed) && (react_1.default.createElement("div", { className: "mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/80 text-[11px] space-y-1" },
+                    react_1.default.createElement("div", { className: "flex items-center justify-between font-bold text-slate-800 dark:text-slate-200" },
+                        react_1.default.createElement("span", null, "Wazuh SIEM & AI Engine"),
+                        react_1.default.createElement("span", { className: "inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400" },
+                            react_1.default.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" }),
+                            "Connected")),
+                    react_1.default.createElement("div", { className: "text-slate-500 dark:text-slate-400" }, "Human-in-the-Loop Decision Support"))))),
+        react_1.default.createElement("nav", { className: "lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-slate-900/95 border-t border-slate-200 dark:border-slate-700 px-2 py-1.5 flex items-center justify-around shadow-lg" }, menuItems.map((item) => {
+            const active = activePage === item.id;
+            return (react_1.default.createElement("button", { key: item.id, type: "button", onClick: () => handleNavigate(item.id), className: `flex flex-col items-center justify-center gap-0.5 px-2.5 py-1.5 rounded-xl min-w-0 flex-1 transition cursor-pointer ${active
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}` },
+                react_1.default.createElement("div", { className: "relative" },
+                    item.icon,
+                    item.badge !== undefined && (react_1.default.createElement("span", { className: "absolute -top-1.5 -right-2.5 text-[9px] font-mono font-extrabold px-1 rounded-full bg-rose-500 text-white" }, item.badge))),
+                react_1.default.createElement("span", { className: "text-[10px] font-bold truncate max-w-full" }, item.id === 'dashboard'
+                    ? 'Dashboard'
+                    : item.id === 'workspace'
+                        ? 'Analyze'
+                        : item.id === 'review'
+                            ? 'Review'
+                            : 'Report')));
+        }))));
 };
 exports.Sidebar = Sidebar;
 

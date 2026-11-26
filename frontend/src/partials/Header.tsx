@@ -12,6 +12,7 @@ import {
   MailCheck,
   Trash2,
   X,
+  Menu,
 } from 'lucide-react';
 import { SecurityAlert, SOCUserIdentity, WorkspaceInfo } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
@@ -28,6 +29,7 @@ interface HeaderProps {
   onOpenWorkspaces?: () => void;
   onOpenAccess?: () => void;
   onEndSession?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -42,6 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenWorkspaces,
   onOpenAccess,
   onEndSession,
+  onOpenMobileMenu,
 }) => {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -96,17 +99,28 @@ export const Header: React.FC<HeaderProps> = ({
     : alerts.slice(0, 6);
 
   return (
-    <header className="sylva-glass-card rounded-[22px] px-5 py-3 mb-4 flex flex-wrap items-center justify-between gap-3 z-30 shrink-0">
-      {/* Left: ชื่อระบบ, สถานะระบบ และ Notification ล่าสุด */}
-      <div className="flex flex-wrap items-center gap-3">
+    <header className="sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-30 shrink-0">
+      {/* Left: ปุ่มเมนูมือถือ, ชื่อระบบ, สถานะระบบ และ Notification ล่าสุด */}
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
+        {onOpenMobileMenu && (
+          <button
+            type="button"
+            onClick={onOpenMobileMenu}
+            title="เปิดเมนูนำทาง"
+            className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        )}
+
         <span className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
           Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span>
-          <span className="hidden md:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5">
-            · SOC Alert Triage & Threat Prioritization
+          <span className="hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5">
+            · AI-Assisted Security Alert Analysis
           </span>
         </span>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold">
+        <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
           <span>สถานะระบบ: Online</span>
         </div>

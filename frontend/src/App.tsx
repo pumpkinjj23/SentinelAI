@@ -126,6 +126,7 @@ const WORKFLOW_STEPS: {
 
 export function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [activePage, setActivePage] = useState<PageId>('dashboard');
 
@@ -323,15 +324,17 @@ export function App() {
 
   return (
     <div
-      className={`h-screen w-screen overflow-hidden p-2.5 sm:p-4 flex flex-col ${
+      className={`min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${
         darkMode ? 'theme-bg-dark' : 'theme-bg-light'
       } text-slate-900 dark:text-slate-100 sylva-transition`}
     >
-      <div className="sylva-shell flex-1 rounded-[30px] p-3 sm:p-4 flex overflow-hidden relative">
-        {/* MAIN MENU SIDEBAR (6 Core Pages) */}
+      <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative">
+        {/* MAIN MENU SIDEBAR (Desktop Sidebar + Tablet/Mobile Drawer + Bottom Nav) */}
         <Sidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
+          mobileOpen={mobileMenuOpen}
+          setMobileOpen={setMobileMenuOpen}
           activePage={activePage}
           setActivePage={setActivePage}
           pendingCount={summary?.pending_review_count ?? 0}
@@ -352,9 +355,10 @@ export function App() {
             }}
             latestNotification={latestNotification}
             onEndSession={handleEndSession}
+            onOpenMobileMenu={() => setMobileMenuOpen(true)}
           />
 
-          <main className="flex-1 overflow-y-auto overflow-x-hidden pr-1 pb-6 space-y-5">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5">
             {/* =====================================================================
                 PAGE 1: DASHBOARD & UPLOAD (ภาพรวมและนำเข้าข้อมูลในหน้าเดียว)
                ===================================================================== */}

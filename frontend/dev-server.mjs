@@ -139,7 +139,12 @@ const INDEX_HTML = `<!doctype html>
       }
       body {
         font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
-        overflow: hidden;
+        overflow-x: hidden;
+      }
+      @media (min-width: 1024px) {
+        body {
+          overflow: hidden;
+        }
       }
 
       /* High-Contrast Dark & Light Canvas */
