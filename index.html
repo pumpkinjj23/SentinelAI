@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="th" style="color-scheme: light;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SentinelAI — AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            maxWidth: {
+              '9xl': '96rem',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --sylva-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      body {
+        font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
+        overflow: hidden;
+      }
+
+      /* High-Contrast Dark & Light Canvas */
+      .theme-bg-dark {
+        background-color: #0b1120;
+        background-image:
+          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.14) 0px, transparent 45%),
+          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.12) 0px, transparent 45%),
+          linear-gradient(180deg, #090e1a 0%, #0f172a 100%);
+      }
+
+      .theme-bg-light {
+        background-color: #f1f5f9;
+        background-image:
+          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.08) 0px, transparent 45%),
+          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.08) 0px, transparent 45%),
+          linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
+      }
+
+      /* Crisp High-Readability Frosted Shell & Cards (No nested backdrop-filter so fixed modals cover full viewport) */
+      .sylva-shell {
+        background: rgba(15, 23, 42, 0.94);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.6);
+      }
+      html:not(.dark) .sylva-shell {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(203, 213, 225, 0.9);
+        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.08);
+      }
+
+      .sylva-glass-card {
+        background: rgba(30, 41, 59, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+        transition: all 0.25s var(--sylva-ease);
+      }
+      html:not(.dark) .sylva-glass-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+      }
+
+      /* Ensure <select> options are always readable in both Dark and Light mode */
+      select option {
+        background-color: #1e293b;
+        color: #f8fafc;
+      }
+      html:not(.dark) select option {
+        background-color: #ffffff;
+        color: #0f172a;
+      }
+
+      .sylva-transition {
+        transition: all 0.35s var(--sylva-ease);
+      }
+
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="root"></div>
+    <script src="./app.bundle.js"></script>
+  </body>
+</html>

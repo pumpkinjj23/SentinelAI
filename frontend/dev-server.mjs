@@ -206,14 +206,20 @@ const INDEX_HTML = `<!doctype html>
   </head>
   <body class="antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
-    <script src="/app.bundle.js"></script>
+    <script src="./app.bundle.js"></script>
   </body>
 </html>`;
 
 const distDir = path.join(__dirname, 'dist');
+const rootDir = path.resolve(__dirname, '..');
 fs.mkdirSync(distDir, { recursive: true });
+const builtBundle = buildAppBundle();
 fs.writeFileSync(path.join(distDir, 'index.html'), INDEX_HTML, 'utf-8');
-fs.writeFileSync(path.join(distDir, 'app.bundle.js'), buildAppBundle(), 'utf-8');
+fs.writeFileSync(path.join(distDir, 'app.bundle.js'), builtBundle, 'utf-8');
+// Also emit index.html, app.bundle.js, and .nojekyll at repo root for GitHub Pages (https://pumpkinjj23.github.io/SentinelAI/)
+fs.writeFileSync(path.join(rootDir, 'index.html'), INDEX_HTML, 'utf-8');
+fs.writeFileSync(path.join(rootDir, 'app.bundle.js'), builtBundle, 'utf-8');
+fs.writeFileSync(path.join(rootDir, '.nojekyll'), '', 'utf-8');
 
 if (process.argv.includes('--build-only')) {
   console.log('[SentinelAI] High-Contrast Frosted bundle written to dist/ successfully.');

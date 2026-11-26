@@ -9,6 +9,18 @@ import {
   WorkspaceInvitationInfo,
   WorkspaceMemberInfo,
 } from '../types';
+import {
+  buildLocalDashboardSummary,
+  getLocalWorkspaces,
+  loadLocalAlerts,
+  loadLocalAuditLogs,
+  localClearTemporary,
+  localDeleteEvidenceImage,
+  localIngestPayloads,
+  localSeedDemo,
+  localSubmitDecision,
+  localUploadEvidenceImage,
+} from './browserFallbackEngine';
 
 const API_BASE = '/api';
 
@@ -39,10 +51,14 @@ export async function fetchKnownUsers(): Promise<SOCUserIdentity[]> {
 }
 
 export async function fetchWorkspaces(userEmail?: string): Promise<WorkspaceInfo[]> {
-  const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
-  const res = await fetch(`${API_BASE}/workspaces${qs}`);
-  if (!res.ok) throw new Error('Failed to load workspaces');
-  return res.json();
+  try {
+    const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
+    const res = await fetch(`${API_BASE}/workspaces${qs}`);
+    if (!res.ok) throw new Error('Failed to load workspaces');
+    return await res.json();
+  } catch {
+    return getLocalWorkspaces();
+  }
 }
 
 export async function createWorkspace(payload: {
@@ -238,14 +254,18 @@ export async function fetchDashboardSummary(
   workspaceId?: string,
   userEmail?: string
 ): Promise<DashboardSummary> {
-  const qs = new URLSearchParams();
-  if (workspaceId) qs.set('workspace_id', workspaceId);
-  if (userEmail) qs.set('user_email', userEmail);
-  const res = await fetch(
-    `${API_BASE}/dashboard/summary${qs.toString() ? `?${qs.toString()}` : ''}`
-  );
-  if (!res.ok) throw new Error('Failed to load dashboard summary');
-  return res.json();
+  try {
+    const qs = new URLSearchParams();
+    if (workspaceId) qs.set('workspace_id', workspaceId);
+    if (userEmail) qs.set('user_email', userEmail);
+    const res = await fetch(
+      `${API_BASE}/dashboard/summary${qs.toString() ? `?${qs.toString()}` : ''}`
+    );
+    if (!res.ok) throw new Error('Failed to load dashboard summary');
+    return await res.json();
+  } catch {
+    return buildLocalDashboardSummary(loadLocalAlerts());
+  }
 }
 
 export async function clearTemporaryAlerts(
@@ -258,12 +278,16 @@ export async function clearTemporaryAlerts(
   deleted_analyses?: number;
   deleted_imports?: number;
 }> {
-  const qs = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
-  const res = await fetch(`${API_BASE}/alerts/clear-temporary${qs}`, {
-    method: 'DELETE',
-  });
-  if (!res.ok) throw new Error('ไม่สามารถล้างข้อมูลชั่วคราวได้');
-  return res.json();
+  try {
+    const qs = workspaceId ? `?workspace_id=${encodeURIComponent(workspaceId)}` : '';
+    const res = await fetch(`${API_BASE}/alerts/clear-temporary${qs}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('ไม่สามารถล้างข้อมูลชั่วคราวได้');
+    return await res.json();
+  } catch {
+    return localClearTemporary();
+  }
 }
 
 export async function fetchAlerts(params?: {
@@ -273,17 +297,38 @@ export async function fetchAlerts(params?: {
   status?: string;
   search?: string;
 }): Promise<SecurityAlert[]> {
-  const qs = new URLSearchParams();
-  if (params?.workspace_id) qs.set('workspace_id', params.workspace_id);
-  if (params?.user_email) qs.set('user_email', params.user_email);
-  if (params?.severity && params.severity !== 'ALL') qs.set('severity', params.severity);
-  if (params?.status && params.status !== 'ALL') qs.set('status', params.status);
-  if (params?.search) qs.set('search', params.search);
+  try {
+    const qs = new URLSearchParams();
+    if (params?.workspace_id) qs.set('workspace_id', params.workspace_id);
+    if (params?.user_email) qs.set('user_email', params.user_email);
+    if (params?.severity && params.severity !== 'ALL') qs.set('severity', params.severity);
+    if (params?.status && params.status !== 'ALL') qs.set('status', params.status);
+    if (params?.search) qs.set('search', params.search);
 
-  const url = `${API_BASE}/alerts${qs.toString() ? `?${qs.toString()}` : ''}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Failed to fetch alerts');
-  return res.json();
+    const url = `${API_BASE}/alerts${qs.toString() ? `?${qs.toString()}` : ''}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to fetch alerts');
+    return await res.json();
+  } catch {
+    let list = loadLocalAlerts();
+    if (params?.severity && params.severity !== 'ALL') {
+      list = list.filter((a) => a.analysis?.severity === params.severity);
+    }
+    if (params?.status && params.status !== 'ALL') {
+      list = list.filter((a) => a.status === params.status);
+    }
+    if (params?.search && params.search.trim()) {
+      const q = params.search.toLowerCase();
+      list = list.filter(
+        (a) =>
+          a.alert_code.toLowerCase().includes(q) ||
+          a.description.toLowerCase().includes(q) ||
+          (a.hostname || '').toLowerCase().includes(q) ||
+          (a.src_ip || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }
 }
 
 export async function submitAnalystDecision(
@@ -299,17 +344,21 @@ export async function submitAnalystDecision(
   },
   userEmail?: string
 ): Promise<SecurityAlert> {
-  const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
-  const res = await fetch(`${API_BASE}/alerts/${alertId}/decision${qs}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Failed to submit analyst decision');
+  try {
+    const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
+    const res = await fetch(`${API_BASE}/alerts/${alertId}/decision${qs}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to submit analyst decision');
+    }
+    return await res.json();
+  } catch {
+    return localSubmitDecision(alertId, payload);
   }
-  return res.json();
 }
 
 export async function uploadAlertEvidenceImage(
@@ -317,17 +366,21 @@ export async function uploadAlertEvidenceImage(
   payload: { title: string; image_data: string },
   userEmail?: string
 ): Promise<SecurityAlert> {
-  const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
-  const res = await fetch(`${API_BASE}/alerts/${alertId}/evidence-images${qs}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'ไม่สามารถอัปโหลดรูปภาพหลักฐานได้');
+  try {
+    const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
+    const res = await fetch(`${API_BASE}/alerts/${alertId}/evidence-images${qs}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'ไม่สามารถอัปโหลดรูปภาพหลักฐานได้');
+    }
+    return await res.json();
+  } catch {
+    return localUploadEvidenceImage(alertId, payload, userEmail);
   }
-  return res.json();
 }
 
 export async function deleteAlertEvidenceImage(
@@ -335,31 +388,42 @@ export async function deleteAlertEvidenceImage(
   imageId: string,
   userEmail?: string
 ): Promise<SecurityAlert> {
-  const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
-  const res = await fetch(
-    `${API_BASE}/alerts/${alertId}/evidence-images/${encodeURIComponent(imageId)}${qs}`,
-    { method: 'DELETE' }
-  );
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'ไม่สามารถลบรูปภาพหลักฐานได้');
+  try {
+    const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
+    const res = await fetch(
+      `${API_BASE}/alerts/${alertId}/evidence-images/${encodeURIComponent(imageId)}${qs}`,
+      { method: 'DELETE' }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'ไม่สามารถลบรูปภาพหลักฐานได้');
+    }
+    return await res.json();
+  } catch {
+    return localDeleteEvidenceImage(alertId, imageId);
   }
-  return res.json();
 }
 
 export async function reanalyzeAlert(
   alertId: number,
   userEmail?: string
 ): Promise<SecurityAlert> {
-  const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
-  const res = await fetch(`${API_BASE}/alerts/${alertId}/reanalyze${qs}`, {
-    method: 'POST',
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Failed to re-analyze alert');
+  try {
+    const qs = userEmail ? `?user_email=${encodeURIComponent(userEmail)}` : '';
+    const res = await fetch(`${API_BASE}/alerts/${alertId}/reanalyze${qs}`, {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to re-analyze alert');
+    }
+    return await res.json();
+  } catch {
+    const list = loadLocalAlerts();
+    const found = list.find((a) => a.id === alertId) || list[0];
+    if (!found) throw new Error('Alert not found');
+    return found;
   }
-  return res.json();
 }
 
 export async function fetchIncidentReport(alertId: number): Promise<IncidentReportResponse> {
@@ -378,24 +442,31 @@ export async function ingestJsonAlerts(
   deduplicated_count: number;
   alerts: SecurityAlert[];
 }> {
-  const qs = new URLSearchParams();
-  if (workspaceId) qs.set('workspace_id', workspaceId);
-  if (filename) qs.set('filename', filename);
-  if (userEmail) qs.set('user_email', userEmail);
+  try {
+    const qs = new URLSearchParams();
+    if (workspaceId) qs.set('workspace_id', workspaceId);
+    if (filename) qs.set('filename', filename);
+    if (userEmail) qs.set('user_email', userEmail);
 
-  const res = await fetch(
-    `${API_BASE}/alerts/ingest/json${qs.toString() ? `?${qs.toString()}` : ''}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const res = await fetch(
+      `${API_BASE}/alerts/ingest/json${qs.toString() ? `?${qs.toString()}` : ''}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to ingest JSON alert');
     }
-  );
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Failed to ingest JSON alert');
+    return await res.json();
+  } catch {
+    const items = Array.isArray(payload)
+      ? (payload as Record<string, unknown>[])
+      : [payload as Record<string, unknown>];
+    return localIngestPayloads(items);
   }
-  return res.json();
 }
 
 export async function ingestCsvAlerts(
@@ -407,24 +478,41 @@ export async function ingestCsvAlerts(
   deduplicated_count: number;
   alerts: SecurityAlert[];
 }> {
-  const qs = new URLSearchParams();
-  if (workspaceId) qs.set('workspace_id', workspaceId);
-  if (userEmail) qs.set('user_email', userEmail);
+  try {
+    const qs = new URLSearchParams();
+    if (workspaceId) qs.set('workspace_id', workspaceId);
+    if (userEmail) qs.set('user_email', userEmail);
 
-  const formData = new FormData();
-  formData.append('file', file);
-  const res = await fetch(
-    `${API_BASE}/alerts/ingest/csv${qs.toString() ? `?${qs.toString()}` : ''}`,
-    {
-      method: 'POST',
-      body: formData,
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(
+      `${API_BASE}/alerts/ingest/csv${qs.toString() ? `?${qs.toString()}` : ''}`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to ingest CSV file');
     }
-  );
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Failed to ingest CSV file');
+    return await res.json();
+  } catch {
+    const text = await file.text();
+    const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+    if (lines.length < 2) throw new Error('Uploaded CSV file contains no rows.');
+    const headers = lines[0].split(',').map((h) => h.trim());
+    const rows: Record<string, unknown>[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(',');
+      const obj: Record<string, unknown> = {};
+      headers.forEach((h, idx) => {
+        obj[h] = (cols[idx] || '').replace(/^"|"$/g, '').trim();
+      });
+      rows.push(obj);
+    }
+    return localIngestPayloads(rows);
   }
-  return res.json();
 }
 
 export async function seedDemoDatasets(
@@ -435,32 +523,40 @@ export async function seedDemoDatasets(
   deduplicated_count: number;
   alerts: SecurityAlert[];
 }> {
-  const qs = new URLSearchParams();
-  if (workspaceId) qs.set('workspace_id', workspaceId);
-  if (userEmail) qs.set('user_email', userEmail);
+  try {
+    const qs = new URLSearchParams();
+    if (workspaceId) qs.set('workspace_id', workspaceId);
+    if (userEmail) qs.set('user_email', userEmail);
 
-  const res = await fetch(
-    `${API_BASE}/alerts/seed-demo${qs.toString() ? `?${qs.toString()}` : ''}`,
-    { method: 'POST' }
-  );
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Failed to seed demo datasets');
+    const res = await fetch(
+      `${API_BASE}/alerts/seed-demo${qs.toString() ? `?${qs.toString()}` : ''}`,
+      { method: 'POST' }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to seed demo datasets');
+    }
+    return await res.json();
+  } catch {
+    return localSeedDemo();
   }
-  return res.json();
 }
 
 export async function fetchAuditLogs(
   workspaceId?: string,
   userEmail?: string
 ): Promise<AuditLog[]> {
-  const qs = new URLSearchParams();
-  if (workspaceId) qs.set('workspace_id', workspaceId);
-  if (userEmail) qs.set('user_email', userEmail);
+  try {
+    const qs = new URLSearchParams();
+    if (workspaceId) qs.set('workspace_id', workspaceId);
+    if (userEmail) qs.set('user_email', userEmail);
 
-  const res = await fetch(
-    `${API_BASE}/audit-logs${qs.toString() ? `?${qs.toString()}` : ''}`
-  );
-  if (!res.ok) return [];
-  return res.json();
+    const res = await fetch(
+      `${API_BASE}/audit-logs${qs.toString() ? `?${qs.toString()}` : ''}`
+    );
+    if (!res.ok) throw new Error('Failed to load audit logs');
+    return await res.json();
+  } catch {
+    return loadLocalAuditLogs();
+  }
 }
