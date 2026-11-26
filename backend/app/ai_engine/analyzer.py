@@ -65,7 +65,27 @@ def _deterministic_evidence_analysis(
     )
 
     # Behavioral Analysis & Recommendations tailored by incident pattern
-    if "ransomware" in desc_lower or "shadow" in desc_lower:
+    cmd_lower = str(normalized_alert.get("command_line") or "").lower()
+    raw_lower = str(normalized_alert.get("raw_log") or "").lower()
+    combined_lower = f"{desc_lower} {cmd_lower} {raw_lower}"
+
+    if "/etc/shadow" in combined_lower or ("sudo" in desc_lower and "shadow" not in desc_lower):
+        behavior_analysis = (
+            f"บัญชีบริการเว็บ '{user}' ซึ่งปกติไม่ควรมีสิทธิ์ระดับผู้ดูแลระบบ ได้รันคำสั่ง sudo เพื่ออ่านไฟล์รหัสผ่านระบบ '/etc/shadow' "
+            f"บนเครื่อง '{host}' บ่งชี้ว่าผู้โจมตีอาจยึด Web Shell ได้แล้วกำลังยกระดับสิทธิ์ (Privilege Escalation)"
+        )
+        recommendations = [
+            f"1. ตรวจสอบไฟล์ `/etc/sudoers` และ `/etc/sudoers.d/` บน '{host}' ว่าเหตุใดบัญชี '{user}' จึงรัน sudo ได้",
+            "2. ตรวจสอบ Web Access Logs เพื่อหาจุดเริ่มต้นของ Web Shell หรือ Remote Code Execution (RCE)",
+            "3. หมุนเวียนรหัสผ่านของบัญชี Local บนเซิร์ฟเวอร์และตรวจสอบ SSH `authorized_keys`",
+        ]
+    elif (
+        "ransomware" in combined_lower
+        or "shadow copy" in combined_lower
+        or "delete shadows" in combined_lower
+        or "vssadmin" in combined_lower
+        or ".lockbit" in combined_lower
+    ):
         behavior_analysis = (
             f"พบพฤติกรรมทำลายระบบสำรองข้อมูลด้วยคำสั่ง '{normalized_alert.get('command_line')}' "
             f"เพื่อลบ Volume Shadow Copies ป้องกันการกู้คืนระบบ ตามด้วยการเปลี่ยนนามสกุลไฟล์จำนวนมาก (.lockbit) "

@@ -504,3 +504,72 @@ def test_tc13_workspace_isolation_and_owner_member_invitation_rbac():
     )
     assert viewer_audit.status_code == 403
 
+
+def test_tc14_evaluator_hardening_5_edge_cases():
+    """TC14: ทดสอบการป้องกันจุดอ่อนทั้ง 5 จุดใน evaluator.py"""
+    from app.rule_engine.evaluator import evaluate_alert_risk
+
+    # 1. คำว่า '/etc/shadow' ต้องถูกจำแนกเป็น Privilege Escalation ไม่ใช่ Ransomware
+    res_shadow_file = evaluate_alert_risk(
+        normalized_alert={
+            "rule_id": "5402",
+            "rule_level": 9,
+            "description": "Unauthorized read of /etc/shadow by www-data",
+            "command_line": "sudo cat /etc/shadow",
+            "username": "www-data",
+        },
+        ioc_results=[],
+        mitre_mappings=[{"technique_id": "T1548.003", "name": "Sudo", "tactic": "Privilege Escalation"}],
+    )
+    assert res_shadow_file["incident_type"] == "Unauthorized Privilege Escalation"
+
+    # 2 & 4. เหตุการณ์อันตรายที่ผู้โจมตีแกล้งใส่คำว่า 'Scheduled Maintenance' ต้องไม่ถูกลดคะแนน
+    res_spoofed_maint = evaluate_alert_risk(
+        normalized_alert={
+            "rule_id": "87901",
+            "rule_level": 15,
+            "description": "Ransomware vssadmin delete shadows during Scheduled Maintenance",
+            "command_line": "vssadmin.exe delete shadows /all /quiet",
+            "username": "admin",
+        },
+        ioc_results=[
+            {
+                "value": "185.220.101.45",
+                "reputation": "MALICIOUS",
+                "confidence_score": 95,
+                "source": "AbuseIPDB",
+            }
+        ],
+        mitre_mappings=[{"technique_id": "T1490", "name": "Inhibit System Recovery", "tactic": "Impact"}],
+    )
+    factors = [b["factor"] for b in res_spoofed_maint["scoring_breakdown"]]
+    assert "Low-Noise / Maintenance Context Adjustment" not in factors
+    assert res_spoofed_maint["severity"] == "CRITICAL"
+
+    # 3. IOC ที่มาจากแหล่งที่ไม่น่าเชื่อถือหรือ Confidence ต่ำ ต้องไม่ถูกรวมเป็น Confirmed Malicious IOC (+20)
+    res_untrusted_ioc = evaluate_alert_risk(
+        normalized_alert={"rule_id": "1001", "rule_level": 5, "description": "Outbound connection"},
+        ioc_results=[
+            {
+                "value": "203.0.113.5",
+                "reputation": "MALICIOUS",
+                "confidence_score": 25,
+                "source": "UnverifiedCommunityBlog",
+            }
+        ],
+        mitre_mappings=[],
+    )
+    untrusted_factors = [b["factor"] for b in res_untrusted_ioc["scoring_breakdown"]]
+    assert "Confirmed Malicious IOC" not in untrusted_factors
+    assert "Suspicious Indicator (IOC)" in untrusted_factors
+
+    # 5. ข้อมูลนำเข้าผิดรูปแบบ (rule_level ไม่ใช่ตัวเลข, MITRE mapping ขาดฟิลด์) ต้องไม่ทำให้ระบบล่ม
+    res_malformed = evaluate_alert_risk(
+        normalized_alert={"rule_id": None, "rule_level": "INVALID_NUMBER", "description": None},
+        ioc_results=["invalid_ioc_item", {"value": ""}],
+        mitre_mappings=[{"invalid_key": "no_technique_id"}, None],
+    )
+    assert 5 <= res_malformed["risk_score"] <= 100
+    assert res_malformed["severity"] in ("LOW", "MEDIUM", "HIGH", "CRITICAL")
+
+
