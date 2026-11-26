@@ -572,4 +572,39 @@ def test_tc14_evaluator_hardening_5_edge_cases():
     assert 5 <= res_malformed["risk_score"] <= 100
     assert res_malformed["severity"] in ("LOW", "MEDIUM", "HIGH", "CRITICAL")
 
+    # 6. Wazuh Rule Level 0-16, Benign PowerShell vs Malicious PowerShell, Stale IOC, Unverified Maintenance
+    res_level16 = evaluate_alert_risk(
+        normalized_alert={"rule_id": "99999", "rule_level": 16, "description": "Extreme level 16 alert"},
+        ioc_results=[],
+        mitre_mappings=[],
+    )
+    assert res_level16["scoring_breakdown"][0]["factor"] == "SIEM Rule Level (16/16)"
+
+    res_benign_ps = evaluate_alert_risk(
+        normalized_alert={
+            "rule_id": "1001",
+            "rule_level": 3,
+            "description": "PowerShell Get-Service health check script executed by IT admin",
+            "command_line": "powershell.exe -Command Get-Service",
+        },
+        ioc_results=[],
+        mitre_mappings=[],
+    )
+    assert res_benign_ps["incident_type"] == "Administrative PowerShell Activity"
+    assert res_benign_ps["severity"] == "LOW"
+
+    res_unverified_maint = evaluate_alert_risk(
+        normalized_alert={
+            "rule_id": "9991",
+            "rule_level": 5,
+            "description": "Unknown binary executed during scheduled maintenance",
+            "username": "guest",
+        },
+        ioc_results=[],
+        mitre_mappings=[],
+    )
+    unv_factors = [b["factor"] for b in res_unverified_maint["scoring_breakdown"]]
+    assert "Low-Noise / Maintenance Context Adjustment" not in unv_factors
+
+
 

@@ -108,7 +108,11 @@ def _deterministic_evidence_analysis(
             "3. ตรวจสอบ Event ID 4624 (Logon Type 3 และ 10) จากเครื่องนี้ไปยัง File Server หรือ Domain Controller",
             "4. ยืนยันสถานะการเปิดใช้งาน Credential Guard และ LSA Protection (RunAsPPL)",
         ]
-    elif "powershell" in desc_lower or "encodedcommand" in desc_lower:
+    elif (
+        "encodedcommand" in combined_lower
+        or "-enc" in combined_lower
+        or ("powershell" in combined_lower and any(k in combined_lower for k in ("-w hidden", "downloadstring", "c2", "stage2", "suspicious", "bypass")))
+    ):
         behavior_analysis = (
             f"โปรเซส powershell.exe ถูกรันด้วยพารามิเตอร์ซ่อนหน้าต่าง (-NoP -NonI -W Hidden) และเข้ารหัสคำสั่งแบบ Base64 (-Enc) "
             f"เพื่อดาวน์โหลดสคริปต์ Stage-2 จากโดเมน '{normalized_alert.get('domain')}' ({dst_ip}) ซึ่งตรงกับรูปแบบ Initial Execution ของมัลแวร์"

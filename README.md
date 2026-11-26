@@ -1,5 +1,5 @@
-# SentinelAI — AI-Powered SOC Alert Triage and Prioritization Platform
-**แพลตฟอร์ม AI สำหรับช่วยวิเคราะห์และจัดลำดับความสำคัญของการแจ้งเตือนภัยคุกคามทางไซเบอร์ (Security Alerts) แบบใช้งานง่าย ไม่ต้อง Login หรือสมัครสมาชิก และจัดการข้อมูลแบบ Temporary Session**
+# SentinelAI — AI-Assisted Security Alert Analysis and Rule-Based Risk Prioritization
+**แพลตฟอร์มวิเคราะห์การแจ้งเตือนภัยคุกคามทางไซเบอร์ด้วย AI และจัดลำดับความเสี่ยงตามกฎอย่างตรวจสอบได้ (AI-Assisted Security Alert Analysis and Rule-Based Risk Prioritization) แบบใช้งานง่าย ไม่ต้อง Login หรือสมัครสมาชิก และจัดการข้อมูลแบบ Temporary Session**
 
 **SentinelAI** เป็นแพลตฟอร์ม AI สำหรับช่วยวิเคราะห์และจัดลำดับความสำคัญของการแจ้งเตือนภัยคุกคามทางไซเบอร์ (Security Alerts) โดยผู้ใช้งานสามารถนำเข้าไฟล์แจ้งเตือนจาก **Wazuh** (JSON หรือ CSV) หรือกรอกข้อมูล Alert ด้วยตนเอง ให้ระบบประเมินความเสี่ยง วิเคราะห์เหตุการณ์ และแสดงผลเพื่อช่วยให้ผู้ดูแลระบบตัดสินใจตรวจสอบได้ง่ายขึ้น โดยเน้นหลักการ **Human-in-the-Loop** (AI ทำหน้าที่เป็นเครื่องมือช่วยวิเคราะห์ แต่การตัดสินใจสุดท้ายยังเป็นของผู้ใช้งาน)
 
@@ -98,6 +98,29 @@
 
 3. **การดึงตัวแปรจริงจาก Log มาประกอบเป็นคำแนะนำเฉพาะเจาะจง (Dynamic Evidence Grounding):**
    - ระบบไม่ได้ใช้ข้อความสำเร็จรูปตายตัว แต่จะดึงค่าตัวแปรจริงที่สกัดได้จาก Alert นั้นๆ ได้แก่ ชื่อเครื่องเป้าหมาย (`hostname`), IP ต้นทางและปลายทาง (`src_ip`, `dst_ip`), บัญชีผู้ใช้ (`username`), ชื่อโปรเซสและคำสั่งที่รัน (`process_name`, `command_line`), โดเมนหรือค่าแฮชของไฟล์ (`domain`, `file_hash`), ผลตรวจ `IOC Threat Intel` ([ioc_enrichment.py](file:///d:/fightikeeee/backend/app/services/ioc_enrichment.py)) และคะแนนแต่ละปัจจัยจาก `Rule Engine` ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py)) มาสร้างเป็นคำอธิบายและขั้นตอนการแก้ไขที่ระบุชื่อเครื่อง ชื่อผู้ใช้ และ IP ของเหตุการณ์นั้นโดยตรง
+
+### แผนผังสถาปัตยกรรมการประมวลผล (AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization Pipeline)
+ระบบแยกส่วนการคำนวณคะแนนตามกฎที่ตรวจสอบได้ (**Rule-Based Risk Scoring** พร้อม `scoring_breakdown`) ออกจากส่วนการสรุปและอธิบายหลักฐานด้วย **LLM / Evidence AI Engine** ดังแผนภาพต่อไปนี้:
+
+```mermaid
+flowchart TD
+    A["Wazuh Alert + IOC + Log"] --> B["Evidence Analysis + MITRE Mapping"]
+    B --> C["Rule-Based Risk Scoring\n(คำนวณคะแนนอย่างตรวจสอบได้ พร้อม scoring_breakdown)"]
+    B --> D["LLM / Evidence AI Analysis\n(สรุปและอธิบายหลักฐานภาษาไทย)"]
+    C --> E["รวมผลและแสดงคำอธิบาย\n(Analysis Workspace)"]
+    D --> E
+    E --> F["Analyst ตรวจสอบและยืนยันผล\n(Human-in-the-Loop Review)"]
+```
+
+### กลไกความแม่นยำและการป้องกันข้อผิดพลาดของ Rule-Based Risk Scoring ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py))
+1. **รองรับ Wazuh Rule Level ครบตามมาตรฐานจริง (`0–16`):** รองรับระดับ `0` (Ignored/0 คะแนน) ถึงระดับ `16` (ระดับสูงสุดของ Wazuh)
+2. **คะแนน MITRE ต้องมีหลักฐานยืนยัน (`Evidence-Verified MITRE Scoring`):** ไม่ให้คะแนนเต็มเพียงเพราะมีรหัส MITRE แต่ตรวจสอบว่ามีหลักฐานใน Log รองรับและสอดคล้องกับความรุนแรงของเหตุการณ์
+3. **การจำแนกด้วยบริบท ไม่ดูแค่คำสำคัญเดี่ยวๆ (`Context-Aware Classification`):**
+   - แยกการใช้งาน **PowerShell ปกติของแอดมิน (`Administrative PowerShell Activity`)** ออกจาก **PowerShell อันตรายที่มีการเข้ารหัสหรือดึงมัลแวร์ (`-enc`, `encodedcommand`, `-w hidden`, `downloadstring`, `c2`)**
+   - แยกการอ่านไฟล์ **`/etc/shadow` (`Privilege Escalation`)** ออกจากคำสั่ง **`vssadmin delete shadows` (`Ransomware`)**
+4. **ตรวจสอบแหล่งที่มา ความเชื่อมั่น และความสดใหม่ของ IOC (`IOC Credibility & Freshness`):** ตรวจสอบว่า IOC มาจากแหล่งที่เชื่อถือได้ (`AbuseIPDB`, `VirusTotal`, `ThreatFox`, `URLhaus` ฯลฯ), มี `confidence_score >= 70%` และข้อมูลยังไม่เก่าเกิน `90 วัน`
+5. **การหักคะแนนงานบำรุงรักษาต้องมีหลักฐานยืนยัน (`Verified Maintenance Guard`):** คำว่า `scheduled maintenance` จะไม่ลดคะแนนทันทีหากไม่มีหลักฐานยืนยันว่าเป็นบัญชีหรือกฎงานบำรุงรักษาที่ได้รับอนุญาต (`backup_svc`, `rule #5501`) และจะไม่ลดคะแนนเด็ดขาดหากพบ IOC หรือ Payload อันตราย
+6. **เพดานคะแนนแต่ละหมวดหมู่ (`Category Sub-Caps`) พร้อม `scoring_breakdown`:** จำกัดเพดานคะแนนแยกตามหมวด (`Rule Level <= 42`, `IOC <= 28`, `MITRE <= 22`, `Behavioral Modifiers <= 25`) เพื่อไม่ให้คะแนนพุ่งสูงเกินจริง และแสดงตาราง `scoring_breakdown` ให้ผู้ใช้เห็นที่มาของคะแนนทุกปัจจัยอย่างโปร่งใส
 
 ---
 

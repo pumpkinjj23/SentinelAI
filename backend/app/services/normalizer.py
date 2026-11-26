@@ -93,7 +93,7 @@ def normalize_alert_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     raw_level = rule_obj.get("level") if rule_obj.get("level") is not None else payload.get("rule_level", 6)
     try:
-        rule_level = max(1, min(15, int(float(raw_level))))
+        rule_level = max(0, min(16, int(float(raw_level))))
     except (ValueError, TypeError):
         rule_level = 6
 
