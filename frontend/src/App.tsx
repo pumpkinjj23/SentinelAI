@@ -126,7 +126,7 @@ const WORKFLOW_STEPS: {
 
 export function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [activePage, setActivePage] = useState<PageId>('dashboard');
 
   const [currentUser] = useState<SOCUserIdentity>({
