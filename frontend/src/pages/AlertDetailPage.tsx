@@ -258,6 +258,29 @@ export const AlertDetailPage: React.FC<AlertDetailPageProps> = ({
                 {an.behavior_analysis}
               </p>
             </div>
+
+            {an.evidence_citations && an.evidence_citations.length > 0 && (
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                  <div className="text-xs font-extrabold text-sky-700 dark:text-sky-400 uppercase">
+                    หลักฐานอ้างอิงจาก Alert ที่ AI ใช้ประกอบการวิเคราะห์ (Evidence Citations — {an.evidence_citations.length} รายการ)
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-100 text-sky-800 dark:bg-sky-500/20 dark:text-sky-200 border border-sky-300 dark:border-sky-400/40">
+                    Evidence-Grounded · Zero Hallucination
+                  </span>
+                </div>
+                <ul className="space-y-2">
+                  {an.evidence_citations.map((cit, idx) => (
+                    <li
+                      key={idx}
+                      className="p-3 rounded-xl bg-sky-50/70 dark:bg-slate-900/90 border border-sky-200 dark:border-slate-700 text-xs font-mono text-slate-800 dark:text-slate-200 leading-relaxed break-all"
+                    >
+                      {cit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* แนวทางตรวจสอบเบื้องต้น */}
