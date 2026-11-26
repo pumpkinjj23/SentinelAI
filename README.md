@@ -75,6 +75,30 @@
 
 > **ระบบ Fallback อัตโนมัติ:** หากตั้งค่าใช้ LLM ภายนอก (`gemini`, `openai`, `ollama`) แล้วเครือข่ายขัดข้องหรือ API Key ไม่พร้อมใช้งาน ระบบจะสลับกลับมาใช้ **Built-in Deterministic Evidence AI Engine** ให้อัตโนมัติเพื่อให้การวิเคราะห์ของ SOC ไม่สะดุด
 
+### หลักการคิดวิเคราะห์และแหล่งอ้างอิงวิธีแก้ไข (How Built-in Evidence AI Engine Works)
+ตัว **`Built-in Deterministic Evidence AI Engine`** ([analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py)) ทำงานในรูปแบบ **Rule-Based Expert System + Dynamic Telemetry Injection** (ระบบผู้เชี่ยวชาญที่ดึงข้อมูลจริงจาก Log มาประกอบเข้ากับคู่มือรับมือภัยคุกคามมาตรฐานสากล) โดยอ้างอิงจาก 3 มาตรฐานหลักของงาน SOC ดังนี้:
+
+1. **อ้างอิงขั้นตอนการแก้ไขและระงับเหตุจากมาตรฐาน NIST SP 800-61 (Computer Security Incident Handling Guide) และ SANS Incident Handler's Handbook:**
+   - ทุกคำแนะนำการแก้ไข (`recommendations`) จะถูกจัดเรียงตามลำดับการรับมือเหตุการณ์ 4 ขั้นตอนเสมอ ได้แก่:
+     - **Containment (จำกัดวงความเสียหายทันที):** เช่น การสั่งแยกเครื่องออกจากเครือข่าย (`Network Isolation`) หรือระงับสิทธิ์บัญชีผู้ใช้ชั่วคราว (`Disable Account`)
+     - **Investigation & Forensics (ตรวจสอบหลักฐานและหาขอบเขต):** เช่น การตรวจสอบ Windows/Sysmon Event ID (`4624`, `4104`, `7045`, `5140`), การถอดรหัสคำสั่ง Base64, การตรวจ DNS/Firewall Logs หรือการค้นหา `file_hash` บนเครื่องอื่นในวงแลน
+     - **Eradication (กำจัดต้นตอของภัยคุกคาม):** เช่น การบังคับรีเซ็ตรหัสผ่าน (`Force Password Reset`), การล้าง Kerberos Golden/Silver Ticket, การบล็อก IP/Domain บน WAF/Firewall หรือการแก้ไขโค้ดเป็น Parameterized Queries
+     - **Recovery & Hardening (กู้คืนระบบและป้องกันการเกิดซ้ำ):** เช่น การกู้คืนจาก Offline Backup, การเปิดใช้งาน Credential Guard / LSA Protection (`RunAsPPL`) หรือการตั้งค่า Fail2Ban / Account Lockout Policy
+
+2. **อ้างอิงรูปแบบพฤติกรรมการโจมตีจาก MITRE ATT&CK Framework (Enterprise Matrix) และ Wazuh / Sigma Detection Rules:**
+   - เชื่อมโยงผลลัพธ์จากโมดูล [mapper.py](file:///d:/fightikeeee/backend/app/mitre_mapping/mapper.py) เพื่อจับคู่คำสั่งและพฤติกรรมใน Log เข้ากับเทคนิคของ MITRE ATT&CK แล้วเลือก Playbook การรับมือที่ตรงกับประเภทภัยคุกคาม เช่น:
+     - **`T1486 / T1490` (Ransomware & Shadow Copy Deletion):** ตรวจพบคำสั่ง `vssadmin delete shadows` หรือการเข้ารหัสไฟล์ (`.lockbit`)
+     - **`T1003.001` (LSASS Credential Dumping / Mimikatz):** ตรวจพบการเข้าถึงหน่วยความจำของโปรเซส `lsass.exe`
+     - **`T1059.001` (PowerShell EncodedCommand Execution):** ตรวจพบการรัน `powershell.exe` แบบซ่อนหน้าต่างและเข้ารหัส Base64 (`-Enc`) เพื่อดึงสคริปต์จาก C2
+     - **`T1190` (Exploit Public-Facing Application / SQL Injection):** ตรวจพบ Payload แบบ `UNION SELECT` ที่ดึงข้อมูลจากฐานข้อมูล
+     - **`T1110` (Credential Brute Force):** ตรวจพบความพยายามล็อกอินล้มเหลวซ้ำๆ อย่างต่อเนื่อง
+     - **`T1548.003` (Sudo Privilege Escalation):** ตรวจพบบัญชีบริการรัน `sudo` เพื่อเข้าถึงไฟล์สำคัญ เช่น `/etc/shadow`
+     - **`T1021.002 / T1569.002` (Lateral Movement / PsExec):** ตรวจพบการติดตั้งและรันบริการรีโมตข้ามเครื่องภายในเครือข่าย
+     - **`T1041 / T1071.004` (Exfiltration Over C2 / DNS Tunneling):** ตรวจพบการส่งข้อมูลออกนอกองค์กรในปริมาณผิดปกติ
+
+3. **การดึงตัวแปรจริงจาก Log มาประกอบเป็นคำแนะนำเฉพาะเจาะจง (Dynamic Evidence Grounding):**
+   - ระบบไม่ได้ใช้ข้อความสำเร็จรูปตายตัว แต่จะดึงค่าตัวแปรจริงที่สกัดได้จาก Alert นั้นๆ ได้แก่ ชื่อเครื่องเป้าหมาย (`hostname`), IP ต้นทางและปลายทาง (`src_ip`, `dst_ip`), บัญชีผู้ใช้ (`username`), ชื่อโปรเซสและคำสั่งที่รัน (`process_name`, `command_line`), โดเมนหรือค่าแฮชของไฟล์ (`domain`, `file_hash`), ผลตรวจ `IOC Threat Intel` ([ioc_enrichment.py](file:///d:/fightikeeee/backend/app/services/ioc_enrichment.py)) และคะแนนแต่ละปัจจัยจาก `Rule Engine` ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py)) มาสร้างเป็นคำอธิบายและขั้นตอนการแก้ไขที่ระบุชื่อเครื่อง ชื่อผู้ใช้ และ IP ของเหตุการณ์นั้นโดยตรง
+
 ---
 
 ## 5. โครงสร้างโฟลเดอร์และตำแหน่งไฟล์ทั้งหมด (Project Directory & File Map)
