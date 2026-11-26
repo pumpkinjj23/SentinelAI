@@ -51,14 +51,14 @@
 | ส่วนการทำงาน (Layer) | เทคโนโลยี / ไลบรารีที่ใช้ | หน้าที่และการทำงาน |
 | :--- | :--- | :--- |
 | **Frontend UI** | **React 18 + TypeScript** | พัฒนาเว็บแอปพลิเคชันแบบ Single-Page Application (SPA) 4 หน้าหลัก |
-| **Styling & Theme** | **Tailwind CSS + Lucide React Icons** | ออกแบบ UI สไตล์ High-Contrast Frosted Glass รองรับโหมดสว่าง (Light) และโหมดมืด (Dark) |
+| **Styling & Theme** | **Tailwind CSS + Lucide React Icons** | ออกแบบ UI สไตล์ High-Contrast Frosted Glass (เปิดเป็นธีมสว่าง Light Mode เป็นค่าเริ่มต้น และสลับเป็นโหมดมืด Dark Mode ได้ทันที) |
 | **Data Visualization** | **Recharts** | แสดงกราฟสถิติการแจ้งเตือน (Alert Trend, Severity Distribution, MITRE Tactics, Source Breakdown) |
 | **Frontend Build / Dev Server** | **TypeScript (`tsc`) + Custom Node ESM Bundler (`dev-server.mjs`)** | คอมไพล์และรัน Dev Server บนพอร์ต `3000` พร้อม Proxy ไปยัง `/api` ที่พอร์ต `8080` |
 | **Backend API Framework** | **Python 3 + FastAPI + Uvicorn** | ให้บริการ RESTful API สำหรับ Ingest, Analyze, Review, Audit Log, Evidence Images และ End Session Cleanup พร้อม Swagger Docs (`/docs`) |
 | **ORM & Data Validation** | **SQLAlchemy 2.0 + Pydantic v2** | จัดการโครงสร้างฐานข้อมูลและตรวจสอบความถูกต้องของข้อมูล (Schema Validation) |
 | **Database & Storage** | **SQLite (`sentinelai.db`) / PostgreSQL 16** | จัดเก็บข้อมูลระหว่าง Session และลบข้อมูลชั่วคราวรวมถึง Session Audit Log เมื่อกด End Session |
-| **AI & Threat Analysis** | **Deterministic Rule Engine + Hybrid AI Engine + MITRE Mapper** | คำนวณ Risk Score (0–100), สกัด IOC, จับคู่ MITRE ATT&CK และสรุปผลวิเคราะห์ภาษาไทยพร้อมอ้างอิงหลักฐาน (`evidence_citations`) |
-| **Automated Testing** | **Pytest (`TC01`–`TC13`)** | ทดสอบการนำเข้าข้อมูล, Deduplication, Risk Score, AI Analysis, MITRE Mapping, IOC Enrichment และการจัดการข้อมูล |
+| **AI & Threat Analysis** | **Deterministic Rule Engine + Hybrid AI Engine + MITRE Mapper** | คำนวณ Risk Score (0–100) รองรับ Wazuh Rule Level 0–16, สกัด IOC, จับคู่ MITRE ATT&CK และสรุปผลวิเคราะห์ภาษาไทยพร้อมอ้างอิงหลักฐาน (`evidence_citations`) |
+| **Automated Testing** | **Pytest (`TC01`–`TC14`)** | ทดสอบการนำเข้าข้อมูล, Deduplication, Risk Score (Wazuh Level 0–16, IOC Credibility, Context-Aware Classification), AI Analysis, MITRE Mapping และการจัดการข้อมูล |
 
 ---
 

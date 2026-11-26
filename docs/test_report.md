@@ -20,6 +20,8 @@
 | **TC10** | Analyst Approve / Reject | ส่งคำสั่ง `APPROVE` ไปยัง `POST /api/alerts/{id}/decision` | สถานะของ Alert เปลี่ยนจาก `PENDING_REVIEW` เป็น `APPROVED` | **PASS** |
 | **TC11** | บันทึก Audit Trail | เรียก `GET /api/audit-logs` หลัง Analyst ตัดสินใจ | พบรายการบันทึกชื่อผู้ตรวจ เวลา สถานะก่อน-หลัง และความคิดเห็นครบถ้วน | **PASS** |
 | **TC12** | สร้าง Incident Report | เรียก `GET /api/alerts/{id}/report` | ระบบสร้างรายงานทั้งรูปแบบ JSON และ Markdown ที่มีคำตอบครบ 5 ข้อและหลักฐานต้นทาง | **PASS** |
+| **TC13** | การแยกข้อมูลและการจัดการสิทธิ์ | ทดสอบการแยกข้อมูลและการตรวจสอบสิทธิ์ของ API | ระบบแยกชุดข้อมูลและตรวจสอบสิทธิ์ได้อย่างถูกต้อง | **PASS** |
+| **TC14** | การป้องกันจุดอ่อนของ Rule Engine ทั้ง 6 ข้อ | ทดสอบ `/etc/shadow` vs `Ransomware`, `Wazuh Level 0–16`, `Benign PowerShell`, `IOC Credibility & Freshness`, `Verified Maintenance Guard` และ `Malformed Input` | ระบบจำแนกประเภทเหตุการณ์และคำนวณคะแนนได้ถูกต้องโดยไม่ถูกลดคะแนนหลอกและไม่ล่มเมื่อข้อมูลผิดรูปแบบ | **PASS** |
 
 ---
 
