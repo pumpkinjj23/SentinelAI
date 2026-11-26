@@ -22846,62 +22846,11 @@ const lucide_react_1 = require("lucide-react");
 const SeverityBadge_1 = require("../components/SeverityBadge");
 const api_1 = require("../services/api");
 const reportExporter_1 = require("../utils/reportExporter");
-const formatDateTime_1 = require("../utils/formatDateTime");
 const AlertDetailPage = ({ alerts, selectedAlert, userEmail, userRole = 'OWNER', onSelectAlert, onGoToReview, onGoToReports, onSaveReport, onConfirmed, }) => {
     const [confirming, setConfirming] = (0, react_1.useState)(false);
     const [reanalyzing, setReanalyzing] = (0, react_1.useState)(false);
     const [confirmMsg, setConfirmMsg] = (0, react_1.useState)(null);
-    const [imgCaption, setImgCaption] = (0, react_1.useState)('');
-    const [uploadingImg, setUploadingImg] = (0, react_1.useState)(false);
-    const [previewModalImg, setPreviewModalImg] = (0, react_1.useState)(null);
     const activeAlert = selectedAlert || alerts[0];
-    const canEdit = userRole === 'OWNER' || userRole === 'ANALYST';
-    const evidenceImages = Array.isArray(activeAlert?.raw_payload?.evidence_images)
-        ? (activeAlert?.raw_payload)
-            .evidence_images
-        : [];
-    const handleImageFileSelect = (e) => {
-        const file = e.target.files?.[0];
-        if (!file || !activeAlert)
-            return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const base64 = String(reader.result || '');
-            if (!base64)
-                return;
-            try {
-                setUploadingImg(true);
-                setConfirmMsg(null);
-                const titleToUse = imgCaption.trim() || `ภาพหลักฐานจุดน่าสงสัย (${file.name})`;
-                const updated = await (0, api_1.uploadAlertEvidenceImage)(activeAlert.id, { title: titleToUse, image_data: base64 }, userEmail);
-                setImgCaption('');
-                setConfirmMsg(`แนบรูปภาพหลักฐานยืนยันจุดน่าสงสัยสำหรับ ${updated.alert_code} สำเร็จ`);
-                if (onConfirmed)
-                    onConfirmed(updated);
-            }
-            catch (err) {
-                setConfirmMsg(err instanceof Error ? err.message : 'ไม่สามารถแนบรูปภาพได้');
-            }
-            finally {
-                setUploadingImg(false);
-                e.target.value = '';
-            }
-        };
-        reader.readAsDataURL(file);
-    };
-    const handleDeleteImage = async (imgId) => {
-        if (!activeAlert)
-            return;
-        try {
-            const updated = await (0, api_1.deleteAlertEvidenceImage)(activeAlert.id, imgId, userEmail);
-            setConfirmMsg(`ลบรูปภาพหลักฐาน ${imgId} เรียบร้อยแล้ว`);
-            if (onConfirmed)
-                onConfirmed(updated);
-        }
-        catch (err) {
-            setConfirmMsg(err instanceof Error ? err.message : 'ไม่สามารถลบรูปภาพได้');
-        }
-    };
     if (!activeAlert || !activeAlert.analysis) {
         return (react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-8 text-center" },
             react_1.default.createElement("p", { className: "text-base font-bold text-slate-700 dark:text-slate-200" }, "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25 Alert \u0E17\u0E35\u0E48\u0E40\u0E25\u0E37\u0E2D\u0E01 \u0E01\u0E23\u0E38\u0E13\u0E32\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E43\u0E19\u0E2B\u0E19\u0E49\u0E32 Data Sources & Import")));
@@ -23072,49 +23021,6 @@ const AlertDetailPage = ({ alerts, selectedAlert, userEmail, userRole = 'OWNER',
                     react_1.default.createElement("div", null,
                         react_1.default.createElement("span", { className: "text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5" }, "Raw Security Log \u0E15\u0E49\u0E19\u0E09\u0E1A\u0E31\u0E1A:"),
                         react_1.default.createElement("pre", { className: "text-sm font-mono text-emerald-300 bg-slate-950 p-4 rounded-xl border border-slate-800 overflow-x-auto whitespace-pre-wrap break-all leading-relaxed" }, activeAlert.raw_log))),
-                react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-4 overflow-hidden border-2 border-emerald-500/35" },
-                    react_1.default.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700/80 pb-3" },
-                        react_1.default.createElement("h3", { className: "text-base font-extrabold text-emerald-700 dark:text-emerald-400 uppercase flex items-center gap-2" },
-                            react_1.default.createElement(lucide_react_1.ImagePlus, { className: "w-5 h-5 shrink-0" }),
-                            "\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E2B\u0E25\u0E31\u0E01\u0E10\u0E32\u0E19\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19\u0E08\u0E38\u0E14\u0E19\u0E48\u0E32\u0E2A\u0E07\u0E2A\u0E31\u0E22 (",
-                            evidenceImages.length,
-                            " \u0E23\u0E39\u0E1B)"),
-                        react_1.default.createElement("span", { className: "text-xs text-slate-500 dark:text-slate-400" }, "\u0E41\u0E19\u0E1A\u0E20\u0E32\u0E1E\u0E41\u0E04\u0E1B\u0E2B\u0E19\u0E49\u0E32\u0E08\u0E2D\u0E08\u0E38\u0E14\u0E1C\u0E34\u0E14\u0E1B\u0E01\u0E15\u0E34\u0E43\u0E19 Log, \u0E01\u0E23\u0E32\u0E1F Network, \u0E2B\u0E23\u0E37\u0E2D Process \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E43\u0E0A\u0E49\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19\u0E40\u0E2B\u0E15\u0E38\u0E01\u0E32\u0E23\u0E13\u0E4C\u0E41\u0E25\u0E30\u0E41\u0E2A\u0E14\u0E07\u0E43\u0E19\u0E23\u0E32\u0E22\u0E07\u0E32\u0E19 PDF")),
-                    canEdit && (react_1.default.createElement("div", { className: "p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center gap-2.5" },
-                        react_1.default.createElement("input", { type: "text", value: imgCaption, onChange: (e) => setImgCaption(e.target.value), placeholder: "\u0E23\u0E30\u0E1A\u0E38\u0E04\u0E33\u0E2D\u0E18\u0E34\u0E1A\u0E32\u0E22\u0E08\u0E38\u0E14\u0E19\u0E48\u0E32\u0E2A\u0E07\u0E2A\u0E31\u0E22 \u0E40\u0E0A\u0E48\u0E19 \u0E1E\u0E1A\u0E04\u0E33\u0E2A\u0E31\u0E48\u0E07 PowerShell -Enc \u0E40\u0E0A\u0E37\u0E48\u0E2D\u0E21\u0E15\u0E48\u0E2D C2 IP...", className: "flex-1 min-w-[220px] px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500" }),
-                        react_1.default.createElement("label", { className: "px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-sm cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap" },
-                            react_1.default.createElement(lucide_react_1.ImagePlus, { className: "w-4 h-4" }),
-                            uploadingImg ? 'กำลังอัปโหลดรูป...' : 'เลือกรูปภาพยืนยันจุดน่าสงสัย',
-                            react_1.default.createElement("input", { type: "file", accept: "image/*", disabled: uploadingImg, onChange: handleImageFileSelect, className: "hidden" })))),
-                    evidenceImages.length === 0 ? (react_1.default.createElement("div", { className: "p-6 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-700 text-center text-xs text-slate-500 dark:text-slate-400" },
-                        "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E2B\u0E25\u0E31\u0E01\u0E10\u0E32\u0E19\u0E41\u0E19\u0E1A\u0E43\u0E19\u0E40\u0E2B\u0E15\u0E38\u0E01\u0E32\u0E23\u0E13\u0E4C ",
-                        activeAlert.alert_code,
-                        " \u2014 \u0E01\u0E14\u0E1B\u0E38\u0E48\u0E21 \u201C\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19\u0E08\u0E38\u0E14\u0E19\u0E48\u0E32\u0E2A\u0E07\u0E2A\u0E31\u0E22\u201D \u0E14\u0E49\u0E32\u0E19\u0E1A\u0E19\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E41\u0E19\u0E1A\u0E20\u0E32\u0E1E\u0E1B\u0E23\u0E30\u0E01\u0E2D\u0E1A\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A")) : (react_1.default.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-4" }, evidenceImages.map((img) => (react_1.default.createElement("div", { key: img.id, className: "p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 space-y-2.5 overflow-hidden" },
-                        react_1.default.createElement("div", { onClick: () => setPreviewModalImg(img), className: "relative rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-950 cursor-pointer group" },
-                            react_1.default.createElement("img", { src: img.image_data, alt: img.title, className: "w-full h-44 object-contain bg-slate-950 group-hover:scale-[1.02] transition" })),
-                        react_1.default.createElement("div", { className: "flex items-start justify-between gap-2" },
-                            react_1.default.createElement("div", { className: "min-w-0 flex-1" },
-                                react_1.default.createElement("div", { className: "text-xs font-extrabold text-slate-900 dark:text-white break-words" }, img.title),
-                                react_1.default.createElement("div", { className: "text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5" },
-                                    "\u0E42\u0E14\u0E22: ",
-                                    img.uploaded_by,
-                                    " \u00B7 ",
-                                    (0, formatDateTime_1.formatThaiDateTime)(img.created_at))),
-                            canEdit && (react_1.default.createElement("button", { type: "button", onClick: () => handleDeleteImage(img.id), title: "\u0E25\u0E1A\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E19\u0E35\u0E49", className: "p-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 cursor-pointer shrink-0" },
-                                react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5" })))))))))),
-                previewModalImg && (react_1.default.createElement("div", { onClick: () => setPreviewModalImg(null), className: "fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4" },
-                    react_1.default.createElement("div", { onClick: (e) => e.stopPropagation(), className: "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-4xl w-full p-5 space-y-3 shadow-2xl" },
-                        react_1.default.createElement("div", { className: "flex items-center justify-between gap-2" },
-                            react_1.default.createElement("div", null,
-                                react_1.default.createElement("div", { className: "text-sm font-extrabold text-slate-900 dark:text-white" }, previewModalImg.title),
-                                react_1.default.createElement("div", { className: "text-xs font-mono text-slate-500 dark:text-slate-400" },
-                                    "\u0E41\u0E19\u0E1A\u0E42\u0E14\u0E22: ",
-                                    previewModalImg.uploaded_by,
-                                    " \u00B7 ",
-                                    (0, formatDateTime_1.formatThaiDateTime)(previewModalImg.created_at))),
-                            react_1.default.createElement("button", { type: "button", onClick: () => setPreviewModalImg(null), className: "px-3.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-xs font-extrabold cursor-pointer" }, "\u0E1B\u0E34\u0E14\u0E2B\u0E19\u0E49\u0E32\u0E15\u0E48\u0E32\u0E07")),
-                        react_1.default.createElement("div", { className: "rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 max-h-[75vh] flex items-center justify-center" },
-                            react_1.default.createElement("img", { src: previewModalImg.image_data, alt: previewModalImg.title, className: "max-h-[72vh] w-auto object-contain" }))))),
                 react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-4 overflow-hidden" },
                     react_1.default.createElement("h3", { className: "text-base font-extrabold text-sky-700 dark:text-sky-400 uppercase flex items-center gap-2 border-b border-slate-200 dark:border-slate-700/80 pb-3" },
                         react_1.default.createElement(lucide_react_1.Globe, { className: "w-5 h-5 shrink-0" }),
@@ -23216,7 +23122,6 @@ const lucide_react_1 = require("lucide-react");
 const SeverityBadge_1 = require("../components/SeverityBadge");
 const api_1 = require("../services/api");
 const reportExporter_1 = require("../utils/reportExporter");
-const formatDateTime_1 = require("../utils/formatDateTime");
 const AnalystReviewPage = ({ alerts, selectedAlert, userEmail, onSelectAlert, onDecisionSaved, onGoToReports, onSaveReport, }) => {
     const [queueFilter, setQueueFilter] = (0, react_1.useState)('pending');
     const pendingAlerts = alerts.filter((a) => a.status === 'PENDING_REVIEW');
@@ -23227,28 +23132,8 @@ const AnalystReviewPage = ({ alerts, selectedAlert, userEmail, onSelectAlert, on
     const [adjustedSeverity, setAdjustedSeverity] = (0, react_1.useState)(activeAlert?.analysis?.severity || 'HIGH');
     const [adjustedScore, setAdjustedScore] = (0, react_1.useState)(activeAlert?.analysis?.risk_score ?? 80);
     const [comment, setComment] = (0, react_1.useState)('');
-    const [attachedImgBase64, setAttachedImgBase64] = (0, react_1.useState)(null);
-    const [attachedImgTitle, setAttachedImgTitle] = (0, react_1.useState)('');
     const [submitting, setSubmitting] = (0, react_1.useState)(false);
     const [feedback, setFeedback] = (0, react_1.useState)(null);
-    const existingEvidenceImages = Array.isArray(activeAlert?.raw_payload?.evidence_images)
-        ? (activeAlert?.raw_payload)
-            .evidence_images
-        : [];
-    const handleAttachFile = (e) => {
-        const file = e.target.files?.[0];
-        if (!file)
-            return;
-        const reader = new FileReader();
-        reader.onload = () => {
-            setAttachedImgBase64(String(reader.result || ''));
-            if (!attachedImgTitle.trim()) {
-                setAttachedImgTitle(`ภาพหลักฐานจุดน่าสงสัย (${file.name})`);
-            }
-            e.target.value = '';
-        };
-        reader.readAsDataURL(file);
-    };
     (0, react_1.useEffect)(() => {
         if (activeAlert?.analysis) {
             setAdjustedSeverity(activeAlert.analysis.severity);
@@ -23288,12 +23173,8 @@ const AnalystReviewPage = ({ alerts, selectedAlert, userEmail, onSelectAlert, on
                 comment,
                 adjusted_severity: adjustedSeverity,
                 adjusted_risk_score: Number(adjustedScore),
-                evidence_image_data: attachedImgBase64 || undefined,
-                evidence_image_title: attachedImgTitle.trim() || undefined,
             }, userEmail);
             setComment('');
-            setAttachedImgBase64(null);
-            setAttachedImgTitle('');
             setFeedback({
                 type: 'success',
                 text: `บันทึกผลการตัดสินใจ (${action}_ALERT) สำหรับ ${updated.alert_code} ลงใน Audit Logs เรียบร้อยแล้ว!`,
@@ -23490,45 +23371,6 @@ const AnalystReviewPage = ({ alerts, selectedAlert, userEmail, onSelectAlert, on
                     react_1.default.createElement("div", null,
                         react_1.default.createElement("label", { className: "block text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5" }, "\u0E40\u0E1E\u0E34\u0E48\u0E21\u0E04\u0E27\u0E32\u0E21\u0E04\u0E34\u0E14\u0E40\u0E2B\u0E47\u0E19 (Comment)"),
                         react_1.default.createElement("textarea", { rows: 3, placeholder: "\u0E40\u0E0A\u0E48\u0E19 \u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E41\u0E25\u0E49\u0E27 \u0E1E\u0E1A\u0E2B\u0E25\u0E31\u0E01\u0E10\u0E32\u0E19\u0E2A\u0E2D\u0E14\u0E04\u0E25\u0E49\u0E2D\u0E07...", value: comment, onChange: (e) => setComment(e.target.value), className: "w-full px-4 py-3 rounded-xl text-sm font-medium bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500" })),
-                    react_1.default.createElement("div", { className: "p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 space-y-3" },
-                        react_1.default.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2" },
-                            react_1.default.createElement("label", { className: "text-xs font-extrabold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5" },
-                                react_1.default.createElement(lucide_react_1.ImagePlus, { className: "w-4 h-4" }),
-                                "\u0E41\u0E19\u0E1A\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19\u0E08\u0E38\u0E14\u0E19\u0E48\u0E32\u0E2A\u0E07\u0E2A\u0E31\u0E22\u0E43\u0E19\u0E40\u0E2B\u0E15\u0E38\u0E01\u0E32\u0E23\u0E13\u0E4C\u0E19\u0E35\u0E49 (\u0E44\u0E21\u0E48\u0E1A\u0E31\u0E07\u0E04\u0E31\u0E1A \u2014 \u0E23\u0E39\u0E1B\u0E08\u0E30\u0E41\u0E2A\u0E14\u0E07\u0E43\u0E19 AI Analysis \u0E41\u0E25\u0E30\u0E23\u0E32\u0E22\u0E07\u0E32\u0E19 PDF)"),
-                            react_1.default.createElement("label", { className: "px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold cursor-pointer inline-flex items-center gap-1.5" },
-                                react_1.default.createElement(lucide_react_1.ImagePlus, { className: "w-3.5 h-3.5" }),
-                                "\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E2B\u0E25\u0E31\u0E01\u0E10\u0E32\u0E19",
-                                react_1.default.createElement("input", { type: "file", accept: "image/*", onChange: handleAttachFile, className: "hidden" }))),
-                        attachedImgBase64 && (react_1.default.createElement("div", { className: "p-3 rounded-xl bg-white dark:bg-slate-800 border border-emerald-400/50 space-y-2" },
-                            react_1.default.createElement("div", { className: "flex items-center justify-between gap-2" },
-                                react_1.default.createElement("input", { type: "text", value: attachedImgTitle, onChange: (e) => setAttachedImgTitle(e.target.value), placeholder: "\u0E23\u0E30\u0E1A\u0E38\u0E04\u0E33\u0E2D\u0E18\u0E34\u0E1A\u0E32\u0E22\u0E08\u0E38\u0E14\u0E19\u0E48\u0E32\u0E2A\u0E07\u0E2A\u0E31\u0E22\u0E43\u0E19\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E19\u0E35\u0E49...", className: "flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none" }),
-                                react_1.default.createElement("button", { type: "button", onClick: () => {
-                                        setAttachedImgBase64(null);
-                                        setAttachedImgTitle('');
-                                    }, className: "px-2.5 py-1.5 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 text-xs font-bold cursor-pointer inline-flex items-center gap-1" },
-                                    react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5" }),
-                                    " \u0E22\u0E01\u0E40\u0E25\u0E34\u0E01\u0E23\u0E39\u0E1B\u0E19\u0E35\u0E49")),
-                            react_1.default.createElement("img", { src: attachedImgBase64, alt: "Preview", className: "max-h-40 rounded-lg border border-slate-300 dark:border-slate-700 object-contain bg-slate-950" }))),
-                        existingEvidenceImages.length > 0 && (react_1.default.createElement("div", { className: "space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/80" },
-                            react_1.default.createElement("div", { className: "text-xs font-bold text-slate-600 dark:text-slate-300" },
-                                "\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E2B\u0E25\u0E31\u0E01\u0E10\u0E32\u0E19\u0E17\u0E35\u0E48\u0E41\u0E19\u0E1A\u0E44\u0E27\u0E49\u0E41\u0E25\u0E49\u0E27\u0E43\u0E19\u0E40\u0E2B\u0E15\u0E38\u0E01\u0E32\u0E23\u0E13\u0E4C ",
-                                activeAlert.alert_code,
-                                " (",
-                                existingEvidenceImages.length,
-                                " \u0E23\u0E39\u0E1B):"),
-                            react_1.default.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5" }, existingEvidenceImages.map((img) => (react_1.default.createElement("div", { key: img.id, className: "p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-2.5" },
-                                react_1.default.createElement("img", { src: img.image_data, alt: img.title, className: "w-16 h-12 rounded-lg object-cover bg-slate-950 border border-slate-300 dark:border-slate-700 shrink-0" }),
-                                react_1.default.createElement("div", { className: "min-w-0 flex-1" },
-                                    react_1.default.createElement("div", { className: "text-xs font-bold text-slate-900 dark:text-white truncate" }, img.title),
-                                    react_1.default.createElement("div", { className: "text-[10px] font-mono text-slate-500 dark:text-slate-400 truncate" },
-                                        img.uploaded_by,
-                                        " \u00B7 ",
-                                        (0, formatDateTime_1.formatThaiDateTime)(img.created_at))),
-                                react_1.default.createElement("button", { type: "button", onClick: async () => {
-                                        const updated = await (0, api_1.deleteAlertEvidenceImage)(activeAlert.id, img.id, userEmail);
-                                        onDecisionSaved(updated);
-                                    }, className: "p-1.5 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 cursor-pointer shrink-0" },
-                                    react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5" }))))))))),
                     react_1.default.createElement("div", { className: "flex flex-wrap items-center justify-end gap-2.5" },
                         onSaveReport && (react_1.default.createElement("button", { type: "button", onClick: () => {
                                 onSaveReport(activeAlert, comment.trim() || undefined);
@@ -27564,25 +27406,6 @@ function exportPrintableRemediationReport(alertsToExport, reportTitle, summary) 
                 .map((ioc) => `<li style="margin-bottom:3px;word-break:break-all;"><strong>[${ioc.indicator_type.toUpperCase()}] ${ioc.value}</strong> — สถานะ: <strong>${ioc.reputation} (${ioc.confidence_score}%)</strong> | <span style="word-break:break-word;">${ioc.details}</span></li>`)
                 .join('')
             : '<li>ไม่พบ IOC ภายนอก (กิจกรรมภายในเครือข่าย)</li>';
-        const evidenceImages = Array.isArray(a.raw_payload?.evidence_images)
-            ? a.raw_payload
-                .evidence_images
-            : [];
-        const evidenceImagesSection = evidenceImages.length > 0
-            ? `<div style="margin-bottom:12px;">
-               <h4 style="margin:0 0 6px 0;font-size:13.5px;color:#047857;">รูปภาพหลักฐานยืนยันจุดน่าสงสัย (${evidenceImages.length} รูป)</h4>
-               <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                 ${evidenceImages
-                .map((img) => `
-                   <div style="border:1px solid #cbd5e1;border-radius:8px;padding:8px;background:#f8fafc;">
-                     <img src="${img.image_data}" alt="${img.title}" style="width:100%;max-height:210px;object-fit:contain;background:#0f172a;border-radius:6px;margin-bottom:6px;" />
-                     <div style="font-size:12px;font-weight:700;color:#0f172a;word-break:break-word;">${img.title}</div>
-                     <div style="font-size:11px;color:#475569;">แนบโดย: ${img.uploaded_by} | ${(0, formatDateTime_1.formatThaiDateTime)(img.created_at)}</div>
-                   </div>`)
-                .join('')}
-               </div>
-             </div>`
-            : '';
         // Note: Do NOT put page-break-inside:avoid on the outer card so it never gets pushed off Page 1!
         // If there are multiple alerts, start subsequent alerts on a new page cleanly.
         const pageBreakRule = index > 0 ? 'page-break-before: always; margin-top: 10px;' : '';
@@ -27648,8 +27471,6 @@ function exportPrintableRemediationReport(alertsToExport, reportTitle, summary) 
             <tbody>${mitreRows}</tbody>
           </table>
         </div>
-
-        ${evidenceImagesSection}
 
         <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:12.5px;word-break:break-word;">
           <strong style="color:#065f46;">บันทึกการอนุมัติโดยผู้ตรวจสอบ (Analyst Approval & Audit Record):</strong><br/>

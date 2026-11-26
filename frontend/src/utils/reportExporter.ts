@@ -1,4 +1,4 @@
-import { DashboardSummary, EvidenceImageAttachment, SecurityAlert } from '../types';
+import { DashboardSummary, SecurityAlert } from '../types';
 import { formatThaiDateTime } from './formatDateTime';
 
 const STATUS_THAI_LABEL: Record<string, string> = {
@@ -131,34 +131,6 @@ export function exportPrintableRemediationReport(
               .join('')
           : '<li>ไม่พบ IOC ภายนอก (กิจกรรมภายในเครือข่าย)</li>';
 
-      const evidenceImages: EvidenceImageAttachment[] = Array.isArray(
-        (a.raw_payload as Record<string, unknown>)?.evidence_images
-      )
-        ? ((a.raw_payload as Record<string, unknown>)
-            .evidence_images as EvidenceImageAttachment[])
-        : [];
-
-      const evidenceImagesSection =
-        evidenceImages.length > 0
-          ? `<div style="margin-bottom:12px;">
-               <h4 style="margin:0 0 6px 0;font-size:13.5px;color:#047857;">รูปภาพหลักฐานยืนยันจุดน่าสงสัย (${evidenceImages.length} รูป)</h4>
-               <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                 ${evidenceImages
-                   .map(
-                     (img) => `
-                   <div style="border:1px solid #cbd5e1;border-radius:8px;padding:8px;background:#f8fafc;">
-                     <img src="${img.image_data}" alt="${img.title}" style="width:100%;max-height:210px;object-fit:contain;background:#0f172a;border-radius:6px;margin-bottom:6px;" />
-                     <div style="font-size:12px;font-weight:700;color:#0f172a;word-break:break-word;">${img.title}</div>
-                     <div style="font-size:11px;color:#475569;">แนบโดย: ${img.uploaded_by} | ${formatThaiDateTime(
-                       img.created_at
-                     )}</div>
-                   </div>`
-                   )
-                   .join('')}
-               </div>
-             </div>`
-          : '';
-
       // Note: Do NOT put page-break-inside:avoid on the outer card so it never gets pushed off Page 1!
       // If there are multiple alerts, start subsequent alerts on a new page cleanly.
       const pageBreakRule = index > 0 ? 'page-break-before: always; margin-top: 10px;' : '';
@@ -225,8 +197,6 @@ export function exportPrintableRemediationReport(
             <tbody>${mitreRows}</tbody>
           </table>
         </div>
-
-        ${evidenceImagesSection}
 
         <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:12.5px;word-break:break-word;">
           <strong style="color:#065f46;">บันทึกการอนุมัติโดยผู้ตรวจสอบ (Analyst Approval & Audit Record):</strong><br/>

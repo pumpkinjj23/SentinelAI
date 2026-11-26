@@ -9,16 +9,13 @@ import {
   Sliders,
   Printer,
   Download,
-  ImagePlus,
-  Trash2,
   RefreshCw,
   BookmarkCheck,
   FileBarChart2,
 } from 'lucide-react';
-import { EvidenceImageAttachment, SecurityAlert } from '../types';
+import { SecurityAlert } from '../types';
 import { SeverityBadge, StatusBadge } from '../components/SeverityBadge';
 import {
-  deleteAlertEvidenceImage,
   reanalyzeAlert,
   submitAnalystDecision,
 } from '../services/api';
@@ -26,7 +23,6 @@ import {
   exportAlertsToCSV,
   exportPrintableRemediationReport,
 } from '../utils/reportExporter';
-import { formatThaiDateTime } from '../utils/formatDateTime';
 
 interface AnalystReviewPageProps {
   alerts: SecurityAlert[];
@@ -68,33 +64,10 @@ export const AnalystReviewPage: React.FC<AnalystReviewPageProps> = ({
     activeAlert?.analysis?.risk_score ?? 80
   );
   const [comment, setComment] = useState('');
-  const [attachedImgBase64, setAttachedImgBase64] = useState<string | null>(null);
-  const [attachedImgTitle, setAttachedImgTitle] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(
     null
   );
-
-  const existingEvidenceImages: EvidenceImageAttachment[] = Array.isArray(
-    (activeAlert?.raw_payload as Record<string, unknown>)?.evidence_images
-  )
-    ? ((activeAlert?.raw_payload as Record<string, unknown>)
-        .evidence_images as EvidenceImageAttachment[])
-    : [];
-
-  const handleAttachFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setAttachedImgBase64(String(reader.result || ''));
-      if (!attachedImgTitle.trim()) {
-        setAttachedImgTitle(`ภาพหลักฐานจุดน่าสงสัย (${file.name})`);
-      }
-      e.target.value = '';
-    };
-    reader.readAsDataURL(file);
-  };
 
   useEffect(() => {
     if (activeAlert?.analysis) {
@@ -145,14 +118,10 @@ export const AnalystReviewPage: React.FC<AnalystReviewPageProps> = ({
           comment,
           adjusted_severity: adjustedSeverity,
           adjusted_risk_score: Number(adjustedScore),
-          evidence_image_data: attachedImgBase64 || undefined,
-          evidence_image_title: attachedImgTitle.trim() || undefined,
         },
         userEmail
       );
       setComment('');
-      setAttachedImgBase64(null);
-      setAttachedImgTitle('');
       setFeedback({
         type: 'success',
         text: `บันทึกผลการตัดสินใจ (${action}_ALERT) สำหรับ ${updated.alert_code} ลงใน Audit Logs เรียบร้อยแล้ว!`,
@@ -555,99 +524,6 @@ export const AnalystReviewPage: React.FC<AnalystReviewPageProps> = ({
                 onChange={(e) => setComment(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl text-sm font-medium bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
               />
-            </div>
-
-            {/* แนบรูปภาพยืนยันจุดน่าสงสัยประกอบการตัดสินใจ */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="text-xs font-extrabold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
-                  <ImagePlus className="w-4 h-4" />
-                  แนบรูปภาพยืนยันจุดน่าสงสัยในเหตุการณ์นี้ (ไม่บังคับ — รูปจะแสดงใน AI Analysis และรายงาน PDF)
-                </label>
-                <label className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold cursor-pointer inline-flex items-center gap-1.5">
-                  <ImagePlus className="w-3.5 h-3.5" />
-                  เลือกรูปภาพหลักฐาน
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAttachFile}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              {attachedImgBase64 && (
-                <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-emerald-400/50 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <input
-                      type="text"
-                      value={attachedImgTitle}
-                      onChange={(e) => setAttachedImgTitle(e.target.value)}
-                      placeholder="ระบุคำอธิบายจุดน่าสงสัยในรูปภาพนี้..."
-                      className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAttachedImgBase64(null);
-                        setAttachedImgTitle('');
-                      }}
-                      className="px-2.5 py-1.5 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 text-xs font-bold cursor-pointer inline-flex items-center gap-1"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" /> ยกเลิกรูปนี้
-                    </button>
-                  </div>
-                  <img
-                    src={attachedImgBase64}
-                    alt="Preview"
-                    className="max-h-40 rounded-lg border border-slate-300 dark:border-slate-700 object-contain bg-slate-950"
-                  />
-                </div>
-              )}
-
-              {existingEvidenceImages.length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-700/80">
-                  <div className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                    รูปภาพหลักฐานที่แนบไว้แล้วในเหตุการณ์ {activeAlert.alert_code} ({existingEvidenceImages.length} รูป):
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {existingEvidenceImages.map((img) => (
-                      <div
-                        key={img.id}
-                        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-2.5"
-                      >
-                        <img
-                          src={img.image_data}
-                          alt={img.title}
-                          className="w-16 h-12 rounded-lg object-cover bg-slate-950 border border-slate-300 dark:border-slate-700 shrink-0"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                            {img.title}
-                          </div>
-                          <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 truncate">
-                            {img.uploaded_by} · {formatThaiDateTime(img.created_at)}
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            const updated = await deleteAlertEvidenceImage(
-                              activeAlert.id,
-                              img.id,
-                              userEmail
-                            );
-                            onDecisionSaved(updated);
-                          }}
-                          className="p-1.5 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 cursor-pointer shrink-0"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="flex flex-wrap items-center justify-end gap-2.5">
