@@ -11,6 +11,7 @@ import {
   FolderKanban,
   MailCheck,
   Trash2,
+  X,
 } from 'lucide-react';
 import { SecurityAlert, SOCUserIdentity, WorkspaceInfo } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
@@ -66,6 +67,17 @@ export const Header: React.FC<HeaderProps> = ({
     const timer = setInterval(updateClock, 10000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!searchModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSearchModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [searchModalOpen]);
 
   const criticalAlerts = alerts.filter(
     (a) => a.analysis?.severity === 'CRITICAL' || a.analysis?.severity === 'HIGH'
@@ -281,48 +293,79 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Search Modal */}
       {searchModalOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center pt-20 px-4"
+          className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-16 px-4"
           onClick={() => setSearchModalOpen(false)}
         >
           <div
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl max-w-2xl w-full rounded-3xl overflow-hidden p-2"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl max-w-2xl w-full rounded-3xl overflow-hidden p-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative border-b border-slate-200 dark:border-slate-700">
-              <Search className="w-4 h-4 text-emerald-600 dark:text-emerald-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <div className="relative flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+              <Search className="w-4 h-4 text-emerald-600 dark:text-emerald-400 ml-3 shrink-0" />
               <input
                 type="search"
                 autoFocus
                 placeholder="ค้นหา Alert Code, Hostname, Source IP, MITRE Technique..."
                 value={modalQuery}
-                onChange={(e) => {
-                  setModalQuery(e.target.value);
-                  onQuickSearch(e.target.value);
+                onChange={(e) => setModalQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && modalQuery.trim()) {
+                    setSearchModalOpen(false);
+                    onQuickSearch(modalQuery.trim());
+                  }
                 }}
-                className="w-full bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-sm py-3.5 pl-11 pr-4 focus:outline-none"
+                className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-sm py-2.5 px-2 focus:outline-none"
               />
-            </div>
-            <div className="p-2 max-h-80 overflow-y-auto space-y-1">
-              {filteredModalAlerts.map((a) => (
+              {modalQuery.trim() && (
                 <button
-                  key={a.id}
+                  type="button"
                   onClick={() => {
                     setSearchModalOpen(false);
-                    onSelectAlert(a);
+                    onQuickSearch(modalQuery.trim());
                   }}
-                  className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold cursor-pointer shrink-0"
                 >
-                  <div className="min-w-0 pr-3">
-                    <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                      {a.alert_code} — {a.analysis?.incident_type || a.description}
-                    </div>
-                    <div className="text-xs text-slate-600 dark:text-slate-300 truncate">
-                      Host: {a.hostname} · Source IP: {a.src_ip || 'internal'}
-                    </div>
-                  </div>
-                  <SeverityBadge severity={a.analysis?.severity} />
+                  ค้นหา
                 </button>
-              ))}
+              )}
+              <button
+                type="button"
+                onClick={() => setSearchModalOpen(false)}
+                title="ปิดหน้าต่างค้นหา (Esc)"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold cursor-pointer shrink-0"
+              >
+                <X className="w-4 h-4" />
+                <span>ปิด</span>
+              </button>
+            </div>
+            <div className="p-2 max-h-80 overflow-y-auto space-y-1">
+              {filteredModalAlerts.length === 0 ? (
+                <div className="py-6 text-center text-xs font-bold text-slate-500 dark:text-slate-400">
+                  ไม่พบรายการ Alert ที่ตรงกับคำค้นหา — กดปุ่ม &ldquo;ปิด&rdquo; หรือคลิกพื้นที่ว่างด้านนอกเพื่อกลับสู่หน้าหลัก
+                </div>
+              ) : (
+                filteredModalAlerts.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => {
+                      setSearchModalOpen(false);
+                      onSelectAlert(a);
+                    }}
+                    className="w-full text-left flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  >
+                    <div className="min-w-0 pr-3">
+                      <div className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        {a.alert_code} — {a.analysis?.incident_type || a.description}
+                      </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300 truncate">
+                        Host: {a.hostname} · Source IP: {a.src_ip || 'internal'}
+                      </div>
+                    </div>
+                    <SeverityBadge severity={a.analysis?.severity} />
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -108,11 +108,11 @@ function buildAppBundle() {
 }
 
 const INDEX_HTML = `<!doctype html>
-<html lang="th" class="dark" style="color-scheme: dark;">
+<html lang="th" style="color-scheme: light;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SentinelAI — AI-Powered SOC Alert Triage Platform</title>
+    <title>SentinelAI — AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -159,24 +159,20 @@ const INDEX_HTML = `<!doctype html>
           linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
       }
 
-      /* Crisp High-Readability Frosted Shell & Cards */
+      /* Crisp High-Readability Frosted Shell & Cards (No nested backdrop-filter so fixed modals cover full viewport) */
       .sylva-shell {
-        background: rgba(15, 23, 42, 0.82);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
+        background: rgba(15, 23, 42, 0.94);
         border: 1px solid rgba(148, 163, 184, 0.18);
         box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.6);
       }
       html:not(.dark) .sylva-shell {
-        background: rgba(255, 255, 255, 0.88);
+        background: rgba(255, 255, 255, 0.96);
         border: 1px solid rgba(203, 213, 225, 0.9);
         box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.08);
       }
 
       .sylva-glass-card {
-        background: rgba(30, 41, 59, 0.78);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: rgba(30, 41, 59, 0.92);
         border: 1px solid rgba(148, 163, 184, 0.18);
         box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
         transition: all 0.25s var(--sylva-ease);
