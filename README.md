@@ -64,16 +64,19 @@
 
 ## 4. สถาปัตยกรรม AI ที่ใช้ในระบบ (Hybrid Evidence-Grounded AI Engine)
 
-ระบบ **SentinelAI** ออกแบบด้วยสถาปัตยกรรม **Hybrid Evidence-Grounded AI Engine** (กำหนดไว้ในไฟล์ [config.py](file:///d:/fightikeeee/backend/app/core/config.py) และ [analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py)) โดยแยกส่วนการคำนวณคะแนนความเสี่ยง (**Deterministic Rule Engine**) ออกจากส่วนการสรุปและอธิบายเหตุการณ์ด้วย AI เพื่อป้องกันปัญหา AI คำนวณคะแนนเพี้ยนหรือสร้างข้อมูลเท็จ (Zero Hallucination) และรองรับการทำงาน **4 โหมด** ดังนี้:
+> **สรุปชัดเจน (ระบบนี้ใช้ AI อะไรเป็นตัวหลัก?):**
+> ระบบ **SentinelAI** ใช้ **`Built-in Deterministic Evidence AI Engine` (ระบบผู้เชี่ยวชาญแบบอ้างอิงหลักฐาน หรือ Rule-Based Expert System AI ที่พัฒนาขึ้นเองในไฟล์ [analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py))** เป็น **เอนจินหลักที่ทำงานอยู่จริง 100% ในปัจจุบัน** โดยทำงานร่วมกับ **`Rule-Based Risk Scoring`** ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py))
+> - **ทำไมถึงใช้ตัวนี้เป็นตัวหลัก:** ทำงานในเครื่องได้ทันทีโดยไม่ต้องต่ออินเทอร์เน็ต ไม่ต้องเสียเงินค่า API Key และไม่มีปัญหา AI มโนข้อมูลหรือคำนวณคะแนนเพี้ยน (Zero Hallucination)
+> - **ส่วน LLM ภายนอกอีก 3 ตัว (`Google Gemini`, `OpenAI`, `Ollama`):** เป็นเพียง **"ส่วนขยายเสริม (Optional Plug-in API)"** ที่เขียนโค้ดรองรับเตรียมไว้ เผื่อในอนาคตผู้ดูแลระบบต้องการนำ API Key มาเชื่อมต่อเพิ่มเติม
 
-| โหมด AI (`AI_PROVIDER`) | โมเดล / เอนจินที่ใช้ | รายละเอียดการทำงานและการตั้งค่า |
-| :--- | :--- | :--- |
-| **`mock`** *(ค่าเริ่มต้น)* | **Built-in Deterministic Evidence AI Engine** | เอนจินวิเคราะห์หลักฐานเชิงพฤติกรรมในตัวเครื่อง ไม่ต้องใช้อินเทอร์เน็ตและไม่ต้องใช้ API Key สกัดหลักฐานจาก `Raw Log`, `Command Line`, `IOC Threat Intel` และ `MITRE ATT&CK` เพื่อวิเคราะห์รูปแบบการโจมตี (เช่น Ransomware, Mimikatz LSASS Dump, SQL Injection, PowerShell EncodedCommand, Brute Force, Lateral Movement, Data Exfiltration) พร้อมสร้างสรุปภาษาไทยและขั้นตอนการแก้ไขทันที |
-| **`gemini`** | **Google Gemini (`gemini-2.5-flash`)** | เชื่อมต่อ Google Gemini API โดยตั้งค่า `AI_PROVIDER=gemini` และระบุ `GEMINI_API_KEY` ในไฟล์ `.env` |
-| **`openai`** | **OpenAI (`gpt-4o-mini`)** | เชื่อมต่อ OpenAI Chat Completions API โดยตั้งค่า `AI_PROVIDER=openai` และระบุ `OPENAI_API_KEY` ในไฟล์ `.env` |
-| **`ollama`** | **Ollama Local LLM (`llama3.1`)** | เชื่อมต่อ Local LLM ที่รันภายในเครื่องหรือเซิร์ฟเวอร์องค์กร (`http://localhost:11434`) โดยตั้งค่า `AI_PROVIDER=ollama` เหมาะสำหรับงาน SOC ที่ต้องการความเป็นส่วนตัวของข้อมูลสูง (On-Premise / Air-Gapped) ไม่ส่ง Log ออกนอกองค์กร |
+| สถานะการใช้งานในระบบ | โหมด (`AI_PROVIDER`) | เอนจิน / โมเดลที่ใช้ | รายละเอียดการทำงานและการตั้งค่า |
+| :--- | :--- | :--- | :--- |
+| **✅ ใช้งานจริงเป็นตัวหลัก (Active Main Engine)** | **`mock`** *(ค่าเริ่มต้น)* | **Built-in Deterministic Evidence AI Engine (Expert System AI)** | เอนจินวิเคราะห์หลักฐานเชิงพฤติกรรมที่พัฒนาขึ้นเองในตัวเครื่อง สกัดหลักฐานจาก `Raw Log`, `Command Line`, `IOC Threat Intel` และ `MITRE ATT&CK` เพื่อวิเคราะห์รูปแบบการโจมตี (เช่น Ransomware, Mimikatz LSASS Dump, SQL Injection, PowerShell EncodedCommand, Brute Force, Lateral Movement, Data Exfiltration) พร้อมสร้างสรุปภาษาไทยและขั้นตอนการแก้ไขตามมาตรฐาน NIST SP 800-61 ทันที |
+| *🔌 ส่วนขยายเสริม (Optional Plug-in)* | **`gemini`** | **Google Gemini (`gemini-2.5-flash`)** | เปิดใช้งานเพิ่มเติมได้เมื่อต้องการเชื่อมต่อ Google Gemini API โดยตั้งค่า `AI_PROVIDER=gemini` และใส่ `GEMINI_API_KEY` ในไฟล์ `.env` |
+| *🔌 ส่วนขยายเสริม (Optional Plug-in)* | **`openai`** | **OpenAI (`gpt-4o-mini`)** | เปิดใช้งานเพิ่มเติมได้เมื่อต้องการเชื่อมต่อ OpenAI API โดยตั้งค่า `AI_PROVIDER=openai` และใส่ `OPENAI_API_KEY` ในไฟล์ `.env` |
+| *🔌 ส่วนขยายเสริม (Optional Plug-in)* | **`ollama`** | **Ollama Local LLM (`llama3.1`)** | เปิดใช้งานเพิ่มเติมได้เมื่อต้องการเชื่อมต่อ Local LLM ในองค์กร (`http://localhost:11434`) โดยตั้งค่า `AI_PROVIDER=ollama` |
 
-> **ระบบ Fallback อัตโนมัติ:** หากตั้งค่าใช้ LLM ภายนอก (`gemini`, `openai`, `ollama`) แล้วเครือข่ายขัดข้องหรือ API Key ไม่พร้อมใช้งาน ระบบจะสลับกลับมาใช้ **Built-in Deterministic Evidence AI Engine** ให้อัตโนมัติเพื่อให้การวิเคราะห์ของ SOC ไม่สะดุด
+> **ระบบ Fallback อัตโนมัติ:** หากเปิดใช้ส่วนขยายเสริม (`gemini`, `openai`, `ollama`) แล้วเครือข่ายขัดข้องหรือไม่ได้ใส่ API Key ระบบจะสลับกลับมาใช้ตัวหลัก (**Built-in Deterministic Evidence AI Engine**) ให้อัตโนมัติเสมอ
 
 ### หลักการคิดวิเคราะห์และแหล่งอ้างอิงวิธีแก้ไข (How Built-in Evidence AI Engine Works)
 ตัว **`Built-in Deterministic Evidence AI Engine`** ([analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py)) ทำงานในรูปแบบ **Rule-Based Expert System + Dynamic Telemetry Injection** (ระบบผู้เชี่ยวชาญที่ดึงข้อมูลจริงจาก Log มาประกอบเข้ากับคู่มือรับมือภัยคุกคามมาตรฐานสากล) โดยอ้างอิงจาก 3 มาตรฐานหลักของงาน SOC ดังนี้:
