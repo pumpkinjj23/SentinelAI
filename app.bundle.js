@@ -22950,16 +22950,6 @@ const AlertDetailPage = ({ alerts, selectedAlert, userEmail, userRole = 'OWNER',
                     react_1.default.createElement("button", { onClick: () => onGoToReview(activeAlert), className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
                         react_1.default.createElement(lucide_react_1.UserCheck, { className: "w-3.5 h-3.5 shrink-0" }),
                         "Review (\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A & \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E2B\u0E21\u0E32\u0E22\u0E40\u0E2B\u0E15\u0E38)"),
-                    react_1.default.createElement("button", { onClick: () => {
-                            if (onGoToReports) {
-                                onGoToReports();
-                            }
-                            else {
-                                handleQuickConfirm();
-                            }
-                        }, className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
-                        react_1.default.createElement(lucide_react_1.FileBarChart2, { className: "w-3.5 h-3.5 shrink-0" }),
-                        "Generate Report"),
                     react_1.default.createElement("button", { onClick: () => (0, reportExporter_1.exportPrintableRemediationReport)([activeAlert], `รายงานวิเคราะห์เหตุการณ์และแนวทางแก้ไข (${activeAlert.alert_code})`), className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
                         react_1.default.createElement(lucide_react_1.Printer, { className: "w-3.5 h-3.5 shrink-0" }),
                         "Download PDF"),
@@ -23249,9 +23239,6 @@ const AnalystReviewPage = ({ alerts, selectedAlert, userEmail, onSelectAlert, on
                     }, className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 text-xs font-extrabold transition cursor-pointer whitespace-nowrap" },
                     react_1.default.createElement(lucide_react_1.RefreshCw, { className: "w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" }),
                     "Analyze (\u0E27\u0E34\u0E40\u0E04\u0E23\u0E32\u0E30\u0E2B\u0E4C\u0E0B\u0E49\u0E33)"),
-                onGoToReports && (react_1.default.createElement("button", { type: "button", onClick: onGoToReports, className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
-                    react_1.default.createElement(lucide_react_1.FileBarChart2, { className: "w-3.5 h-3.5 shrink-0" }),
-                    "Generate Report")),
                 react_1.default.createElement("button", { type: "button", onClick: () => (0, reportExporter_1.exportPrintableRemediationReport)([activeAlert], `รายงานผลการวิเคราะห์และวิธีแก้ไขภัยคุกคาม (${activeAlert.alert_code})`), className: "inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
                     react_1.default.createElement(lucide_react_1.Printer, { className: "w-3.5 h-3.5 shrink-0" }),
                     "Download PDF"),

@@ -11,7 +11,6 @@ import {
   Printer,
   RefreshCw,
   BookmarkCheck,
-  FileBarChart2,
 } from 'lucide-react';
 import { SecurityAlert } from '../types';
 import { SeverityBadge, StatusBadge } from '../components/SeverityBadge';
@@ -170,22 +169,7 @@ export const AlertDetailPage: React.FC<AlertDetailPageProps> = ({
               Review (ตรวจสอบ & เพิ่มหมายเหตุ)
             </button>
 
-            {/* 3. Generate Report */}
-            <button
-              onClick={() => {
-                if (onGoToReports) {
-                  onGoToReports();
-                } else {
-                  handleQuickConfirm();
-                }
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap"
-            >
-              <FileBarChart2 className="w-3.5 h-3.5 shrink-0" />
-              Generate Report
-            </button>
-
-            {/* 4. Download PDF */}
+            {/* 3. Download PDF */}
             <button
               onClick={() =>
                 exportPrintableRemediationReport(
