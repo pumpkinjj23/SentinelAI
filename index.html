@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SentinelAI 97 — Retro Windows 95 SOC Alert Triage System</title>
+    <title>SentinelAI — AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -11,36 +14,22 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"MS Sans Serif"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-              heading: ['"Arial Black"', 'Impact', 'Haettenschweiler', 'sans-serif'],
-              mono: ['"Courier New"', 'Courier', 'monospace'],
+              sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            maxWidth: {
+              '9xl': '96rem',
             },
           },
         },
       };
     </script>
     <style>
-      /* =========================================================================
-         RETRO / 90s NOSTALGIA DESIGN SYSTEM (WINDOWS 95 / 1997 WEB)
-         - 0px border-radius EVERYWHERE
-         - Pure RGB / Win95 palette (#C0C0C0, #000000, #808080, #FFFFFF, #000080, #1084D0, #0000FF, #FF0000, #FFFF00, #00FF00, #FFFFCC)
-         - Mandatory 3D Outset / Inset bevels, tiled pattern, construction stripes, groove HR, rainbow, marquee, hit counter
-         ========================================================================= */
-
-      * {
-        border-radius: 0px !important;
-        transition: none !important;
+      :root {
+        --sylva-ease: cubic-bezier(0.22, 1, 0.36, 1);
       }
-
-      ::selection {
-        background: #000080 !important;
-        color: #ffffff !important;
-      }
-
       body {
-        font-family: "MS Sans Serif", Tahoma, Geneva, Verdana, sans-serif;
-        color: #000000;
-        background-color: #c0c0c0;
+        font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
         overflow-x: hidden;
       }
       @media (min-width: 1024px) {
@@ -49,274 +38,141 @@
         }
       }
 
-      h1, h2, h3, .retro-heading {
-        font-family: "Arial Black", Impact, Haettenschweiler, "MS Sans Serif", sans-serif !important;
-        font-weight: 900 !important;
-      }
-
-      /* 1. 90s Tiled Background Pattern (MANDATORY) */
-      .theme-bg-light,
+      /* Cybersecurity SOC Command Blue & Cyan Canvas (Inspired by Microsoft Sentinel / CrowdStrike / Wazuh) */
       .theme-bg-dark {
-        background-color: #c0c0c0 !important;
+        background-color: #050b14;
         background-image:
-          linear-gradient(45deg, #b8b8b8 25%, transparent 25%),
-          linear-gradient(-45deg, #b8b8b8 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #b8b8b8 75%),
-          linear-gradient(-45deg, transparent 75%, #b8b8b8 75%) !important;
-        background-size: 4px 4px !important;
-        background-position: 0 0, 0 2px, 2px -2px, -2px 0px !important;
-        color: #000000 !important;
+          radial-gradient(circle at 12% 8%, rgba(6, 182, 212, 0.14) 0px, transparent 42%),
+          radial-gradient(circle at 88% 12%, rgba(37, 99, 235, 0.16) 0px, transparent 45%),
+          linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+          linear-gradient(180deg, #060d18 0%, #091324 50%, #050b14 100%);
+        background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px, 100% 100%;
       }
 
-      /* 2. Windows 95 Outset / Inset 3D Bevels */
-      .win95-outset,
-      .sylva-shell,
+      .theme-bg-light {
+        background-color: #f0f5fa;
+        background-image:
+          radial-gradient(at 10% 8%, rgba(2, 132, 199, 0.09) 0px, transparent 45%),
+          radial-gradient(at 90% 12%, rgba(37, 99, 235, 0.07) 0px, transparent 45%),
+          linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+          linear-gradient(180deg, #f6f9fc 0%, #eaf1f8 100%);
+        background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px, 100% 100%;
+      }
+
+      /* SOC Command Shell & Glass Cards (No nested backdrop-filter so fixed modals cover full viewport) */
+      .sylva-shell {
+        background: rgba(8, 15, 28, 0.94);
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.72), 0 0 32px -16px rgba(6, 182, 212, 0.25);
+      }
+      html:not(.dark) .sylva-shell {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(203, 213, 225, 0.95);
+        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.09);
+      }
+
       .sylva-glass-card {
-        background: #c0c0c0 !important;
-        border: 2px solid !important;
-        border-color: #ffffff #808080 #808080 #ffffff !important;
-        box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf !important;
-        color: #000000 !important;
+        background: linear-gradient(180deg, rgba(15, 25, 44, 0.94) 0%, rgba(10, 18, 34, 0.96) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
+        transition: all 0.25s var(--sylva-ease);
+      }
+      .sylva-glass-card:hover {
+        border-color: rgba(56, 189, 248, 0.34);
+      }
+      html:not(.dark) .sylva-glass-card {
+        background: #ffffff;
+        border: 1px solid #dbe4f0;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+      }
+      html:not(.dark) .sylva-glass-card:hover {
+        border-color: rgba(2, 132, 199, 0.38);
       }
 
-      .win95-inset {
-        background: #ffffff !important;
-        border: 2px solid !important;
-        border-color: #808080 #ffffff #ffffff #808080 !important;
-        box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf !important;
-        color: #000000 !important;
+      /* Cybersecurity SOC Blue & Cyan Primary Accent Harmonization
+         Keeps Severity badges (CRITICAL=Red, HIGH=Amber, MEDIUM=Sky, LOW=Green) crisp & distinct
+         while unifying all primary UI buttons, active nav, and highlights into Cyber Blue (#0284c7 / #06b6d4). */
+      html:not(.dark) .bg-emerald-600,
+      html:not(.dark) .hover\:bg-emerald-600:hover {
+        background-color: #0284c7 !important;
+      }
+      html:not(.dark) .hover\:bg-emerald-500:hover {
+        background-color: #0369a1 !important;
+      }
+      html:not(.dark) .border-emerald-500,
+      html:not(.dark) .hover\:border-emerald-500:hover,
+      html:not(.dark) .focus\:border-emerald-500:focus {
+        border-color: #0284c7 !important;
+      }
+      html:not(.dark) .border-emerald-500\/40,
+      html:not(.dark) .border-emerald-500\/35 {
+        border-color: rgba(2, 132, 199, 0.35) !important;
+      }
+      html:not(.dark) .text-emerald-700,
+      html:not(.dark) .text-emerald-600 {
+        color: #0369a1 !important;
+      }
+      html:not(.dark) .bg-emerald-50,
+      html:not(.dark) .bg-emerald-50\/70,
+      html:not(.dark) .hover\:bg-emerald-50:hover {
+        background-color: #f0f9ff !important;
+      }
+      html:not(.dark) .border-emerald-200 {
+        border-color: #bae6fd !important;
       }
 
-      .win95-titlebar {
-        background: linear-gradient(to right, #000080, #1084d0) !important;
-        color: #ffffff !important;
-        font-weight: 900 !important;
-        padding: 4px 10px !important;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 2px solid #000000;
+      /* Dark Mode Cyber Cyan Accents */
+      html.dark .bg-emerald-600,
+      html.dark .hover\:bg-emerald-600:hover {
+        background-color: #0284c7 !important;
+      }
+      html.dark .hover\:bg-emerald-500:hover {
+        background-color: #0ea5e9 !important;
+      }
+      html.dark .border-emerald-500,
+      html.dark .hover\:border-emerald-500:hover,
+      html.dark .focus\:border-emerald-500:focus {
+        border-color: #06b6d4 !important;
+      }
+      html.dark .border-emerald-500\/40,
+      html.dark .border-emerald-500\/35 {
+        border-color: rgba(6, 182, 212, 0.38) !important;
+      }
+      html.dark .dark\:text-emerald-400,
+      html.dark .text-emerald-400 {
+        color: #38bdf8 !important;
+      }
+      html.dark .shadow-emerald-600\/25,
+      html.dark .shadow-emerald-600\/20,
+      html.dark .shadow-emerald-600\/30,
+      html.dark .shadow-emerald-500\/20 {
+        --tw-shadow-color: rgba(2, 132, 199, 0.35) !important;
       }
 
-      /* 3. Construction Warning Stripes */
-      .bg-construction {
-        background: repeating-linear-gradient(
-          45deg,
-          #ffff00,
-          #ffff00 10px,
-          #000000 10px,
-          #000000 20px
-        ) !important;
+      /* Ensure <select> options are always readable in both Dark and Light mode */
+      select option {
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+      html:not(.dark) select option {
+        background-color: #ffffff;
+        color: #0f172a;
       }
 
-      /* 4. Groove Horizontal Rule (HR) */
-      .hr-groove {
-        border: none !important;
-        height: 4px !important;
-        width: 100%;
-        background: linear-gradient(
-          to bottom,
-          #808080 0%, #808080 50%,
-          #ffffff 50%, #ffffff 100%
-        ) !important;
-      }
-
-      /* 5. Rainbow Text Animation */
-      @keyframes rainbow {
-        0% { color: #ff0000; }
-        17% { color: #ff8000; }
-        33% { color: #aaaa00; }
-        50% { color: #00aa00; }
-        67% { color: #0000ff; }
-        83% { color: #8000ff; }
-        100% { color: #ff0000; }
-      }
-      .text-rainbow {
-        animation: rainbow 4s linear infinite;
-        text-shadow: 2px 2px 0 #000000;
-      }
-
-      /* 6. Pulse Glow & Blink Animations */
-      @keyframes pulse-glow {
-        0%, 100% {
-          transform: scale(1);
-          box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
-        }
-        50% {
-          transform: scale(1.05);
-          box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.5);
-        }
-      }
-      .animate-pulse-glow {
-        animation: pulse-glow 1.5s ease-in-out infinite;
-      }
-
-      @keyframes retro-blink {
-        50% { opacity: 0; }
-      }
-      .retro-blink {
-        animation: retro-blink 1s step-end infinite;
-      }
-
-      /* 7. Pure CSS Marquee */
-      @keyframes retro-marquee {
-        0% { transform: translateX(0%); }
-        100% { transform: translateX(-50%); }
-      }
-      .retro-marquee-track {
-        display: flex;
-        width: max-content;
-        animation: retro-marquee 24s linear infinite;
-      }
-      .retro-marquee-wrap:hover .retro-marquee-track {
-        animation-play-state: paused;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .text-rainbow { animation: none; color: #ff0000; }
-        .animate-pulse-glow, .retro-blink, .retro-marquee-track { animation: none; }
-      }
-
-      /* 8. Beveled Buttons Everywhere + Pressed State + Dotted Focus Ring */
-      button {
-        border: 2px solid !important;
-        border-color: #ffffff #808080 #808080 #ffffff !important;
-        box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf !important;
-        font-weight: 700 !important;
-      }
-      button:active {
-        border-color: #808080 #ffffff #ffffff #808080 !important;
-        box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf !important;
-        transform: translate(1px, 1px) !important;
-      }
-      button:focus-visible,
-      input:focus-visible,
-      select:focus-visible,
-      textarea:focus-visible,
-      a:focus-visible {
-        outline: 2px dotted #000000 !important;
-        outline-offset: 2px !important;
-      }
-
-      /* Primary Blue / Danger Red / Success Green Win95 Button Tinting */
-      button.bg-emerald-600,
-      button.bg-sky-600 {
-        background-color: #0000ff !important;
-        color: #ffffff !important;
-        border-color: #5555ff #000080 #000080 #5555ff !important;
-      }
-      button.bg-emerald-600:hover,
-      button.bg-sky-600:hover {
-        background-color: #1084d0 !important;
-      }
-      button.bg-rose-600 {
-        background-color: #ff0000 !important;
-        color: #ffffff !important;
-        border-color: #ff5555 #800000 #800000 #ff5555 !important;
-      }
-      button.bg-purple-600 {
-        background-color: #800080 !important;
-        color: #ffffff !important;
-        border-color: #cc55cc #400040 #400040 #cc55cc !important;
-      }
-      button.bg-amber-500 {
-        background-color: #ffff00 !important;
-        color: #000000 !important;
-        border-color: #ffffff #808000 #808000 #ffffff !important;
-      }
-
-      /* 9. Sunken Form Inputs & Selects */
-      input, select, textarea {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid !important;
-        border-color: #808080 #ffffff #ffffff #808080 !important;
-        box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf !important;
-      }
-      input::placeholder, textarea::placeholder {
-        color: #808080 !important;
-      }
-
-      /* 10. Classic Hyperlinks */
-      a {
-        color: #0000ff !important;
-        text-decoration: underline !important;
-      }
-      a:visited {
-        color: #800080 !important;
-      }
-      a:hover {
-        color: #ff0000 !important;
-      }
-
-      /* 11. Table-Like Alternating Rows & Visible Cell Borders */
-      table {
-        border: 2px solid #808080 !important;
-        background-color: #ffffff !important;
-      }
-      thead tr {
-        background: linear-gradient(to right, #000080, #1084d0) !important;
-        color: #ffffff !important;
-      }
-      thead th {
-        color: #ffffff !important;
-        border-right: 2px solid #808080 !important;
-        border-bottom: 2px solid #000000 !important;
-      }
-      tbody tr:nth-child(even) {
-        background-color: #ffffff !important;
-      }
-      tbody tr:nth-child(odd) {
-        background-color: #e8e8e8 !important;
-      }
-      tbody td {
-        border-right: 2px solid #808080 !important;
-        border-bottom: 2px solid #808080 !important;
-        color: #000000 !important;
-      }
-
-      /* 12. Inner Panels -> Win95 Inset White / Panel Yellow */
-      .bg-slate-50,
-      .bg-slate-100,
-      .bg-emerald-50,
-      .bg-emerald-50\/70,
-      .bg-sky-50\/70 {
-        background-color: #ffffcc !important;
-        border: 2px solid !important;
-        border-color: #808080 #ffffff #ffffff #808080 !important;
-        color: #000000 !important;
-      }
-
-      .text-emerald-700,
-      .text-emerald-600,
-      .text-sky-700 {
-        color: #0000ff !important;
-      }
-
-      /* Hit Counter Monospace Terminal Box */
-      .hit-counter {
-        background-color: #000000 !important;
-        color: #00ff00 !important;
-        font-family: "Courier New", Courier, monospace !important;
-        border: 2px solid !important;
-        border-color: #808080 #ffffff #ffffff #808080 !important;
-        box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf !important;
-        padding: 4px 10px;
-        letter-spacing: 1px;
+      .sylva-transition {
+        transition: all 0.35s var(--sylva-ease);
       }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      ::-webkit-scrollbar { width: 14px; height: 14px; }
-      ::-webkit-scrollbar-track { background: #dfdfdf; border-left: 1px solid #808080; }
-      ::-webkit-scrollbar-thumb {
-        background: #c0c0c0;
-        border: 2px solid;
-        border-color: #ffffff #808080 #808080 #ffffff;
-      }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.38); border-radius: 9999px; }
     </style>
   </head>
-  <body class="antialiased">
+  <body class="antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
     <script src="./app.bundle.js"></script>
   </body>
