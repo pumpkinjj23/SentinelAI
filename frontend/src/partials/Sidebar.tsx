@@ -5,6 +5,7 @@ import {
   UserCheck,
   FileBarChart2,
   PanelLeft,
+  PanelLeftOpen,
   X,
 } from 'lucide-react';
 
@@ -111,13 +112,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="w-full">
             {/* Top Brand: SentinelAI / SOC Intelligence Platform */}
             {!mobileOpen && isCollapsed ? (
-              <div className="flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80">
+              <div className="flex flex-col items-center pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80">
                 <button
-                  onClick={() => handleNavigate('dashboard')}
-                  title="SentinelAI — SOC Intelligence Platform"
-                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0"
+                  type="button"
+                  onClick={() => setIsCollapsed(false)}
+                  aria-label="เปิดแถบด้านข้าง"
+                  className="group relative w-11 h-11 rounded-full bg-gradient-to-br from-sky-600 to-cyan-500 hover:from-slate-200 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-slate-800 flex items-center justify-center shadow-md shadow-sky-500/25 hover:shadow-none border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer shrink-0 transition-all duration-200"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                  {/* โลโก้ปกติ (ซ่อนเมื่อ Hover) */}
+                  <svg
+                    className="w-5 h-5 transition-opacity duration-150 group-hover:opacity-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
                     <path
                       d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"
                       stroke="#ffffff"
@@ -126,17 +133,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     />
                     <circle cx="12" cy="11.5" r="2.5" fill="#ffffff" />
                   </svg>
-                </button>
 
-                <button
-                  type="button"
-                  onClick={() => setIsCollapsed(false)}
-                  aria-label="Toggle sidebar"
-                  className="group relative w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0"
-                >
-                  <PanelLeft className="w-5 h-5" />
-                  <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-14 top-1/2 -translate-y-1/2 z-50 px-3 py-1.5 rounded-full bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold whitespace-nowrap shadow-xl border border-slate-700">
-                    Toggle sidebar
+                  {/* ไอคอนเปิดแถบด้านข้าง (โผล่มาแทนโลโก้เมื่อ Hover) */}
+                  <PanelLeftOpen className="w-5 h-5 text-slate-800 dark:text-slate-100 absolute opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+
+                  {/* Tooltip แคปซูล "เปิดแถบด้านข้าง" */}
+                  <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-14 top-1/2 -translate-y-1/2 z-50 px-3.5 py-1.5 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold whitespace-nowrap shadow-xl">
+                    เปิดแถบด้านข้าง
                   </span>
                 </button>
               </div>
