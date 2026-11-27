@@ -25182,11 +25182,11 @@ const ReportsPage = ({ summary, alerts, savedReports = [], onSaveReport, onDelet
                         "\u0E2A\u0E48\u0E07\u0E2D\u0E2D\u0E01 Report \u0E17\u0E35\u0E48\u0E2D\u0E19\u0E38\u0E21\u0E31\u0E15\u0E34\u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E27\u0E34\u0E18\u0E35\u0E41\u0E01\u0E49\u0E44\u0E02 (PDF)"),
                     react_1.default.createElement("button", { onClick: () => {
                             const targetList = approvedAlerts.length > 0 ? approvedAlerts : filteredByTimeAlerts;
-                            recordExport('CSV', 'SentinelAI-Approved-Remediation-Report.csv', targetList.length);
+                            recordExport('CSV', 'SentinelAI-Approved-Remediation-Report.xls', targetList.length);
                             (0, reportExporter_1.exportAlertsToCSV)(targetList, 'SentinelAI-Approved-Remediation-Report');
                         }, className: "inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-sm font-extrabold shadow-sm transition cursor-pointer whitespace-nowrap" },
                         react_1.default.createElement(lucide_react_1.Download, { className: "w-4 h-4 shrink-0" }),
-                        "Export CSV \u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E27\u0E34\u0E18\u0E35\u0E41\u0E01\u0E49\u0E44\u0E02 (.csv)"),
+                        "Export Excel \u0E15\u0E32\u0E23\u0E32\u0E07\u0E2A\u0E35\u0E1E\u0E23\u0E49\u0E2D\u0E21\u0E27\u0E34\u0E18\u0E35\u0E41\u0E01\u0E49\u0E44\u0E02 (.xls)"),
                     react_1.default.createElement("button", { onClick: () => {
                             const title = `รายงานสรุปเหตุการณ์ภัยคุกคามทั้งหมด (${filteredByTimeAlerts.length} รายการ)`;
                             recordExport('PDF', title, filteredByTimeAlerts.length);
@@ -27530,62 +27530,170 @@ const STATUS_THAI_LABEL = {
     FALSE_POSITIVE: 'แจ้งเตือนลวง (False Positive)',
     REJECTED: 'ปฏิเสธ (Rejected)',
 };
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
 /**
- * Generates and downloads a UTF-8 BOM CSV file (Excel-compatible for Thai text)
- * including AI Summary, Remediation/Investigation Steps, and Approval Details.
+ * Generates and downloads a rich, styled Excel Spreadsheet (.xls) with UTF-8 encoding
+ * featuring a Deep Navy SOC banner, Executive KPI summary strip, color-coded Severity/Status
+ * cells, visual risk bars, multi-line bulleted Remediation Steps, and crisp borders.
+ * Opens natively in Microsoft Excel, LibreOffice Calc, WPS Office, and Google Sheets.
  */
 function exportAlertsToCSV(alerts, filenamePrefix = 'SentinelAI-Report') {
-    const headers = [
-        'รหัสแจ้งเตือน (Alert ID)',
-        'สถานะการอนุมัติ (Status)',
-        'ระดับความรุนแรง (Severity)',
-        'คะแนนความเสี่ยง (Risk Score)',
-        'ประเภทภัยคุกคาม (Incident Type)',
-        'เครื่องเป้าหมาย (Hostname)',
-        'Source IP',
-        'Destination IP',
-        'บัญชีผู้ใช้ (Username)',
-        'MITRE ATT&CK',
-        'สรุปเหตุการณ์จาก AI (AI Summary)',
-        'วิธีแก้ไขและขั้นตอนการตรวจสอบ (Remediation & Investigation Steps)',
-        'ผู้อนุมัติ/ตรวจสอบล่าสุด (Reviewed By)',
-        'ความคิดเห็นการอนุมัติ (Approval Comment)',
-        'วันเวลาที่เกิดเหตุ (Timestamp)',
-    ];
-    const rows = alerts.map((a) => {
+    const nowStr = (0, formatDateTime_1.formatThaiDateTime)(new Date());
+    const totalCount = alerts.length;
+    const criticalCount = alerts.filter((a) => a.analysis?.severity === 'CRITICAL').length;
+    const highCount = alerts.filter((a) => a.analysis?.severity === 'HIGH').length;
+    const mediumCount = alerts.filter((a) => a.analysis?.severity === 'MEDIUM').length;
+    const lowCount = alerts.filter((a) => (a.analysis?.severity || 'LOW') === 'LOW').length;
+    const approvedCount = alerts.filter((a) => a.status === 'APPROVED').length;
+    const pendingCount = alerts.filter((a) => a.status === 'PENDING_REVIEW').length;
+    const sevStyles = {
+        CRITICAL: { bg: '#ffe4e6', color: '#9f1239' },
+        HIGH: { bg: '#fef3c7', color: '#92400e' },
+        MEDIUM: { bg: '#dbeafe', color: '#1e3a8a' },
+        LOW: { bg: '#d1fae5', color: '#065f46' },
+    };
+    const statusStyles = {
+        APPROVED: { bg: '#dcfce7', color: '#166534' },
+        PENDING_REVIEW: { bg: '#fef9c3', color: '#854d0e' },
+        ESCALATED: { bg: '#f3e8ff', color: '#6b21a8' },
+        FALSE_POSITIVE: { bg: '#f1f5f9', color: '#475569' },
+        REJECTED: { bg: '#fee2e2', color: '#991b1b' },
+    };
+    const dataRowsHtml = alerts
+        .map((a, idx) => {
         const an = a.analysis;
-        const mitreStr = (an?.mitre_mapping || [])
-            .map((m) => `${m.technique_id} (${m.name})`)
-            .join(' | ');
-        const remediationStr = (an?.recommendations || [])
-            .map((r, idx) => `${idx + 1}) ${r.replace(/^\d+\.\s*/, '')}`)
-            .join(' ; ');
+        const severity = an?.severity || 'LOW';
+        const riskScore = an?.risk_score ?? 0;
+        const sevStyle = sevStyles[severity] || sevStyles.LOW;
+        const stStyle = statusStyles[a.status] || { bg: '#f8fafc', color: '#334155' };
+        const rowBg = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+        const filledBlocks = Math.round(riskScore / 10);
+        const riskBar = '█'.repeat(Math.max(0, Math.min(10, filledBlocks))) + '░'.repeat(Math.max(0, 10 - filledBlocks));
+        const mitreHtml = (an?.mitre_mapping || []).length > 0
+            ? (an?.mitre_mapping || [])
+                .map((m) => `<b>${escapeHtml(m.technique_id)}</b> — ${escapeHtml(m.name)}`)
+                .join('<br/>')
+            : '-';
+        const remediationHtml = (an?.recommendations || []).length > 0
+            ? (an?.recommendations || [])
+                .map((r, rIdx) => `${rIdx + 1}. ${escapeHtml(r.replace(/^\d+\.\s*/, ''))}`)
+                .join('<br/>')
+            : '-';
         const latestAudit = a.audit_logs && a.audit_logs.length > 0 ? a.audit_logs[0] : null;
-        const cols = [
-            a.alert_code,
-            STATUS_THAI_LABEL[a.status] || a.status,
-            an?.severity || 'LOW',
-            String(an?.risk_score ?? 0),
-            an?.incident_type || a.description,
-            a.hostname || '',
-            a.src_ip || '',
-            a.dst_ip || '',
-            a.username || '',
-            mitreStr,
-            (an?.ai_summary || '').replace(/"/g, '""'),
-            remediationStr.replace(/"/g, '""'),
-            latestAudit ? latestAudit.analyst_name : 'รอการอนุมัติ',
-            latestAudit ? latestAudit.comment.replace(/"/g, '""') : '-',
-            (0, formatDateTime_1.formatThaiDateTime)(a.timestamp),
-        ];
-        return cols.map((c) => `"${c}"`).join(',');
-    });
-    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const reviewedBy = latestAudit ? latestAudit.analyst_name : 'รอการอนุมัติ';
+        const reviewComment = latestAudit ? latestAudit.comment : '-';
+        return `
+        <tr style="background:${rowBg};vertical-align:top;">
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;font-weight:bold;color:#1e3a8a;text-align:center;white-space:nowrap;">${escapeHtml(a.alert_code)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;background:${stStyle.bg};color:${stStyle.color};font-weight:bold;text-align:center;white-space:nowrap;">${escapeHtml(STATUS_THAI_LABEL[a.status] || a.status)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;background:${sevStyle.bg};color:${sevStyle.color};font-weight:bold;text-align:center;white-space:nowrap;">${escapeHtml(severity)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;background:${sevStyle.bg};color:${sevStyle.color};font-weight:bold;text-align:center;white-space:nowrap;">${riskScore} / 100<br/><span style="font-size:10px;letter-spacing:0.5px;">${riskBar}</span></td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#0f172a;">${escapeHtml(an?.incident_type || a.description)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;color:#1e293b;">${escapeHtml(a.hostname || '-')}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;color:#1e293b;mso-number-format:'\\@';">${escapeHtml(a.src_ip || '-')}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;color:#1e293b;mso-number-format:'\\@';">${escapeHtml(a.dst_ip || '-')}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;color:#1e293b;">${escapeHtml(a.username || '-')}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;color:#1e3a8a;font-size:11pt;">${mitreHtml}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;color:#1e293b;line-height:1.45;">${escapeHtml(an?.ai_summary || '-')}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;background:#f0fdf4;color:#064e3b;line-height:1.5;">${remediationHtml}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#334155;">${escapeHtml(reviewedBy)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;color:#334155;">${escapeHtml(reviewComment)}</td>
+          <td style="border:1px solid #cbd5e1;padding:8px;font-family:Consolas,monospace;color:#475569;white-space:nowrap;">${escapeHtml((0, formatDateTime_1.formatThaiDateTime)(a.timestamp))}</td>
+        </tr>`;
+    })
+        .join('');
+    const excelHtml = `\uFEFF<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="UTF-8" />
+  <!--[if gte mso 9]>
+  <xml>
+    <x:ExcelWorkbook>
+      <x:ExcelWorksheets>
+        <x:ExcelWorksheet>
+          <x:Name>SentinelAI SOC Report</x:Name>
+          <x:WorksheetOptions>
+            <x:DisplayGridlines/>
+            <x:FreezePanes/>
+            <x:FrozenNoSplit/>
+            <x:SplitHorizontal>6</x:SplitHorizontal>
+            <x:TopRowBottomPane>6</x:TopRowBottomPane>
+          </x:WorksheetOptions>
+        </x:ExcelWorksheet>
+      </x:ExcelWorksheets>
+    </x:ExcelWorkbook>
+  </xml>
+  <![endif]-->
+  <style>
+    body { font-family: 'Sarabun', 'Tahoma', 'Segoe UI', sans-serif; font-size: 11pt; color: #0f172a; }
+    table { border-collapse: collapse; }
+    td, th { mso-number-format: "\\@"; }
+  </style>
+</head>
+<body>
+  <table>
+    <!-- Executive Banner -->
+    <tr>
+      <td colspan="15" style="background:#1e3a8a;color:#ffffff;font-size:16pt;font-weight:bold;padding:14px 16px;border:1px solid #1e3a8a;">
+        🛡️ SentinelAI — AI-Assisted Security Alert Analysis &amp; Remediation Report
+      </td>
+    </tr>
+    <tr>
+      <td colspan="15" style="background:#eff6ff;color:#1e3a8a;font-size:10.5pt;font-weight:bold;padding:7px 16px;border:1px solid #bfdbfe;">
+        วันที่ออกรายงาน: ${escapeHtml(nowStr)} &nbsp;|&nbsp; จำนวนเหตุการณ์ทั้งหมด: ${totalCount} รายการ &nbsp;|&nbsp; มาตรฐานการประเมิน: Wazuh Rule Engine + MITRE ATT&amp;CK + Human-in-the-Loop
+      </td>
+    </tr>
+
+    <!-- Executive KPI Summary Strip -->
+    <tr>
+      <td colspan="2" style="background:#f1f5f9;color:#0f172a;font-weight:bold;text-align:center;padding:8px;border:1px solid #cbd5e1;">ทั้งหมด (Total)<br/><span style="font-size:14pt;">${totalCount}</span></td>
+      <td colspan="2" style="background:#ffe4e6;color:#9f1239;font-weight:bold;text-align:center;padding:8px;border:1px solid #fda4af;">CRITICAL<br/><span style="font-size:14pt;">${criticalCount}</span></td>
+      <td colspan="2" style="background:#fef3c7;color:#92400e;font-weight:bold;text-align:center;padding:8px;border:1px solid #fcd34d;">HIGH<br/><span style="font-size:14pt;">${highCount}</span></td>
+      <td colspan="2" style="background:#dbeafe;color:#1e3a8a;font-weight:bold;text-align:center;padding:8px;border:1px solid #93c5fd;">MEDIUM<br/><span style="font-size:14pt;">${mediumCount}</span></td>
+      <td colspan="2" style="background:#d1fae5;color:#065f46;font-weight:bold;text-align:center;padding:8px;border:1px solid #6ee7b7;">LOW<br/><span style="font-size:14pt;">${lowCount}</span></td>
+      <td colspan="2" style="background:#dcfce7;color:#166534;font-weight:bold;text-align:center;padding:8px;border:1px solid #86efac;">อนุมัติแล้ว (Approved)<br/><span style="font-size:14pt;">${approvedCount}</span></td>
+      <td colspan="3" style="background:#fef9c3;color:#854d0e;font-weight:bold;text-align:center;padding:8px;border:1px solid #fde047;">รอตรวจสอบ (Pending)<br/><span style="font-size:14pt;">${pendingCount}</span></td>
+    </tr>
+
+    <tr><td colspan="15" style="height:8px;border:none;"></td></tr>
+
+    <!-- Table Column Headers -->
+    <tr style="background:#0f172a;color:#ffffff;font-weight:bold;text-align:center;">
+      <th style="border:1px solid #334155;padding:10px 8px;width:110px;">รหัสแจ้งเตือน<br/>(Alert ID)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:160px;">สถานะการอนุมัติ<br/>(Status)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:110px;">ระดับความรุนแรง<br/>(Severity)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:120px;">คะแนนความเสี่ยง<br/>(Risk Score)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:220px;">ประเภทภัยคุกคาม<br/>(Incident Type)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:150px;">เครื่องเป้าหมาย<br/>(Hostname)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:125px;">Source IP</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:125px;">Destination IP</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:130px;">บัญชีผู้ใช้<br/>(Username)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:210px;">MITRE ATT&amp;CK</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:300px;">สรุปเหตุการณ์จาก AI<br/>(AI Summary)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:340px;">วิธีแก้ไขและขั้นตอนการตรวจสอบ<br/>(Remediation Steps)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:150px;">ผู้ตรวจสอบล่าสุด<br/>(Reviewed By)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:220px;">ความคิดเห็นการอนุมัติ<br/>(Approval Comment)</th>
+      <th style="border:1px solid #334155;padding:10px 8px;width:165px;">วันเวลาที่เกิดเหตุ<br/>(Timestamp)</th>
+    </tr>
+
+    <!-- Data Rows -->
+    ${dataRowsHtml}
+  </table>
+</body>
+</html>`;
+    const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${filenamePrefix}-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `${filenamePrefix}-${new Date().toISOString().slice(0, 10)}.xls`;
     link.click();
     URL.revokeObjectURL(url);
 }

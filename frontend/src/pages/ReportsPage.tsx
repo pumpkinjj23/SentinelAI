@@ -172,7 +172,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({
                   approvedAlerts.length > 0 ? approvedAlerts : filteredByTimeAlerts;
                 recordExport(
                   'CSV',
-                  'SentinelAI-Approved-Remediation-Report.csv',
+                  'SentinelAI-Approved-Remediation-Report.xls',
                   targetList.length
                 );
                 exportAlertsToCSV(targetList, 'SentinelAI-Approved-Remediation-Report');
@@ -180,7 +180,7 @@ export const ReportsPage: React.FC<ReportsPageProps> = ({
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-sm font-extrabold shadow-sm transition cursor-pointer whitespace-nowrap"
             >
               <Download className="w-4 h-4 shrink-0" />
-              Export CSV พร้อมวิธีแก้ไข (.csv)
+              Export Excel ตารางสีพร้อมวิธีแก้ไข (.xls)
             </button>
 
             <button
