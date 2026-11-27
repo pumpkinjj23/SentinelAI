@@ -347,55 +347,112 @@ export function App() {
 
           <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5">
             {/* =====================================================================
-                PAGE 1: DASHBOARD & UPLOAD (ภาพรวมและนำเข้าข้อมูลในหน้าเดียว)
+                PAGE 1: DASHBOARD & UPLOAD (RETRO 90s WINDOWS 95 SOC WORKSPACE)
                ===================================================================== */}
             {activePage === 'dashboard' && (
-              <div className="space-y-5 pt-1">
-                {/* Hero Banner + Live Attack Simulator + 6-Step Single-Page Workflow */}
-                <div className="sylva-glass-card rounded-[26px] p-6 space-y-5">
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block">
-                          Dashboard & Upload — ภาพรวมและนำเข้าข้อมูล (Simple Analysis Workspace)
-                        </span>
-                        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5 leading-snug">
-                          Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span> — Simple Analysis Workspace
+              <div className="space-y-4 pt-1">
+                {/* 1. Mandatory 90s Scrolling Marquee Announcement Bar */}
+                <div className="win95-inset bg-[#000000] text-[#ffff00] py-1.5 overflow-hidden retro-marquee-wrap" aria-live="polite">
+                  <div className="retro-marquee-track font-mono text-xs font-bold flex items-center gap-8 px-4">
+                    <span className="text-[#00ff00]">*** WELCOME TO SENTINELAI 97 — AI-ASSISTED SOC ALERT TRIAGE ***</span>
+                    <span className="text-[#ffff00]">★ WAZUH SIEM JSON / CSV IMPORT READY ★</span>
+                    <span className="text-[#ff0000]">[CRITICAL ALERTS: {sevCount('CRITICAL')}]</span>
+                    <span className="text-[#00ffff]">MITRE ATT&amp;CK MAPPING + NIST SP 800-61 PLAYBOOK ONLINE!</span>
+                    <span className="text-[#00ff00]">*** WELCOME TO SENTINELAI 97 — AI-ASSISTED SOC ALERT TRIAGE ***</span>
+                    <span className="text-[#ffff00]">★ WAZUH SIEM JSON / CSV IMPORT READY ★</span>
+                    <span className="text-[#ff0000]">[CRITICAL ALERTS: {sevCount('CRITICAL')}]</span>
+                    <span className="text-[#00ffff]">MITRE ATT&amp;CK MAPPING + NIST SP 800-61 PLAYBOOK ONLINE!</span>
+                  </div>
+                </div>
+
+                {/* 2. Windows 95 Title-Bar Hero Window + Rainbow Headline + Hit Counter + Decorative Color Squares */}
+                <div className="win95-outset p-0">
+                  <div className="win95-titlebar">
+                    <span className="text-xs font-mono uppercase tracking-wide">
+                      C:\SENTINELAI\DASHBOARD.EXE — SOC ALERT TRIAGE &amp; RISK PRIORITIZATION
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="px-1.5 py-0.5 bg-[#c0c0c0] text-black text-[10px] font-bold border border-black">_</span>
+                      <span className="px-1.5 py-0.5 bg-[#c0c0c0] text-black text-[10px] font-bold border border-black">□</span>
+                      <span className="px-1.5 py-0.5 bg-[#c0c0c0] text-black text-[10px] font-bold border border-black">X</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-4">
+                    <div className="win95-inset p-4 flex flex-wrap items-center justify-between gap-4">
+                      <div className="min-w-0 space-y-1.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="animate-pulse-glow inline-block px-2 py-0.5 bg-[#ff0000] text-[#ffff00] font-mono text-xs font-black uppercase border-2 border-black">
+                            NEW! v97.0
+                          </span>
+                          <span className="retro-blink inline-block px-2 py-0.5 bg-[#ffff00] text-black font-mono text-xs font-black uppercase border-2 border-black">
+                            LIVE SOC MODE
+                          </span>
+                          <span className="hit-counter text-xs font-bold">
+                            ALERTS PROCESSED: {String(summary?.total_alerts ?? alerts.length).padStart(7, '0')} | SINCE 1997
+                          </span>
+                        </div>
+                        <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-tight leading-tight">
+                          <span className="text-rainbow">SENTINELAI</span>{' '}
+                          <span className="text-black" style={{ textShadow: '2px 2px 0 #808080' }}>
+                            SOC COMMAND 97
+                          </span>
                         </h1>
-                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">
-                          นำเข้าเหตุการณ์ (Upload Alert) → เลือกเหตุการณ์ (Select Alert) → เริ่มวิเคราะห์ (Analyze) → ตรวจสอบผล (Review) → ดาวน์โหลดรายงาน (Export Report) → จบการทำงาน (End Session เบื้องหลังอัตโนมัติ)
+                        <p className="text-sm font-bold text-black">
+                          นำเข้าไฟล์ Wazuh JSON / CSV → คำนวณ Rule-Based Risk Score (0–100) → วิเคราะห์ด้วย Evidence AI &amp; MITRE ATT&amp;CK → ตรวจสอบผล → ส่งออก PDF/CSV
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => setActivePage('workspace')}
-                        className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-extrabold shadow-lg shadow-emerald-600/25 transition cursor-pointer inline-flex items-center gap-2 shrink-0"
-                      >
-                        <span>ไปที่ Analysis Workspace ({alerts.length} Alerts)</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
+                      <div className="flex flex-col items-end gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setActivePage('workspace')}
+                          className="px-5 py-3 bg-emerald-600 text-white text-sm font-black uppercase tracking-wide cursor-pointer inline-flex items-center gap-2"
+                        >
+                          <span>OPEN ANALYSIS WORKSPACE ({alerts.length})</span>
+                          <ArrowRight className="w-4 h-4 stroke-[2px]" />
+                        </button>
+                        {/* Mandatory Decorative 90s Beveled Color Squares */}
+                        <div className="flex items-center gap-1" aria-hidden="true">
+                          {['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'].map((hex) => (
+                            <span
+                              key={hex}
+                              className="w-4 h-4 inline-block border-2"
+                              style={{
+                                backgroundColor: hex,
+                                borderColor: '#ffffff #808080 #808080 #ffffff',
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
-                      <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 whitespace-nowrap">
-                        <Sparkles className="w-3.5 h-3.5 shrink-0" /> จำลองการโจมตีสดเพื่อทดสอบ AI Analysis (1-Click Demo):
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {SIMULATED_ATTACKS.map((sim, idx) => (
-                          <button
-                            key={idx}
-                            disabled={simulating}
-                            onClick={() => handleSimulateAttack(idx)}
-                            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 transition cursor-pointer whitespace-nowrap"
-                          >
-                            {sim.label}
-                          </button>
-                        ))}
+                    {/* Construction Warning Stripe Bar for 1-Click Live Attack Simulator */}
+                    <div className="bg-construction p-2 border-2 border-black">
+                      <div className="bg-[#ffffcc] border-2 border-black p-3 flex flex-wrap items-center justify-between gap-3">
+                        <div className="text-xs font-black uppercase text-[#ff0000] flex items-center gap-1.5 whitespace-nowrap">
+                          <Sparkles className="w-4 h-4 stroke-[2px] shrink-0" />
+                          ⚠ DANGER ZONE: จำลองการโจมตีสดเพื่อทดสอบ AI ANALYSIS (1-CLICK DEMO)
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {SIMULATED_ATTACKS.map((sim, idx) => (
+                            <button
+                              key={idx}
+                              disabled={simulating}
+                              onClick={() => handleSimulateAttack(idx)}
+                              className="px-3 py-1.5 text-xs font-black uppercase bg-[#c0c0c0] hover:bg-[#d0d0d0] text-black cursor-pointer whitespace-nowrap"
+                            >
+                              {sim.label}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <hr className="hr-groove" />
 
                 {/* KPI Row: Total Alerts, Critical, High, Medium, Low, Alerts ที่รอการตรวจสอบ */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
