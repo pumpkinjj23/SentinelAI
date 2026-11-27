@@ -113,9 +113,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {!mobileOpen && isCollapsed ? (
               <div className="flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80">
                 <button
-                  onClick={() => handleNavigate('dashboard')}
-                  title="SentinelAI — SOC Intelligence Platform"
-                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0"
+                  onClick={() => setIsCollapsed(false)}
+                  title="คลิกเพื่อขยายแถบเมนูด้านข้าง"
+                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0 hover:scale-105 transition"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                     <path
