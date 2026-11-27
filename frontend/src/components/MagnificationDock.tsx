@@ -1,10 +1,8 @@
 /**
  * MagnificationDock Component
  *
- * A premium macOS-inspired dock component with fluid magnification effects,
- * spring physics (mass, stiffness, damping), and floating tooltips.
- * Adapted for SentinelAI's Deep Navy SOC glassmorphism system without
- * requiring an external ESM bundler.
+ * A macOS-inspired dock component with fluid magnification effects and spring physics
+ * on desktop (fine pointer), and rock-solid, zero-flicker native touch navigation on mobile/tablet.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -39,10 +37,10 @@ export function MagnificationDock({
   items,
   className = '',
   spring = { mass: 0.1, stiffness: 150, damping: 12 },
-  magnification = 70,
-  distance = 200,
-  panelHeight = 64,
-  baseItemSize = 50,
+  magnification = 68,
+  distance = 160,
+  panelHeight = 76,
+  baseItemSize = 46,
 }: DockProps) {
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const sizesRef = useRef<number[]>([]);
@@ -51,37 +49,63 @@ export function MagnificationDock({
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [canHover, setCanHover] = useState<boolean>(false);
 
   const mass = spring.mass ?? 0.1;
   const stiffness = spring.stiffness ?? 150;
   const damping = spring.damping ?? 12;
 
-  // Keep internal physics arrays synced with items length
+  // Only enable mouse magnification & hover tooltips on fine-pointer desktop devices
+  // to guarantee zero flicker / zero touch-loop freeze on phones & tablets.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const update = () => setCanHover(mq.matches);
+    update();
+    if (mq.addEventListener) {
+      mq.addEventListener('change', update);
+      return () => mq.removeEventListener('change', update);
+    }
+    return undefined;
+  }, []);
+
   if (sizesRef.current.length !== items.length) {
     sizesRef.current = items.map((_, i) => sizesRef.current[i] ?? baseItemSize);
     velocitiesRef.current = items.map((_, i) => velocitiesRef.current[i] ?? 0);
   }
 
   const startLoop = () => {
+    if (!canHover) return;
     if (rafRef.current !== null) return;
     lastTimeRef.current = performance.now();
 
     const step = (now: number) => {
-      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.032);
+      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.025);
       lastTimeRef.current = now;
 
-      let moving = false;
       const mouseX = mouseXRef.current;
 
+      // Pass 1: Read all rects in one batch (prevents layout thrashing)
+      const centers: number[] = new Array(items.length).fill(0);
+      if (Number.isFinite(mouseX)) {
+        for (let i = 0; i < items.length; i++) {
+          const el = itemRefs.current[i];
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            centers[i] = rect.left + rect.width / 2;
+          }
+        }
+      }
+
+      // Pass 2: Compute spring physics & write dimensions
+      let moving = false;
       for (let i = 0; i < items.length; i++) {
         const el = itemRefs.current[i];
         if (!el) continue;
 
         let target = baseItemSize;
         if (Number.isFinite(mouseX)) {
-          const rect = el.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const dist = Math.abs(mouseX - centerX);
+          const dist = Math.abs(mouseX - centers[i]);
           if (dist < distance) {
             const ratio = 1 - dist / distance;
             target = baseItemSize + (magnification - baseItemSize) * ratio;
@@ -91,13 +115,12 @@ export function MagnificationDock({
         const current = sizesRef.current[i] ?? baseItemSize;
         const velocity = velocitiesRef.current[i] ?? 0;
 
-        // Semi-implicit Euler spring integration matching Framer Motion spring physics
         const force = -stiffness * (current - target) - damping * velocity;
         const acc = force / mass;
         const nextVel = velocity + acc * dt;
-        const nextSize = Math.max(baseItemSize * 0.9, current + nextVel * dt);
+        const nextSize = Math.max(baseItemSize * 0.95, Math.min(magnification + 4, current + nextVel * dt));
 
-        if (Math.abs(nextSize - target) > 0.08 || Math.abs(nextVel) > 0.08) {
+        if (Math.abs(nextSize - target) > 0.15 || Math.abs(nextVel) > 0.15) {
           moving = true;
           sizesRef.current[i] = nextSize;
           velocitiesRef.current[i] = nextVel;
@@ -106,7 +129,7 @@ export function MagnificationDock({
           velocitiesRef.current[i] = 0;
         }
 
-        const finalSize = sizesRef.current[i];
+        const finalSize = Math.round(sizesRef.current[i] * 10) / 10;
         el.style.width = `${finalSize}px`;
         el.style.height = `${finalSize}px`;
       }
@@ -130,54 +153,68 @@ export function MagnificationDock({
   }, []);
 
   return (
-    <div className="flex max-w-full items-end justify-center pointer-events-none select-none">
+    <div
+      className="flex max-w-full items-end justify-center pointer-events-none select-none"
+      style={{ transform: 'translateZ(0)' }}
+    >
       <div
-        onMouseMove={(e) => {
-          mouseXRef.current = e.clientX;
-          startLoop();
-        }}
-        onMouseLeave={() => {
-          mouseXRef.current = Infinity;
-          setHoveredIndex(null);
-          startLoop();
-        }}
-        className={`pointer-events-auto flex items-end w-fit gap-3.5 sm:gap-4 rounded-full border border-slate-300/90 dark:border-blue-500/30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl pt-3 pb-2.5 px-5 sm:px-6 shadow-2xl shadow-blue-950/20 dark:shadow-black/60 ${className}`}
-        style={{ height: panelHeight }}
+        onMouseMove={
+          canHover
+            ? (e) => {
+                mouseXRef.current = e.clientX;
+                startLoop();
+              }
+            : undefined
+        }
+        onMouseLeave={
+          canHover
+            ? () => {
+                mouseXRef.current = Infinity;
+                setHoveredIndex(null);
+                startLoop();
+              }
+            : undefined
+        }
+        className={`pointer-events-auto flex items-end w-fit gap-2.5 sm:gap-4 rounded-full border border-slate-300 dark:border-blue-500/35 bg-white dark:bg-slate-950 lg:bg-white/92 lg:dark:bg-slate-950/92 lg:backdrop-blur-md pt-2.5 pb-2 px-4 sm:px-6 shadow-xl shadow-blue-950/15 dark:shadow-black/60 ${className}`}
+        style={{ height: canHover ? panelHeight : 68 }}
         role="toolbar"
         aria-label="SentinelAI Quick Navigation Dock"
       >
         {items.map((item, index) => {
-          const isHovered = hoveredIndex === index;
+          const isHovered = canHover && hoveredIndex === index;
+          const itemSize = canHover ? baseItemSize : 44;
           return (
             <div key={index} className="relative flex flex-col items-center justify-end">
-              {/* Floating Tooltip (DockLabel) */}
-              <div
-                role="tooltip"
-                className={`pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 dark:bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-all duration-150 ${
-                  isHovered
-                    ? 'opacity-100 -translate-y-1.5 scale-100'
-                    : 'opacity-0 translate-y-0 scale-95'
-                }`}
-              >
-                {item.label}
-              </div>
+              {/* Floating Tooltip (Desktop Hover Only) */}
+              {canHover && (
+                <div
+                  role="tooltip"
+                  className={`pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-opacity duration-150 ${
+                    isHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  {item.label}
+                </div>
+              )}
 
-              {/* Magnifying Dock Item */}
+              {/* Dock Button */}
               <button
                 ref={(el) => {
                   itemRefs.current[index] = el;
                 }}
                 type="button"
                 onClick={item.onClick}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex((prev) => (prev === index ? null : prev))}
-                onFocus={() => setHoveredIndex(index)}
-                onBlur={() => setHoveredIndex((prev) => (prev === index ? null : prev))}
-                style={{ width: baseItemSize, height: baseItemSize }}
-                className={`relative inline-flex items-center justify-center rounded-full border shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 transition-colors ${
+                onMouseEnter={canHover ? () => setHoveredIndex(index) : undefined}
+                onMouseLeave={
+                  canHover ? () => setHoveredIndex((prev) => (prev === index ? null : prev)) : undefined
+                }
+                onFocus={canHover ? () => setHoveredIndex(index) : undefined}
+                onBlur={canHover ? () => setHoveredIndex((prev) => (prev === index ? null : prev)) : undefined}
+                style={{ width: itemSize, height: itemSize, touchAction: 'manipulation' }}
+                className={`relative inline-flex items-center justify-center rounded-full border shadow-sm cursor-pointer active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 ${
                   item.active
-                    ? 'bg-gradient-to-br from-blue-950 to-blue-800 text-white border-blue-700 shadow-blue-900/40'
-                    : 'bg-slate-50 hover:bg-blue-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300/90 dark:border-slate-700'
+                    ? 'bg-gradient-to-br from-blue-950 to-blue-800 text-white border-blue-700 shadow-blue-900/30'
+                    : 'bg-slate-50 hover:bg-blue-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-700'
                 } ${item.className || ''}`}
                 aria-label={typeof item.label === 'string' ? item.label : undefined}
               >
@@ -193,10 +230,8 @@ export function MagnificationDock({
 
               {/* macOS-style Active Indicator Dot */}
               <span
-                className={`mt-1 w-1.5 h-1.5 rounded-full transition-opacity duration-200 ${
-                  item.active
-                    ? 'opacity-100 bg-blue-900 dark:bg-blue-400'
-                    : 'opacity-0'
+                className={`mt-1 w-1.5 h-1.5 rounded-full ${
+                  item.active ? 'opacity-100 bg-blue-900 dark:bg-blue-400' : 'opacity-0'
                 }`}
               />
             </div>

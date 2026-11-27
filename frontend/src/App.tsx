@@ -313,13 +313,13 @@ export function App() {
 
   return (
     <div
-      className={`min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${
+      className={`min-h-[100dvh] lg:h-[100dvh] w-full overflow-x-clip lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${
         darkMode ? 'theme-bg-dark' : 'theme-bg-light'
-      } text-slate-900 dark:text-slate-100 sylva-transition`}
+      } text-slate-900 dark:text-slate-100`}
     >
-      <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative">
+      <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-visible lg:overflow-hidden relative">
         {/* Main Content (Full-Width Workspace — Navigation via Floating MagnificationDock) */}
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <div className="flex-1 flex flex-col overflow-visible lg:overflow-hidden min-w-0">
           <Header
             darkMode={darkMode}
             setDarkMode={setDarkMode}
@@ -333,7 +333,7 @@ export function App() {
             onEndSession={handleEndSession}
           />
 
-          <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5">
+          <main className="flex-1 overflow-visible lg:overflow-y-auto lg:overflow-x-hidden pr-0 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5">
             {/* =====================================================================
                 PAGE 1: DASHBOARD & UPLOAD (ภาพรวมและนำเข้าข้อมูลในหน้าเดียว)
                ===================================================================== */}

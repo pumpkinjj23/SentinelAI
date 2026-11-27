@@ -21660,14 +21660,14 @@ function App() {
     };
     const sevCount = (name) => summary?.severity_distribution.find((s) => s.name === name)?.value ?? 0;
     const pendingAlertsList = alerts.filter((a) => a.status === 'PENDING_REVIEW');
-    return (react_1.default.createElement("div", { className: `min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${darkMode ? 'theme-bg-dark' : 'theme-bg-light'} text-slate-900 dark:text-slate-100 sylva-transition` },
-        react_1.default.createElement("div", { className: "sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative" },
-            react_1.default.createElement("div", { className: "flex-1 flex flex-col overflow-hidden min-w-0" },
+    return (react_1.default.createElement("div", { className: `min-h-[100dvh] lg:h-[100dvh] w-full overflow-x-clip lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${darkMode ? 'theme-bg-dark' : 'theme-bg-light'} text-slate-900 dark:text-slate-100` },
+        react_1.default.createElement("div", { className: "sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-visible lg:overflow-hidden relative" },
+            react_1.default.createElement("div", { className: "flex-1 flex flex-col overflow-visible lg:overflow-hidden min-w-0" },
                 react_1.default.createElement(Header_1.Header, { darkMode: darkMode, setDarkMode: setDarkMode, alerts: alerts, onSelectAlert: (a) => handleInspectAlert(a), onQuickSearch: (q) => {
                         setSearchQuery(q);
                         setActivePage('workspace');
                     }, latestNotification: latestNotification, onEndSession: handleEndSession }),
-                react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5" },
+                react_1.default.createElement("main", { className: "flex-1 overflow-visible lg:overflow-y-auto lg:overflow-x-hidden pr-0 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5" },
                     activePage === 'dashboard' && (react_1.default.createElement("div", { className: "space-y-5 pt-1" },
                         react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-5" },
                             react_1.default.createElement("div", { className: "space-y-4" },
@@ -21903,10 +21903,8 @@ defineMod("./components/MagnificationDock", function(module, exports, require) {
 /**
  * MagnificationDock Component
  *
- * A premium macOS-inspired dock component with fluid magnification effects,
- * spring physics (mass, stiffness, damping), and floating tooltips.
- * Adapted for SentinelAI's Deep Navy SOC glassmorphism system without
- * requiring an external ESM bundler.
+ * A macOS-inspired dock component with fluid magnification effects and spring physics
+ * on desktop (fine pointer), and rock-solid, zero-flicker native touch navigation on mobile/tablet.
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -21934,7 +21932,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MagnificationDock = MagnificationDock;
 const react_1 = __importStar(require("react"));
-function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffness: 150, damping: 12 }, magnification = 70, distance = 200, panelHeight = 64, baseItemSize = 50, }) {
+function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffness: 150, damping: 12 }, magnification = 68, distance = 160, panelHeight = 76, baseItemSize = 46, }) {
     const itemRefs = (0, react_1.useRef)([]);
     const sizesRef = (0, react_1.useRef)([]);
     const velocitiesRef = (0, react_1.useRef)([]);
@@ -21942,32 +21940,58 @@ function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffn
     const rafRef = (0, react_1.useRef)(null);
     const lastTimeRef = (0, react_1.useRef)(0);
     const [hoveredIndex, setHoveredIndex] = (0, react_1.useState)(null);
+    const [canHover, setCanHover] = (0, react_1.useState)(false);
     const mass = spring.mass ?? 0.1;
     const stiffness = spring.stiffness ?? 150;
     const damping = spring.damping ?? 12;
-    // Keep internal physics arrays synced with items length
+    // Only enable mouse magnification & hover tooltips on fine-pointer desktop devices
+    // to guarantee zero flicker / zero touch-loop freeze on phones & tablets.
+    (0, react_1.useEffect)(() => {
+        if (typeof window === 'undefined' || !window.matchMedia)
+            return;
+        const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+        const update = () => setCanHover(mq.matches);
+        update();
+        if (mq.addEventListener) {
+            mq.addEventListener('change', update);
+            return () => mq.removeEventListener('change', update);
+        }
+        return undefined;
+    }, []);
     if (sizesRef.current.length !== items.length) {
         sizesRef.current = items.map((_, i) => sizesRef.current[i] ?? baseItemSize);
         velocitiesRef.current = items.map((_, i) => velocitiesRef.current[i] ?? 0);
     }
     const startLoop = () => {
+        if (!canHover)
+            return;
         if (rafRef.current !== null)
             return;
         lastTimeRef.current = performance.now();
         const step = (now) => {
-            const dt = Math.min((now - lastTimeRef.current) / 1000, 0.032);
+            const dt = Math.min((now - lastTimeRef.current) / 1000, 0.025);
             lastTimeRef.current = now;
-            let moving = false;
             const mouseX = mouseXRef.current;
+            // Pass 1: Read all rects in one batch (prevents layout thrashing)
+            const centers = new Array(items.length).fill(0);
+            if (Number.isFinite(mouseX)) {
+                for (let i = 0; i < items.length; i++) {
+                    const el = itemRefs.current[i];
+                    if (el) {
+                        const rect = el.getBoundingClientRect();
+                        centers[i] = rect.left + rect.width / 2;
+                    }
+                }
+            }
+            // Pass 2: Compute spring physics & write dimensions
+            let moving = false;
             for (let i = 0; i < items.length; i++) {
                 const el = itemRefs.current[i];
                 if (!el)
                     continue;
                 let target = baseItemSize;
                 if (Number.isFinite(mouseX)) {
-                    const rect = el.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const dist = Math.abs(mouseX - centerX);
+                    const dist = Math.abs(mouseX - centers[i]);
                     if (dist < distance) {
                         const ratio = 1 - dist / distance;
                         target = baseItemSize + (magnification - baseItemSize) * ratio;
@@ -21975,12 +21999,11 @@ function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffn
                 }
                 const current = sizesRef.current[i] ?? baseItemSize;
                 const velocity = velocitiesRef.current[i] ?? 0;
-                // Semi-implicit Euler spring integration matching Framer Motion spring physics
                 const force = -stiffness * (current - target) - damping * velocity;
                 const acc = force / mass;
                 const nextVel = velocity + acc * dt;
-                const nextSize = Math.max(baseItemSize * 0.9, current + nextVel * dt);
-                if (Math.abs(nextSize - target) > 0.08 || Math.abs(nextVel) > 0.08) {
+                const nextSize = Math.max(baseItemSize * 0.95, Math.min(magnification + 4, current + nextVel * dt));
+                if (Math.abs(nextSize - target) > 0.15 || Math.abs(nextVel) > 0.15) {
                     moving = true;
                     sizesRef.current[i] = nextSize;
                     velocitiesRef.current[i] = nextVel;
@@ -21989,7 +22012,7 @@ function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffn
                     sizesRef.current[i] = target;
                     velocitiesRef.current[i] = 0;
                 }
-                const finalSize = sizesRef.current[i];
+                const finalSize = Math.round(sizesRef.current[i] * 10) / 10;
                 el.style.width = `${finalSize}px`;
                 el.style.height = `${finalSize}px`;
             }
@@ -22009,30 +22032,31 @@ function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffn
             }
         };
     }, []);
-    return (react_1.default.createElement("div", { className: "flex max-w-full items-end justify-center pointer-events-none select-none" },
-        react_1.default.createElement("div", { onMouseMove: (e) => {
-                mouseXRef.current = e.clientX;
-                startLoop();
-            }, onMouseLeave: () => {
-                mouseXRef.current = Infinity;
-                setHoveredIndex(null);
-                startLoop();
-            }, className: `pointer-events-auto flex items-end w-fit gap-3.5 sm:gap-4 rounded-full border border-slate-300/90 dark:border-blue-500/30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl pt-3 pb-2.5 px-5 sm:px-6 shadow-2xl shadow-blue-950/20 dark:shadow-black/60 ${className}`, style: { height: panelHeight }, role: "toolbar", "aria-label": "SentinelAI Quick Navigation Dock" }, items.map((item, index) => {
-            const isHovered = hoveredIndex === index;
+    return (react_1.default.createElement("div", { className: "flex max-w-full items-end justify-center pointer-events-none select-none", style: { transform: 'translateZ(0)' } },
+        react_1.default.createElement("div", { onMouseMove: canHover
+                ? (e) => {
+                    mouseXRef.current = e.clientX;
+                    startLoop();
+                }
+                : undefined, onMouseLeave: canHover
+                ? () => {
+                    mouseXRef.current = Infinity;
+                    setHoveredIndex(null);
+                    startLoop();
+                }
+                : undefined, className: `pointer-events-auto flex items-end w-fit gap-2.5 sm:gap-4 rounded-full border border-slate-300 dark:border-blue-500/35 bg-white dark:bg-slate-950 lg:bg-white/92 lg:dark:bg-slate-950/92 lg:backdrop-blur-md pt-2.5 pb-2 px-4 sm:px-6 shadow-xl shadow-blue-950/15 dark:shadow-black/60 ${className}`, style: { height: canHover ? panelHeight : 68 }, role: "toolbar", "aria-label": "SentinelAI Quick Navigation Dock" }, items.map((item, index) => {
+            const isHovered = canHover && hoveredIndex === index;
+            const itemSize = canHover ? baseItemSize : 44;
             return (react_1.default.createElement("div", { key: index, className: "relative flex flex-col items-center justify-end" },
-                react_1.default.createElement("div", { role: "tooltip", className: `pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 dark:bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-all duration-150 ${isHovered
-                        ? 'opacity-100 -translate-y-1.5 scale-100'
-                        : 'opacity-0 translate-y-0 scale-95'}` }, item.label),
+                canHover && (react_1.default.createElement("div", { role: "tooltip", className: `pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-opacity duration-150 ${isHovered ? 'opacity-100' : 'opacity-0'}` }, item.label)),
                 react_1.default.createElement("button", { ref: (el) => {
                         itemRefs.current[index] = el;
-                    }, type: "button", onClick: item.onClick, onMouseEnter: () => setHoveredIndex(index), onMouseLeave: () => setHoveredIndex((prev) => (prev === index ? null : prev)), onFocus: () => setHoveredIndex(index), onBlur: () => setHoveredIndex((prev) => (prev === index ? null : prev)), style: { width: baseItemSize, height: baseItemSize }, className: `relative inline-flex items-center justify-center rounded-full border shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 transition-colors ${item.active
-                        ? 'bg-gradient-to-br from-blue-950 to-blue-800 text-white border-blue-700 shadow-blue-900/40'
-                        : 'bg-slate-50 hover:bg-blue-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300/90 dark:border-slate-700'} ${item.className || ''}`, "aria-label": typeof item.label === 'string' ? item.label : undefined },
+                    }, type: "button", onClick: item.onClick, onMouseEnter: canHover ? () => setHoveredIndex(index) : undefined, onMouseLeave: canHover ? () => setHoveredIndex((prev) => (prev === index ? null : prev)) : undefined, onFocus: canHover ? () => setHoveredIndex(index) : undefined, onBlur: canHover ? () => setHoveredIndex((prev) => (prev === index ? null : prev)) : undefined, style: { width: itemSize, height: itemSize, touchAction: 'manipulation' }, className: `relative inline-flex items-center justify-center rounded-full border shadow-sm cursor-pointer active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 ${item.active
+                        ? 'bg-gradient-to-br from-blue-950 to-blue-800 text-white border-blue-700 shadow-blue-900/30'
+                        : 'bg-slate-50 hover:bg-blue-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-700'} ${item.className || ''}`, "aria-label": typeof item.label === 'string' ? item.label : undefined },
                     react_1.default.createElement("div", { className: "flex items-center justify-center" }, item.icon),
                     item.badge !== undefined && item.badge > 0 && (react_1.default.createElement("span", { className: "absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-mono font-extrabold flex items-center justify-center shadow border border-white dark:border-slate-950" }, item.badge > 99 ? '99+' : item.badge))),
-                react_1.default.createElement("span", { className: `mt-1 w-1.5 h-1.5 rounded-full transition-opacity duration-200 ${item.active
-                        ? 'opacity-100 bg-blue-900 dark:bg-blue-400'
-                        : 'opacity-0'}` })));
+                react_1.default.createElement("span", { className: `mt-1 w-1.5 h-1.5 rounded-full ${item.active ? 'opacity-100 bg-blue-900 dark:bg-blue-400' : 'opacity-0'}` })));
         }))));
 }
 exports.default = MagnificationDock;

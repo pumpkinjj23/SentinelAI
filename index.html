@@ -2,7 +2,7 @@
 <html lang="th" style="color-scheme: light;">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>SentinelAI — AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,11 +30,29 @@
       }
       body {
         font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
-        overflow-x: hidden;
+        overflow-x: clip;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: none;
+      }
+      button, a {
+        -webkit-tap-highlight-color: transparent;
       }
       @media (min-width: 1024px) {
         body {
           overflow: hidden;
+        }
+      }
+
+      /* Mobile GPU Stability: avoid multi-layer gradient/grid repaints and layout-transition flicker on phones */
+      @media (max-width: 1023px) {
+        .theme-bg-dark {
+          background-image: linear-gradient(180deg, #050a18 0%, #091229 100%) !important;
+        }
+        .theme-bg-light {
+          background-image: linear-gradient(180deg, #f5f7fc 0%, #e7edf7 100%) !important;
+        }
+        .sylva-glass-card {
+          transition: none !important;
         }
       }
 
@@ -77,7 +95,7 @@
         background: linear-gradient(180deg, rgba(14, 23, 46, 0.94) 0%, rgba(9, 16, 34, 0.96) 100%);
         border: 1px solid rgba(59, 130, 246, 0.18);
         box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
-        transition: all 0.25s var(--sylva-ease);
+        transition: border-color 0.2s var(--sylva-ease), box-shadow 0.2s var(--sylva-ease);
       }
       .sylva-glass-card:hover {
         border-color: rgba(96, 165, 250, 0.38);
@@ -168,7 +186,7 @@
       }
 
       .sylva-transition {
-        transition: all 0.35s var(--sylva-ease);
+        transition: background-color 0.25s var(--sylva-ease), border-color 0.25s var(--sylva-ease), color 0.25s var(--sylva-ease);
       }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
