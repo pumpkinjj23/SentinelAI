@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
     : alerts.slice(0, 6);
 
   return (
-    <header className="sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-30 shrink-0">
+    <header className="sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-20 shrink-0">
       {/* Left: ปุ่มเมนูมือถือ, ชื่อระบบ, สถานะระบบ และ Notification ล่าสุด */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
         {onOpenMobileMenu && (

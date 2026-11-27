@@ -101,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className={`sylva-transition shrink-0 flex flex-col justify-between ${
           mobileOpen
             ? 'fixed inset-y-3 left-3 z-50 w-72 flex overflow-hidden'
-            : 'hidden lg:flex overflow-visible z-30'
+            : 'hidden lg:flex overflow-visible relative z-40'
         } ${!mobileOpen && (isCollapsed ? 'lg:w-[76px] lg:mr-3' : 'lg:w-72 lg:mr-4')}`}
       >
         <div

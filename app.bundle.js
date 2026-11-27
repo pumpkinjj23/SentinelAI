@@ -25957,7 +25957,7 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 (a.src_ip || '').toLowerCase().includes(q));
         })
         : alerts.slice(0, 6);
-    return (react_1.default.createElement("header", { className: "sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-30 shrink-0" },
+    return (react_1.default.createElement("header", { className: "sylva-glass-card rounded-[18px] sm:rounded-[22px] px-3 sm:px-5 py-2.5 sm:py-3 mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3 z-20 shrink-0" },
         react_1.default.createElement("div", { className: "flex flex-wrap items-center gap-2 sm:gap-3 min-w-0" },
             onOpenMobileMenu && (react_1.default.createElement("button", { type: "button", onClick: onOpenMobileMenu, title: "\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E21\u0E19\u0E39\u0E19\u0E33\u0E17\u0E32\u0E07", className: "lg:hidden p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0" },
                 react_1.default.createElement(lucide_react_1.Menu, { className: "w-4 h-4" }))),
@@ -26134,7 +26134,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpe
         mobileOpen && (react_1.default.createElement("div", { onClick: () => setMobileOpen && setMobileOpen(false), className: "fixed inset-0 bg-black/50 z-40 lg:hidden" })),
         react_1.default.createElement("aside", { className: `sylva-transition shrink-0 flex flex-col justify-between ${mobileOpen
                 ? 'fixed inset-y-3 left-3 z-50 w-72 flex overflow-hidden'
-                : 'hidden lg:flex overflow-visible z-30'} ${!mobileOpen && (isCollapsed ? 'lg:w-[76px] lg:mr-3' : 'lg:w-72 lg:mr-4')}` },
+                : 'hidden lg:flex overflow-visible relative z-40'} ${!mobileOpen && (isCollapsed ? 'lg:w-[76px] lg:mr-3' : 'lg:w-72 lg:mr-4')}` },
             react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${!mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center overflow-visible' : 'p-3.5 overflow-y-auto no-scrollbar'} flex flex-col justify-between` },
                 react_1.default.createElement("div", { className: "w-full" },
                     !mobileOpen && isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
