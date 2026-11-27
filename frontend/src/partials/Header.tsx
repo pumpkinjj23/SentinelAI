@@ -113,9 +113,12 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
 
-        <span className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span>
-          <span className="hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5">
+        <span className="inline-flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white tracking-tight font-manrope">
+          <span className="w-3.5 h-3.5 bg-[#ef233c] rounded-[3px] rotate-45 inline-block shrink-0 shadow-xs shadow-[#ef233c]/60" />
+          <span>
+            Sentinel<span className="text-[#ef233c]">AI</span>
+          </span>
+          <span className="hidden xl:inline font-medium text-xs text-slate-500 dark:text-zinc-400 ml-1">
             · AI-Assisted Security Alert Analysis
           </span>
         </span>

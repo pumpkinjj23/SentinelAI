@@ -142,29 +142,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleNavigate('dashboard')}
                   className="flex items-center gap-3 text-left cursor-pointer min-w-0"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        fill="rgba(255,255,255,0.18)"
-                      />
-                      <circle cx="12" cy="11.5" r="2.5" fill="#ffffff" />
-                    </svg>
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#ef233c] to-[#9b081b] flex items-center justify-center shadow-md shadow-[#ef233c]/30 shrink-0">
+                    <div className="w-4 h-4 bg-white rounded-xs rotate-45 shadow-xs" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight truncate">
-                        Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span>
+                      <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight truncate font-manrope">
+                        Sentinel<span className="text-[#ef233c]">AI</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-400/40 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#ef233c]/15 text-[#ef233c] dark:text-rose-200 border border-[#ef233c]/40 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#ef233c] animate-pulse" />
                         Online
                       </span>
                     </div>
-                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block truncate">
-                      SOC Intelligence Platform
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400 block truncate">
+                      Red Noir SOC Intelligence
                     </span>
                   </div>
                 </button>
