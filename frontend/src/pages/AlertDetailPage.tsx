@@ -94,9 +94,7 @@ export const AlertDetailPage: React.FC<AlertDetailPageProps> = ({
       setReanalyzing(true);
       setConfirmMsg(null);
       const updated = await reanalyzeAlert(activeAlert.id, userEmail);
-      setConfirmMsg(
-        `เรียกใช้ AI วิเคราะห์ ${updated.alert_code} ใหม่เสร็จสิ้น (AI Analysis Status: Completed, บันทึก RE_ANALYSIS ลงใน Audit Logs แล้ว)`
-      );
+      setConfirmMsg(`วิเคราะห์ ${updated.alert_code} ใหม่เสร็จสิ้นแล้ว`);
       if (onConfirmed) onConfirmed(updated);
     } catch (err: unknown) {
       setConfirmMsg(err instanceof Error ? err.message : 'ไม่สามารถเรียกวิเคราะห์ใหม่ได้');

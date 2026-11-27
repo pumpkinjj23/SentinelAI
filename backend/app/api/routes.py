@@ -1301,19 +1301,6 @@ def reanalyze_alert(
         alert.analysis.analysis_duration_ms = elapsed_ms
 
     alert.status = "PENDING_REVIEW"
-
-    audit_entry = AuditLog(
-        workspace_id=alert.workspace_id,
-        alert_id=alert.id,
-        alert_code=alert.alert_code,
-        analyst_name=user_email or "Local Operator",
-        action="RE_ANALYSIS",
-        previous_status=prev_status,
-        new_status="PENDING_REVIEW",
-        comment=f"[Risk Score: {risk_eval['risk_score']} ({risk_eval['severity']})] เรียกใช้ AI วิเคราะห์ข้อมูลใหม่ (Re-analysis Completed in {elapsed_ms} ms)",
-        ai_recommendation_snapshot=ai_output["recommendations"],
-    )
-    db.add(audit_entry)
     db.commit()
     db.refresh(alert)
     return alert

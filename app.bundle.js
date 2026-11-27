@@ -22903,7 +22903,7 @@ const AlertDetailPage = ({ alerts, selectedAlert, userEmail, userRole = 'OWNER',
             setReanalyzing(true);
             setConfirmMsg(null);
             const updated = await (0, api_1.reanalyzeAlert)(activeAlert.id, userEmail);
-            setConfirmMsg(`เรียกใช้ AI วิเคราะห์ ${updated.alert_code} ใหม่เสร็จสิ้น (AI Analysis Status: Completed, บันทึก RE_ANALYSIS ลงใน Audit Logs แล้ว)`);
+            setConfirmMsg(`วิเคราะห์ ${updated.alert_code} ใหม่เสร็จสิ้นแล้ว`);
             if (onConfirmed)
                 onConfirmed(updated);
         }
