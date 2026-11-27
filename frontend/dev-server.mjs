@@ -108,7 +108,7 @@ function buildAppBundle() {
 }
 
 const INDEX_HTML = `<!doctype html>
-<html lang="th" class="dark" style="color-scheme: dark;">
+<html lang="th" style="color-scheme: light;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -266,34 +266,48 @@ const INDEX_HTML = `<!doctype html>
         border-color: rgba(239, 35, 60, 0.35);
       }
 
-      /* Red Noir Global Accent Overrides in Dark Mode so all emerald primary accents harmonize with Crimson #ef233c */
-      html.dark .bg-emerald-600 {
+      /* Red Noir Global Accent Overrides — Full Crimson (#ef233c) Harmonization in Dark & Light Mode */
+      html.dark .bg-emerald-600,
+      html.dark .bg-emerald-500,
+      html.dark .hover\\:bg-emerald-600:hover {
         background-color: #ef233c !important;
       }
       html.dark .hover\\:bg-emerald-500:hover {
         background-color: #d90429 !important;
       }
-      html.dark .border-emerald-500 {
+      html.dark .border-emerald-500,
+      html.dark .hover\\:border-emerald-500:hover,
+      html.dark .focus\\:border-emerald-500:focus {
         border-color: #ef233c !important;
       }
-      html.dark .text-emerald-400 {
+      html.dark .text-emerald-400,
+      html.dark .dark\\:text-emerald-400,
+      html.dark .text-emerald-500 {
         color: #ff4d6d !important;
       }
-      html.dark .text-emerald-300 {
+      html.dark .text-emerald-300,
+      html.dark .dark\\:text-emerald-300 {
         color: #ff758f !important;
       }
+      html.dark .text-emerald-200,
+      html.dark .dark\\:text-emerald-200 {
+        color: #fecdd3 !important;
+      }
+      html.dark .bg-emerald-400,
+      html.dark .dark\\:bg-emerald-400 {
+        background-color: #ef233c !important;
+      }
       html.dark .border-emerald-500\\/40,
-      html.dark .border-emerald-500\\/35 {
+      html.dark .border-emerald-500\\/35,
+      html.dark .border-emerald-400\\/40,
+      html.dark .dark\\:border-emerald-400\\/40 {
         border-color: rgba(239, 35, 60, 0.42) !important;
       }
-      html.dark .bg-emerald-500\\/20 {
-        background-color: rgba(239, 35, 60, 0.18) !important;
-      }
-      html.dark .border-emerald-400\\/40 {
-        border-color: rgba(239, 35, 60, 0.4) !important;
-      }
-      html.dark .text-emerald-200 {
-        color: #fecdd3 !important;
+      html.dark .bg-emerald-500\\/20,
+      html.dark .dark\\:bg-emerald-500\\/20,
+      html.dark .bg-emerald-500\\/15,
+      html.dark .dark\\:bg-emerald-500\\/15 {
+        background-color: rgba(239, 35, 60, 0.16) !important;
       }
       html.dark .shadow-emerald-600\\/25,
       html.dark .shadow-emerald-600\\/20,
@@ -303,26 +317,36 @@ const INDEX_HTML = `<!doctype html>
       }
 
       /* Light Mode Red Noir Harmonization */
-      html:not(.dark) .bg-emerald-600 {
+      html:not(.dark) .bg-emerald-600,
+      html:not(.dark) .bg-emerald-500,
+      html:not(.dark) .hover\\:bg-emerald-600:hover {
         background-color: #ef233c !important;
       }
       html:not(.dark) .hover\\:bg-emerald-500:hover {
         background-color: #d90429 !important;
       }
       html:not(.dark) .text-emerald-700,
-      html:not(.dark) .text-emerald-600 {
+      html:not(.dark) .text-emerald-600,
+      html:not(.dark) .text-emerald-500 {
         color: #d90429 !important;
       }
-      html:not(.dark) .border-emerald-500 {
+      html:not(.dark) .border-emerald-500,
+      html:not(.dark) .hover\\:border-emerald-500:hover,
+      html:not(.dark) .focus\\:border-emerald-500:focus {
         border-color: #ef233c !important;
       }
-      html:not(.dark) .bg-emerald-100 {
-        background-color: #ffe4e6 !important;
+      html:not(.dark) .bg-emerald-100,
+      html:not(.dark) .bg-emerald-50,
+      html:not(.dark) .bg-emerald-50\\/70,
+      html:not(.dark) .hover\\:bg-emerald-50:hover {
+        background-color: #fff1f2 !important;
       }
-      html:not(.dark) .text-emerald-800 {
+      html:not(.dark) .text-emerald-800,
+      html:not(.dark) .text-emerald-900 {
         color: #9f1239 !important;
       }
-      html:not(.dark) .border-emerald-300 {
+      html:not(.dark) .border-emerald-300,
+      html:not(.dark) .border-emerald-200 {
         border-color: #fda4af !important;
       }
 

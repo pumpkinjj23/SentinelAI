@@ -123,8 +123,8 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </span>
 
-        <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold">
-          <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
+        <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ef233c]/15 text-[#d90429] border border-[#ef233c]/35 dark:bg-[#ef233c]/20 dark:text-rose-200 dark:border-[#ef233c]/40 text-xs font-bold">
+          <span className="w-2 h-2 rounded-full bg-[#ef233c] animate-pulse" />
           <span>สถานะระบบ: Online</span>
         </div>
 
@@ -216,8 +216,8 @@ export const Header: React.FC<HeaderProps> = ({
           <span
             className={`pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${
               darkMode
-                ? 'translate-x-8 bg-emerald-500 text-slate-950'
-                : 'translate-x-0 bg-white text-amber-500'
+                ? 'translate-x-8 bg-[#ef233c] text-white'
+                : 'translate-x-0 bg-white text-[#ef233c]'
             }`}
           >
             {darkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}

@@ -21505,7 +21505,7 @@ const WORKFLOW_STEPS = [
 function App() {
     const [isCollapsed, setIsCollapsed] = (0, react_1.useState)(false);
     const [mobileMenuOpen, setMobileMenuOpen] = (0, react_1.useState)(false);
-    const [darkMode, setDarkMode] = (0, react_1.useState)(true);
+    const [darkMode, setDarkMode] = (0, react_1.useState)(false);
     const [activePage, setActivePage] = (0, react_1.useState)('dashboard');
     const [currentUser] = (0, react_1.useState)({
         id: 'usr-owner-001',
@@ -25993,8 +25993,8 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                     "Sentinel",
                     react_1.default.createElement("span", { className: "text-[#ef233c]" }, "AI")),
                 react_1.default.createElement("span", { className: "hidden xl:inline font-medium text-xs text-slate-500 dark:text-zinc-400 ml-1" }, "\u00B7 AI-Assisted Security Alert Analysis")),
-            react_1.default.createElement("div", { className: "hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold" },
-                react_1.default.createElement("span", { className: "w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" }),
+            react_1.default.createElement("div", { className: "hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ef233c]/15 text-[#d90429] border border-[#ef233c]/35 dark:bg-[#ef233c]/20 dark:text-rose-200 dark:border-[#ef233c]/40 text-xs font-bold" },
+                react_1.default.createElement("span", { className: "w-2 h-2 rounded-full bg-[#ef233c] animate-pulse" }),
                 react_1.default.createElement("span", null, "\u0E2A\u0E16\u0E32\u0E19\u0E30\u0E23\u0E30\u0E1A\u0E1A: Online")),
             activeWorkspace && (react_1.default.createElement("button", { type: "button", onClick: onOpenWorkspaces, title: "\u0E04\u0E25\u0E34\u0E01\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2A\u0E25\u0E31\u0E1A\u0E2B\u0E23\u0E37\u0E2D\u0E2A\u0E23\u0E49\u0E32\u0E07\u0E2B\u0E49\u0E2D\u0E07 Workspace", className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white cursor-pointer" },
                 react_1.default.createElement(lucide_react_1.FolderKanban, { className: "w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" }),
@@ -26028,8 +26028,8 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5 text-amber-500 ml-1" }),
                 react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-emerald-400 ml-auto mr-1" }),
                 react_1.default.createElement("span", { className: `pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${darkMode
-                        ? 'translate-x-8 bg-emerald-500 text-slate-950'
-                        : 'translate-x-0 bg-white text-amber-500'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
+                        ? 'translate-x-8 bg-[#ef233c] text-white'
+                        : 'translate-x-0 bg-white text-[#ef233c]'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
             react_1.default.createElement("div", { className: "relative" },
                 react_1.default.createElement("button", { onClick: () => {
                         setNotificationsOpen(!notificationsOpen);
@@ -26166,10 +26166,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpe
             react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${!mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center' : 'p-3.5'} flex flex-col justify-between overflow-y-auto no-scrollbar` },
                 react_1.default.createElement("div", { className: "w-full" },
                     !mobileOpen && isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
-                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 cursor-pointer shrink-0" },
-                            react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
-                                react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
-                                react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
+                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-[#ef233c] to-[#9b081b] flex items-center justify-center shadow-md shadow-[#ef233c]/30 cursor-pointer shrink-0" },
+                            react_1.default.createElement("div", { className: "w-4 h-4 bg-white rounded-xs rotate-45 shadow-xs" })),
                         react_1.default.createElement("button", { onClick: () => setIsCollapsed(false), title: "\u0E02\u0E22\u0E32\u0E22\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0" },
                             react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5 rotate-180" })))) : (react_1.default.createElement("div", { className: "flex items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700/80" },
                         react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), className: "flex items-center gap-3 text-left cursor-pointer min-w-0" },
