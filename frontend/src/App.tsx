@@ -812,10 +812,10 @@ export function App() {
         {/* macOS-style Floating Magnification Dock (Primary Navigation Command Dock) */}
         <div className="flex fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
           <MagnificationDock
-            panelHeight={66}
+            panelHeight={78}
             baseItemSize={46}
-            magnification={72}
-            distance={180}
+            magnification={68}
+            distance={160}
             spring={{ mass: 0.1, stiffness: 150, damping: 12 }}
             items={
               [

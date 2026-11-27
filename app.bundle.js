@@ -21859,7 +21859,7 @@ function App() {
                         react_1.default.createElement(AuditTrailPage_1.AuditTrailPage, { logs: auditLogs, workspaceCode: activeWorkspace?.workspace_code, workspaceName: activeWorkspace?.name, userRole: activeWorkspace?.current_user_role }))),
                     activePage === 'reports' && (react_1.default.createElement(ReportsPage_1.ReportsPage, { summary: summary, alerts: alerts, savedReports: savedReports, onSaveReport: (a, note) => handleSaveReport(a, note), onDeleteSavedReport: handleDeleteSavedReport, onFinishAndClearTemp: handleEndSession, onSelectAlert: (a) => handleInspectAlert(a) })))),
             react_1.default.createElement("div", { className: "flex fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none" },
-                react_1.default.createElement(MagnificationDock_1.MagnificationDock, { panelHeight: 66, baseItemSize: 46, magnification: 72, distance: 180, spring: { mass: 0.1, stiffness: 150, damping: 12 }, items: [
+                react_1.default.createElement(MagnificationDock_1.MagnificationDock, { panelHeight: 78, baseItemSize: 46, magnification: 68, distance: 160, spring: { mass: 0.1, stiffness: 150, damping: 12 }, items: [
                         {
                             icon: react_1.default.createElement(lucide_react_1.LayoutDashboard, { className: "w-5 h-5" }),
                             label: 'Dashboard & Upload',
@@ -22017,10 +22017,10 @@ function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffn
                 mouseXRef.current = Infinity;
                 setHoveredIndex(null);
                 startLoop();
-            }, className: `pointer-events-auto flex items-end w-fit gap-2.5 sm:gap-3 rounded-3xl border border-slate-300/90 dark:border-blue-500/30 bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl pb-2 px-3.5 sm:px-4 shadow-2xl shadow-blue-950/20 dark:shadow-black/60 ${className}`, style: { height: panelHeight }, role: "toolbar", "aria-label": "SentinelAI Quick Navigation Dock" }, items.map((item, index) => {
+            }, className: `pointer-events-auto flex items-end w-fit gap-3.5 sm:gap-4 rounded-full border border-slate-300/90 dark:border-blue-500/30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl pt-3 pb-2.5 px-5 sm:px-6 shadow-2xl shadow-blue-950/20 dark:shadow-black/60 ${className}`, style: { height: panelHeight }, role: "toolbar", "aria-label": "SentinelAI Quick Navigation Dock" }, items.map((item, index) => {
             const isHovered = hoveredIndex === index;
             return (react_1.default.createElement("div", { key: index, className: "relative flex flex-col items-center justify-end" },
-                react_1.default.createElement("div", { role: "tooltip", className: `pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 dark:bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-all duration-150 ${isHovered
+                react_1.default.createElement("div", { role: "tooltip", className: `pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 dark:bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-all duration-150 ${isHovered
                         ? 'opacity-100 -translate-y-1.5 scale-100'
                         : 'opacity-0 translate-y-0 scale-95'}` }, item.label),
                 react_1.default.createElement("button", { ref: (el) => {
