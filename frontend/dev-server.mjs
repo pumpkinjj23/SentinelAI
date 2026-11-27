@@ -266,6 +266,52 @@ const INDEX_HTML = `<!doctype html>
         border-color: rgba(239, 35, 60, 0.35);
       }
 
+      /* Red Noir Global Surface & Accent Harmonization
+         Replaces blue-tinted slate dark surfaces with pure neutral Noir Zinc (#09090b / #18181b)
+         so Crimson (#ef233c) and white typography look clean, cohesive, and high-contrast. */
+      html.dark .dark\\:bg-slate-900,
+      html.dark .dark\\:bg-slate-900\\/90,
+      html.dark .dark\\:bg-slate-900\\/80,
+      html.dark .dark\\:bg-slate-900\\/60,
+      html.dark .dark\\:bg-slate-900\\/50 {
+        background-color: rgba(12, 12, 15, 0.92) !important;
+      }
+      html.dark .dark\\:bg-slate-800,
+      html.dark .dark\\:bg-slate-800\\/80,
+      html.dark .dark\\:hover\\:bg-slate-800:hover,
+      html.dark .dark\\:hover\\:bg-slate-800\\/60:hover,
+      html.dark .dark\\:hover\\:bg-slate-800\\/80:hover {
+        background-color: rgba(24, 24, 27, 0.94) !important;
+      }
+      html.dark .dark\\:bg-slate-700,
+      html.dark .dark\\:hover\\:bg-slate-700:hover {
+        background-color: rgba(39, 39, 42, 0.95) !important;
+      }
+      html.dark .dark\\:border-slate-700,
+      html.dark .dark\\:border-slate-700\\/80,
+      html.dark .dark\\:border-slate-600 {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+      }
+      html.dark .dark\\:divide-slate-700\\/70 > :not([hidden]) ~ :not([hidden]) {
+        border-color: rgba(255, 255, 255, 0.08) !important;
+      }
+
+      /* Light Mode Clean Neutral Zinc Surfaces */
+      html:not(.dark) .bg-slate-50,
+      html:not(.dark) .bg-slate-50\\/70 {
+        background-color: #fafafa !important;
+      }
+      html:not(.dark) .bg-slate-100,
+      html:not(.dark) .hover\\:bg-slate-100:hover {
+        background-color: #f4f4f5 !important;
+      }
+      html:not(.dark) .border-slate-200 {
+        border-color: #e4e4e7 !important;
+      }
+      html:not(.dark) .border-slate-300 {
+        border-color: #d4d4d8 !important;
+      }
+
       /* Red Noir Global Accent Overrides — Full Crimson (#ef233c) Harmonization in Dark & Light Mode */
       html.dark .bg-emerald-600,
       html.dark .bg-emerald-500,

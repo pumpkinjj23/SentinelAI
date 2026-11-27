@@ -160,8 +160,8 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {latestNotification && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40 text-xs font-bold">
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-300 dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700 text-xs font-semibold">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#ef233c] shrink-0" />
             <span className="truncate max-w-xs">{latestNotification}</span>
           </div>
         )}
@@ -190,9 +190,9 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             onClick={onEndSession}
             title="สิ้นสุดการใช้งานและลบข้อมูลชั่วคราวทั้งหมด รวมถึง Session Audit Log"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-[#ef233c] dark:bg-white/10 dark:hover:bg-[#ef233c] text-white border border-zinc-800 dark:border-white/15 text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap"
           >
-            <Trash2 className="w-3.5 h-3.5 shrink-0" />
+            <Trash2 className="w-3.5 h-3.5 text-[#ef233c] group-hover:text-white shrink-0" />
             <span>End Session</span>
           </button>
         )}
@@ -206,18 +206,18 @@ export const Header: React.FC<HeaderProps> = ({
           title={darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)'}
           className={`relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${
             darkMode
-              ? 'bg-slate-800 border-slate-600'
-              : 'bg-amber-100 border-amber-300'
+              ? 'bg-zinc-900 border-zinc-700'
+              : 'bg-zinc-100 border-zinc-300'
           }`}
         >
           <span className="sr-only">Toggle Dark / Light Theme</span>
-          <Sun className="w-3.5 h-3.5 text-amber-500 ml-1" />
-          <Moon className="w-3.5 h-3.5 text-emerald-400 ml-auto mr-1" />
+          <Sun className="w-3.5 h-3.5 text-zinc-500 ml-1" />
+          <Moon className="w-3.5 h-3.5 text-zinc-400 ml-auto mr-1" />
           <span
             className={`pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${
               darkMode
                 ? 'translate-x-8 bg-[#ef233c] text-white'
-                : 'translate-x-0 bg-white text-[#ef233c]'
+                : 'translate-x-0 bg-zinc-900 text-white'
             }`}
           >
             {darkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}

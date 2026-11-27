@@ -26008,8 +26008,8 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 react_1.default.createElement("span", { className: "truncate max-w-[140px]" }, currentUser.email),
                 react_1.default.createElement("span", { className: "px-1.5 py-0.2 rounded bg-emerald-600 text-white font-mono text-[10px]" }, activeWorkspace?.current_user_role || 'OWNER'),
                 react_1.default.createElement("span", { className: "text-[10px] underline ml-0.5" }, "\u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u0E2D\u0E35\u0E40\u0E21\u0E25"))),
-            latestNotification && (react_1.default.createElement("div", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40 text-xs font-bold" },
-                react_1.default.createElement(lucide_react_1.CheckCircle2, { className: "w-3.5 h-3.5 shrink-0" }),
+            latestNotification && (react_1.default.createElement("div", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-300 dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-700 text-xs font-semibold" },
+                react_1.default.createElement(lucide_react_1.CheckCircle2, { className: "w-3.5 h-3.5 text-[#ef233c] shrink-0" }),
                 react_1.default.createElement("span", { className: "truncate max-w-xs" }, latestNotification)))),
         react_1.default.createElement("div", { className: "flex items-center gap-2.5" },
             react_1.default.createElement("div", { className: "hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-slate-200" },
@@ -26018,18 +26018,18 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
             react_1.default.createElement("button", { onClick: () => setSearchModalOpen(true), className: "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100 cursor-pointer" },
                 react_1.default.createElement(lucide_react_1.Search, { className: "w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" }),
                 react_1.default.createElement("span", { className: "hidden sm:inline" }, "\u0E04\u0E49\u0E19\u0E2B\u0E32...")),
-            onEndSession && (react_1.default.createElement("button", { type: "button", onClick: onEndSession, title: "\u0E2A\u0E34\u0E49\u0E19\u0E2A\u0E38\u0E14\u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E07\u0E32\u0E19\u0E41\u0E25\u0E30\u0E25\u0E1A\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 \u0E23\u0E27\u0E21\u0E16\u0E36\u0E07 Session Audit Log", className: "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
-                react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5 shrink-0" }),
+            onEndSession && (react_1.default.createElement("button", { type: "button", onClick: onEndSession, title: "\u0E2A\u0E34\u0E49\u0E19\u0E2A\u0E38\u0E14\u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E07\u0E32\u0E19\u0E41\u0E25\u0E30\u0E25\u0E1A\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 \u0E23\u0E27\u0E21\u0E16\u0E36\u0E07 Session Audit Log", className: "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-[#ef233c] dark:bg-white/10 dark:hover:bg-[#ef233c] text-white border border-zinc-800 dark:border-white/15 text-xs font-extrabold shadow-xs transition cursor-pointer whitespace-nowrap" },
+                react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5 text-[#ef233c] group-hover:text-white shrink-0" }),
                 react_1.default.createElement("span", null, "End Session"))),
             react_1.default.createElement("button", { type: "button", role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode(!darkMode), title: darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)', className: `relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${darkMode
-                    ? 'bg-slate-800 border-slate-600'
-                    : 'bg-amber-100 border-amber-300'}` },
+                    ? 'bg-zinc-900 border-zinc-700'
+                    : 'bg-zinc-100 border-zinc-300'}` },
                 react_1.default.createElement("span", { className: "sr-only" }, "Toggle Dark / Light Theme"),
-                react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5 text-amber-500 ml-1" }),
-                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-emerald-400 ml-auto mr-1" }),
+                react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5 text-zinc-500 ml-1" }),
+                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-zinc-400 ml-auto mr-1" }),
                 react_1.default.createElement("span", { className: `pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${darkMode
                         ? 'translate-x-8 bg-[#ef233c] text-white'
-                        : 'translate-x-0 bg-white text-[#ef233c]'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
+                        : 'translate-x-0 bg-zinc-900 text-white'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
             react_1.default.createElement("div", { className: "relative" },
                 react_1.default.createElement("button", { onClick: () => {
                         setNotificationsOpen(!notificationsOpen);
