@@ -324,20 +324,11 @@ export function App() {
 
   return (
     <div
-      className={`min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col relative ${
+      className={`min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${
         darkMode ? 'theme-bg-dark' : 'theme-bg-light'
-      } text-zinc-900 dark:text-zinc-100 sylva-transition`}
+      } text-slate-900 dark:text-slate-100 sylva-transition`}
     >
-      {/* Red Noir Atmospheric Background Layer (Stars + Crimson Radial Glow) */}
-      {darkMode && (
-        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-0 w-[1px] h-[1px] bg-transparent noir-stars-1 animate-[animStar_55s_linear_infinite]" />
-          <div className="absolute top-0 left-0 w-[2px] h-[2px] bg-transparent noir-stars-2 animate-[animStar_85s_linear_infinite]" />
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] h-[760px] bg-[#ef233c]/10 rounded-full blur-[130px]" />
-        </div>
-      )}
-
-      <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative z-10">
+      <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative">
         {/* MAIN MENU SIDEBAR (Desktop Sidebar + Tablet/Mobile Drawer + Bottom Nav) */}
         <Sidebar
           isCollapsed={isCollapsed}
@@ -373,40 +364,29 @@ export function App() {
                ===================================================================== */}
             {activePage === 'dashboard' && (
               <div className="space-y-5 pt-1">
-                {/* Hero Banner (Red Noir Style) + Live Attack Simulator + 6-Step Single-Page Workflow */}
-                <div className="sylva-glass-card rounded-[26px] p-6 space-y-5 animate-fade-up relative overflow-hidden">
-                  <div className="space-y-4 relative z-10">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
+                {/* Hero Banner + Live Attack Simulator + 6-Step Single-Page Workflow */}
+                <div className="sylva-glass-card rounded-[26px] p-6 space-y-5">
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 dark:bg-white/5 border border-rose-500/30 mb-2">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ef233c] opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef233c]" />
-                          </span>
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#ef233c] dark:text-rose-200">
-                            SentinelAI Red Noir · AI-Assisted SOC Alert Analysis
-                          </span>
-                        </div>
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-0.5 leading-snug font-manrope">
-                          Sentinel<span className="text-[#ef233c]">AI</span>{' '}
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-zinc-400">
-                            — Security Alert Triage & Prioritization
-                          </span>
+                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block">
+                          Dashboard & Upload — ภาพรวมและนำเข้าข้อมูล (Simple Analysis Workspace)
+                        </span>
+                        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5 leading-snug">
+                          Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span> — Simple Analysis Workspace
                         </h1>
-                        <p className="text-sm font-medium text-slate-600 dark:text-zinc-400 mt-1.5">
-                          นำเข้าเหตุการณ์ (Upload Alert) → เลือกเหตุการณ์ (Select Alert) → เริ่มวิเคราะห์ (Analyze) → ตรวจสอบผล (Review) → ดาวน์โหลดรายงาน (Export Report) → สิ้นสุดการใช้งาน (End Session)
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">
+                          นำเข้าเหตุการณ์ (Upload Alert) → เลือกเหตุการณ์ (Select Alert) → เริ่มวิเคราะห์ (Analyze) → ตรวจสอบผล (Review) → ดาวน์โหลดรายงาน (Export Report) → จบการทำงาน (End Session เบื้องหลังอัตโนมัติ)
                         </p>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => setActivePage('workspace')}
-                        className="shiny-cta px-6 py-3 text-white text-sm font-extrabold transition cursor-pointer inline-flex items-center gap-2 shrink-0 group"
+                        className="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-extrabold shadow-lg shadow-emerald-600/25 transition cursor-pointer inline-flex items-center gap-2 shrink-0"
                       >
-                        <span className="relative z-10 flex items-center gap-2">
-                          <span>ไปที่ Analysis Workspace ({alerts.length} Alerts)</span>
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                        </span>
+                        <span>ไปที่ Analysis Workspace ({alerts.length} Alerts)</span>
+                        <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
 

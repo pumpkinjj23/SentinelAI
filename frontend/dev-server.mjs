@@ -112,10 +112,10 @@ const INDEX_HTML = `<!doctype html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SentinelAI — Red Noir AI-Assisted Security Alert Analysis</title>
+    <title>SentinelAI — AI-Assisted Security Alert Analysis & Rule-Based Risk Prioritization</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -123,16 +123,8 @@ const INDEX_HTML = `<!doctype html>
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Manrope', 'Noto Sans Thai', 'Inter', 'sans-serif'],
-              manrope: ['Manrope', 'Noto Sans Thai', 'sans-serif'],
-              inter: ['Inter', 'Noto Sans Thai', 'sans-serif'],
+              sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              noir: {
-                red: '#ef233c',
-                crimson: '#d90429',
-              },
             },
             maxWidth: {
               '9xl': '96rem',
@@ -144,33 +136,9 @@ const INDEX_HTML = `<!doctype html>
     <style>
       :root {
         --sylva-ease: cubic-bezier(0.22, 1, 0.36, 1);
-        --accent-red: #ef233c;
-        --accent-red-glow: rgba(239, 35, 60, 0.45);
       }
-
-      @property --gradient-angle {
-        syntax: "<angle>";
-        initial-value: 0deg;
-        inherits: false;
-      }
-
-      @keyframes border-spin {
-        from { --gradient-angle: 0deg; }
-        to { --gradient-angle: 360deg; }
-      }
-
-      @keyframes fade-in-up {
-        from { opacity: 0; transform: translateY(14px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      @keyframes animStar {
-        from { transform: translateY(0px); }
-        to { transform: translateY(-2000px); }
-      }
-
       body {
-        font-family: 'Manrope', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
+        font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
         overflow-x: hidden;
       }
       @media (min-width: 1024px) {
@@ -179,231 +147,55 @@ const INDEX_HTML = `<!doctype html>
         }
       }
 
-      .animate-fade-up {
-        animation: fade-in-up 0.65s var(--sylva-ease) forwards;
-      }
-
-      /* Red Noir Shiny CTA Button */
-      .shiny-cta {
-        --gradient-angle: 0deg;
-        position: relative;
-        overflow: hidden;
-        border-radius: 9999px;
-        background: linear-gradient(#09090b, #09090b) padding-box,
-          conic-gradient(from var(--gradient-angle), transparent 0%, #ef233c 10%, #ef233c 25%, #ff4d6d 35%, transparent 45%, transparent 100%) border-box;
-        border: 2px solid transparent;
-        cursor: pointer;
-        isolation: isolate;
-        animation: border-spin 2.8s linear infinite;
-        box-shadow: 0 0 24px -4px rgba(239, 35, 60, 0.35);
-      }
-      .shiny-cta:hover {
-        box-shadow: 0 0 32px -2px rgba(239, 35, 60, 0.55);
-      }
-      html:not(.dark) .shiny-cta {
-        background: linear-gradient(#111114, #111114) padding-box,
-          conic-gradient(from var(--gradient-angle), transparent 0%, #ef233c 10%, #ef233c 30%, transparent 45%, transparent 100%) border-box;
-      }
-
-      /* Parallax Stars for Red Noir Dark Canvas */
-      .noir-stars-1 {
-        box-shadow: 234px 124px rgba(255,255,255,0.45), 654px 345px rgba(255,255,255,0.35), 876px 12px rgba(239,35,60,0.5), 1200px 800px rgba(255,255,255,0.4), 400px 1500px rgba(255,255,255,0.3), 1800px 200px rgba(255,255,255,0.4), 100px 1000px rgba(239,35,60,0.45), 900px 1900px rgba(255,255,255,0.35), 500px 600px rgba(255,255,255,0.3), 1400px 100px rgba(255,255,255,0.4);
-      }
-      .noir-stars-2 {
-        box-shadow: 123px 456px rgba(255,255,255,0.3), 789px 234px rgba(239,35,60,0.45), 456px 890px rgba(255,255,255,0.35), 1100px 300px rgba(255,255,255,0.3), 200px 1200px rgba(255,255,255,0.35), 1500px 500px rgba(239,35,60,0.4), 600px 1700px rgba(255,255,255,0.3);
-      }
-
-      /* Red Noir Dark Canvas & Crisp Red-Accent Light Canvas */
+      /* High-Contrast Dark & Light Canvas */
       .theme-bg-dark {
-        background-color: #000000;
+        background-color: #0b1120;
         background-image:
-          radial-gradient(circle at 50% 0%, rgba(239, 35, 60, 0.16) 0px, transparent 50%),
-          radial-gradient(circle at 85% 85%, rgba(239, 35, 60, 0.08) 0px, transparent 45%),
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(180deg, #1a0505 0%, #050507 40%, #000000 100%);
-        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 100% 100%;
+          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.14) 0px, transparent 45%),
+          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.12) 0px, transparent 45%),
+          linear-gradient(180deg, #090e1a 0%, #0f172a 100%);
       }
 
       .theme-bg-light {
-        background-color: #f8f7f7;
+        background-color: #f1f5f9;
         background-image:
-          radial-gradient(at 10% 10%, rgba(239, 35, 60, 0.07) 0px, transparent 45%),
-          radial-gradient(at 90% 15%, rgba(24, 24, 27, 0.05) 0px, transparent 45%),
-          linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
-          linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
-        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 100% 100%;
+          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.08) 0px, transparent 45%),
+          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.08) 0px, transparent 45%),
+          linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
       }
 
-      /* Red Noir Shell & Bento Cards (No nested backdrop-filter so fixed modals cover full viewport) */
+      /* Crisp High-Readability Frosted Shell & Cards (No nested backdrop-filter so fixed modals cover full viewport) */
       .sylva-shell {
-        background: rgba(9, 9, 11, 0.92);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 24px 70px -12px rgba(0, 0, 0, 0.85), 0 0 40px -18px rgba(239, 35, 60, 0.25);
+        background: rgba(15, 23, 42, 0.94);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.6);
       }
       html:not(.dark) .sylva-shell {
         background: rgba(255, 255, 255, 0.96);
-        border: 1px solid rgba(228, 228, 231, 0.95);
-        box-shadow: 0 20px 50px -12px rgba(9, 9, 11, 0.08);
+        border: 1px solid rgba(203, 213, 225, 0.9);
+        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.08);
       }
 
       .sylva-glass-card {
-        background: linear-gradient(180deg, rgba(24, 24, 27, 0.88) 0%, rgba(9, 9, 11, 0.96) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.65);
+        background: rgba(30, 41, 59, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
         transition: all 0.25s var(--sylva-ease);
-      }
-      .sylva-glass-card:hover {
-        border-color: rgba(239, 35, 60, 0.28);
       }
       html:not(.dark) .sylva-glass-card {
         background: #ffffff;
-        border: 1px solid #e4e4e7;
-        box-shadow: 0 4px 16px -4px rgba(9, 9, 11, 0.05);
-      }
-      html:not(.dark) .sylva-glass-card:hover {
-        border-color: rgba(239, 35, 60, 0.35);
-      }
-
-      /* Red Noir Global Surface & Accent Harmonization
-         Replaces blue-tinted slate dark surfaces with pure neutral Noir Zinc (#09090b / #18181b)
-         so Crimson (#ef233c) and white typography look clean, cohesive, and high-contrast. */
-      html.dark .dark\\:bg-slate-900,
-      html.dark .dark\\:bg-slate-900\\/90,
-      html.dark .dark\\:bg-slate-900\\/80,
-      html.dark .dark\\:bg-slate-900\\/60,
-      html.dark .dark\\:bg-slate-900\\/50 {
-        background-color: rgba(12, 12, 15, 0.92) !important;
-      }
-      html.dark .dark\\:bg-slate-800,
-      html.dark .dark\\:bg-slate-800\\/80,
-      html.dark .dark\\:hover\\:bg-slate-800:hover,
-      html.dark .dark\\:hover\\:bg-slate-800\\/60:hover,
-      html.dark .dark\\:hover\\:bg-slate-800\\/80:hover {
-        background-color: rgba(24, 24, 27, 0.94) !important;
-      }
-      html.dark .dark\\:bg-slate-700,
-      html.dark .dark\\:hover\\:bg-slate-700:hover {
-        background-color: rgba(39, 39, 42, 0.95) !important;
-      }
-      html.dark .dark\\:border-slate-700,
-      html.dark .dark\\:border-slate-700\\/80,
-      html.dark .dark\\:border-slate-600 {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-      }
-      html.dark .dark\\:divide-slate-700\\/70 > :not([hidden]) ~ :not([hidden]) {
-        border-color: rgba(255, 255, 255, 0.08) !important;
-      }
-
-      /* Light Mode Clean Neutral Zinc Surfaces */
-      html:not(.dark) .bg-slate-50,
-      html:not(.dark) .bg-slate-50\\/70 {
-        background-color: #fafafa !important;
-      }
-      html:not(.dark) .bg-slate-100,
-      html:not(.dark) .hover\\:bg-slate-100:hover {
-        background-color: #f4f4f5 !important;
-      }
-      html:not(.dark) .border-slate-200 {
-        border-color: #e4e4e7 !important;
-      }
-      html:not(.dark) .border-slate-300 {
-        border-color: #d4d4d8 !important;
-      }
-
-      /* Red Noir Global Accent Overrides — Full Crimson (#ef233c) Harmonization in Dark & Light Mode */
-      html.dark .bg-emerald-600,
-      html.dark .bg-emerald-500,
-      html.dark .hover\\:bg-emerald-600:hover {
-        background-color: #ef233c !important;
-      }
-      html.dark .hover\\:bg-emerald-500:hover {
-        background-color: #d90429 !important;
-      }
-      html.dark .border-emerald-500,
-      html.dark .hover\\:border-emerald-500:hover,
-      html.dark .focus\\:border-emerald-500:focus {
-        border-color: #ef233c !important;
-      }
-      html.dark .text-emerald-400,
-      html.dark .dark\\:text-emerald-400,
-      html.dark .text-emerald-500 {
-        color: #ff4d6d !important;
-      }
-      html.dark .text-emerald-300,
-      html.dark .dark\\:text-emerald-300 {
-        color: #ff758f !important;
-      }
-      html.dark .text-emerald-200,
-      html.dark .dark\\:text-emerald-200 {
-        color: #fecdd3 !important;
-      }
-      html.dark .bg-emerald-400,
-      html.dark .dark\\:bg-emerald-400 {
-        background-color: #ef233c !important;
-      }
-      html.dark .border-emerald-500\\/40,
-      html.dark .border-emerald-500\\/35,
-      html.dark .border-emerald-400\\/40,
-      html.dark .dark\\:border-emerald-400\\/40 {
-        border-color: rgba(239, 35, 60, 0.42) !important;
-      }
-      html.dark .bg-emerald-500\\/20,
-      html.dark .dark\\:bg-emerald-500\\/20,
-      html.dark .bg-emerald-500\\/15,
-      html.dark .dark\\:bg-emerald-500\\/15 {
-        background-color: rgba(239, 35, 60, 0.16) !important;
-      }
-      html.dark .shadow-emerald-600\\/25,
-      html.dark .shadow-emerald-600\\/20,
-      html.dark .shadow-emerald-600\\/30,
-      html.dark .shadow-emerald-500\\/20 {
-        --tw-shadow-color: rgba(239, 35, 60, 0.38) !important;
-      }
-
-      /* Light Mode Red Noir Harmonization */
-      html:not(.dark) .bg-emerald-600,
-      html:not(.dark) .bg-emerald-500,
-      html:not(.dark) .hover\\:bg-emerald-600:hover {
-        background-color: #ef233c !important;
-      }
-      html:not(.dark) .hover\\:bg-emerald-500:hover {
-        background-color: #d90429 !important;
-      }
-      html:not(.dark) .text-emerald-700,
-      html:not(.dark) .text-emerald-600,
-      html:not(.dark) .text-emerald-500 {
-        color: #d90429 !important;
-      }
-      html:not(.dark) .border-emerald-500,
-      html:not(.dark) .hover\\:border-emerald-500:hover,
-      html:not(.dark) .focus\\:border-emerald-500:focus {
-        border-color: #ef233c !important;
-      }
-      html:not(.dark) .bg-emerald-100,
-      html:not(.dark) .bg-emerald-50,
-      html:not(.dark) .bg-emerald-50\\/70,
-      html:not(.dark) .hover\\:bg-emerald-50:hover {
-        background-color: #fff1f2 !important;
-      }
-      html:not(.dark) .text-emerald-800,
-      html:not(.dark) .text-emerald-900 {
-        color: #9f1239 !important;
-      }
-      html:not(.dark) .border-emerald-300,
-      html:not(.dark) .border-emerald-200 {
-        border-color: #fda4af !important;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
       }
 
       /* Ensure <select> options are always readable in both Dark and Light mode */
       select option {
-        background-color: #09090b;
-        color: #f4f4f5;
+        background-color: #1e293b;
+        color: #f8fafc;
       }
       html:not(.dark) select option {
         background-color: #ffffff;
-        color: #09090b;
+        color: #0f172a;
       }
 
       .sylva-transition {
@@ -414,10 +206,10 @@ const INDEX_HTML = `<!doctype html>
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       ::-webkit-scrollbar { width: 6px; height: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(239, 35, 60, 0.38); border-radius: 9999px; }
+      ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
     </style>
   </head>
-  <body class="antialiased selection:bg-[#ef233c] selection:text-white">
+  <body class="antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
     <script src="./app.bundle.js"></script>
   </body>
