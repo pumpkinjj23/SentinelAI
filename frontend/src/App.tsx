@@ -343,7 +343,6 @@ export function App() {
             latestNotification={latestNotification}
             onEndSession={handleEndSession}
             onOpenMobileMenu={() => setMobileMenuOpen(true)}
-            onToggleSidebar={() => setIsCollapsed((prev) => !prev)}
           />
 
           <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5">
