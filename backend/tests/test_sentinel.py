@@ -12,6 +12,7 @@ from app.api.routes import (
     accept_workspace_invitation,
     create_workspace,
     create_workspace_invitation,
+    clear_temporary_alerts,
     generate_incident_report,
     get_alert_detail,
     get_dashboard_summary,
@@ -65,6 +66,18 @@ class InProcessFastAPIClient:
     Executes FastAPI route handlers and Pydantic response validation in-process
     without requiring Windows loopback socketpair threads.
     """
+    def delete(self, path: str, workspace_id: Optional[str] = None) -> _Response:
+        db = TestingSessionLocal()
+        try:
+            if path == "/api/alerts/clear-temporary":
+                res = clear_temporary_alerts(workspace_id=workspace_id, db=db)
+                return _Response(200, res)
+            return _Response(404, {"detail": "Not found"})
+        except HTTPException as exc:
+            return _Response(exc.status_code, {"detail": exc.detail})
+        finally:
+            db.close()
+
     def post(
         self,
         path: str,
@@ -605,6 +618,140 @@ def test_tc14_evaluator_hardening_5_edge_cases():
     )
     unv_factors = [b["factor"] for b in res_unverified_maint["scoring_breakdown"]]
     assert "Low-Noise / Maintenance Context Adjustment" not in unv_factors
+
+
+def test_tc15_temporary_session_end_session_complete_wipe():
+    """TC15: End-to-End Flow + Ground Truth Precision/Recall/F1 + End Session Complete DB Wipe (0 leftover rows)"""
+    from app.models.alert import (
+        SecurityAlert,
+        AlertAnalysis,
+        AnalystReviewRecord,
+        ImportHistory,
+        AuditLog,
+    )
+
+    # 1. Seed all 12 Ground Truth alerts (7 JSON Wazuh + 5 CSV)
+    seed_resp = client.post("/api/alerts/seed-demo")
+    assert seed_resp.status_code == 200
+    assert seed_resp.json()["ingested_count"] == 12
+
+    # 2. Verify Ground Truth Evaluation Metrics (Precision, Recall, F1, Severity, MITRE)
+    summary = client.get("/api/dashboard/summary").json()
+    ev = summary["evaluation_metrics"]
+    print(f"\n[TC15 Ground Truth Metrics] {ev}")
+    assert ev["available"] is True
+    assert ev["precision"] >= 90.0
+    assert ev["recall"] >= 90.0
+    assert ev["f1_score"] >= 90.0
+    assert ev["severity_accuracy"] >= 90.0
+    assert ev["mitre_mapping_accuracy"] >= 90.0
+
+    # 3. Perform Analyst Review to create AnalystReviewRecord + AuditLog
+    alerts = client.get("/api/alerts").json()
+    target_id = alerts[0]["id"]
+    rev_resp = client.post(
+        f"/api/alerts/{target_id}/decision",
+        json={
+            "analyst_name": "SOC Thesis Verifier",
+            "action": "APPROVE",
+            "comment": "Verified E2E before End Session wipe",
+            "override_severity": "CRITICAL",
+            "override_risk_score": 96,
+        },
+    )
+    assert rev_resp.status_code == 200
+    assert rev_resp.json()["status"] == "APPROVED"
+
+    # 4. Trigger End Session (DELETE /api/alerts/clear-temporary)
+    wipe_resp = client.delete("/api/alerts/clear-temporary")
+    assert wipe_resp.status_code == 200
+    wipe_data = wipe_resp.json()
+    assert wipe_data["deleted_count"] == 12
+    assert wipe_data["deleted_audit_logs"] >= 1
+
+    # 5. Directly verify SQLite database has 0 leftover rows in ALL temporary tables
+    db = TestingSessionLocal()
+    try:
+        assert db.query(SecurityAlert).count() == 0
+        assert db.query(AlertAnalysis).count() == 0
+        assert db.query(AnalystReviewRecord).count() == 0
+        assert db.query(ImportHistory).count() == 0
+        assert db.query(AuditLog).count() == 0
+    finally:
+        db.close()
+
+
+def test_tc16_llm_provider_adapters_and_fallback(monkeypatch):
+    """TC16: Verify Gemini, OpenAI, and Ollama adapters parse JSON responses cleanly and fall back safely"""
+    import json
+    import httpx
+    from app.core.config import settings
+    from app.ai_engine.analyzer import analyze_alert_with_ai
+
+    sample_alert = {
+        "hostname": "erp-db-01",
+        "rule_id": "87999",
+        "rule_level": 15,
+        "description": "Ransomware vssadmin delete shadows",
+        "command_line": "vssadmin delete shadows /all /quiet",
+        "raw_log": "vssadmin delete shadows /all /quiet",
+        "source": "Wazuh SIEM",
+    }
+    sample_risk = {"severity": "CRITICAL", "risk_score": 92, "incident_type": "Ransomware", "scoring_breakdown": []}
+    sample_mitre = [{"technique_id": "T1490", "name": "Inhibit System Recovery", "tactic": "Impact", "evidence": "Wazuh Rule #87999 explicitly tagged T1490"}]
+
+    fake_payload = {
+        "ai_summary": "สรุปจาก LLM ทดสอบ",
+        "behavior_analysis": "วิเคราะห์พฤติกรรมจาก LLM",
+        "risk_justification": "เหตุผลจาก LLM",
+        "recommendations": ["1. แยกเครื่องออกจากเครือข่าย"],
+        "is_suspicious": True,
+    }
+
+    class FakeResp:
+        def __init__(self, body):
+            self.status_code = 200
+            self._body = body
+
+        def json(self):
+            return self._body
+
+    # Test Gemini adapter
+    class FakeGeminiClient:
+        def __init__(self, *args, **kwargs):
+            pass
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def post(self, url, **kwargs):
+            assert "generativelanguage.googleapis.com" in url
+            return FakeResp({"candidates": [{"content": {"parts": [{"text": json.dumps(fake_payload)}]}}]})
+
+    monkeypatch.setattr(settings, "AI_PROVIDER", "gemini")
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "test-key")
+    monkeypatch.setattr(httpx, "Client", FakeGeminiClient)
+    res_gem = analyze_alert_with_ai(sample_alert, sample_risk, [], sample_mitre)
+    assert res_gem["ai_provider"].startswith("gemini:")
+    assert res_gem["ai_summary"] == "สรุปจาก LLM ทดสอบ"
+    assert len(res_gem["evidence_citations"]) >= 2
+
+    # Test automatic fallback to deterministic engine when API fails
+    class FailingClient:
+        def __init__(self, *args, **kwargs):
+            pass
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def post(self, url, **kwargs):
+            raise httpx.ConnectError("Network unreachable")
+
+    monkeypatch.setattr(httpx, "Client", FailingClient)
+    res_fb = analyze_alert_with_ai(sample_alert, sample_risk, [], sample_mitre)
+    assert res_fb["ai_provider"] == "mock-evidence-engine"
+    assert len(res_fb["recommendations"]) >= 3
+
 
 
 

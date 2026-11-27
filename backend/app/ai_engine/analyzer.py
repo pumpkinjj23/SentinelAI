@@ -291,6 +291,42 @@ def analyze_alert_with_ai(
         except Exception:
             pass
 
+    elif provider == "gemini" and settings.GEMINI_API_KEY:
+        try:
+            prompt = _build_llm_prompt(normalized_alert, risk_eval, ioc_results, mitre_mappings)
+            endpoint = (
+                f"https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{settings.GEMINI_MODEL}:generateContent?key={settings.GEMINI_API_KEY}"
+            )
+            with httpx.Client(timeout=20.0) as client:
+                resp = client.post(
+                    endpoint,
+                    json={
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "temperature": 0.1,
+                            "responseMimeType": "application/json",
+                        },
+                    },
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    parsed = json.loads(text)
+                    if parsed.get("ai_summary"):
+                        return {
+                            "ai_provider": f"gemini:{settings.GEMINI_MODEL}",
+                            "ai_summary": parsed["ai_summary"],
+                            "behavior_analysis": parsed.get("behavior_analysis", ""),
+                            "risk_justification": parsed.get("risk_justification", ""),
+                            "evidence_citations": citations,
+                            "recommendations": parsed.get("recommendations", []),
+                            "is_suspicious": bool(parsed.get("is_suspicious", risk_eval["risk_score"] >= 45)),
+                            "requires_analyst_review": True,
+                        }
+        except Exception:
+            pass
+
     elif provider == "ollama":
         try:
             prompt = _build_llm_prompt(normalized_alert, risk_eval, ioc_results, mitre_mappings)
