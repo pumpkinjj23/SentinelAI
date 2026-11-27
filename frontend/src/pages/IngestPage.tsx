@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Upload,
   FileJson,
@@ -228,32 +228,7 @@ export const IngestPage: React.FC<{
     }
   };
 
-  const [history, setHistory] = useState<ImportHistoryItem[]>([
-    {
-      id: 'IMP-0001',
-      timestamp: formatThaiDateTime(new Date()),
-      sourceType: 'Wazuh Connector',
-      filename: 'sample_wazuh_alerts.json',
-      totalCount: 7,
-      ingestedCount: 7,
-      deduplicatedCount: 0,
-      failedCount: 0,
-      dedupDetails: 'Event ID & SHA-256 Verified (0 Duplicates)',
-      status: 'SUCCESS',
-    },
-    {
-      id: 'IMP-0002',
-      timestamp: formatThaiDateTime(new Date()),
-      sourceType: 'CSV Upload',
-      filename: 'sample_security_logs.csv',
-      totalCount: 5,
-      ingestedCount: 5,
-      deduplicatedCount: 0,
-      failedCount: 0,
-      dedupDetails: 'Event ID & SHA-256 Verified (0 Duplicates)',
-      status: 'SUCCESS',
-    },
-  ]);
+  const [history, setHistory] = useState<ImportHistoryItem[]>([]);
 
   const [latestResult, setLatestResult] = useState<{
     totalEvents: number;
@@ -262,14 +237,17 @@ export const IngestPage: React.FC<{
     failedEvents: number;
     status: 'SUCCESS' | 'PARTIAL_SUCCESS' | 'FAILED';
     filename: string;
-  }>({
-    totalEvents: 7,
-    newEvents: 5,
-    duplicatedEvents: 2,
-    failedEvents: 0,
-    status: 'SUCCESS',
-    filename: 'sample_wazuh_alerts.json (Latest Batch Summary)',
-  });
+  } | null>(null);
+
+  // ล้างผลลัพธ์การนำเข้าและประวัติชั่วคราวอัตโนมัติเมื่อ End Session ลบข้อมูล Alert จนหมด
+  useEffect(() => {
+    if (alerts.length === 0) {
+      setHistory([]);
+      setLatestResult(null);
+      setMessage(null);
+      setValidationPreview(null);
+    }
+  }, [alerts.length]);
 
   const addHistory = (
     sourceType: ImportHistoryItem['sourceType'],
@@ -872,7 +850,8 @@ export const IngestPage: React.FC<{
         </div>
       </div>
 
-      {/* 3. Import Result Summary (ส่วนที่ 3: แสดงผลหลังนำเข้าตาม Specification) */}
+      {/* 3. Import Result Summary (ส่วนที่ 3: แสดงผลหลังนำเข้าเฉพาะเมื่อมีการนำเข้าใน Session ปัจจุบัน) */}
+      {latestResult && (
       <div className="sylva-glass-card rounded-[26px] p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700/80 pb-3">
           <h3 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase flex items-center gap-2">
@@ -926,6 +905,7 @@ export const IngestPage: React.FC<{
           </div>
         </div>
       </div>
+      )}
 
       {/* 4. ประวัติการนำเข้าข้อมูล (Import History Table) */}
       <div className="sylva-glass-card rounded-[26px] p-6 space-y-4">
@@ -953,7 +933,17 @@ export const IngestPage: React.FC<{
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700/70 text-xs font-medium">
-              {history.map((h) => (
+              {history.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="py-6 px-3 text-center text-xs font-semibold text-slate-500 dark:text-slate-400"
+                  >
+                    ยังไม่มีประวัติการนำเข้าข้อมูลใน Session ปัจจุบัน (เมื่อกด End Session ข้อมูลชั่วคราวทั้งหมดจะถูกล้างออกอัตโนมัติ)
+                  </td>
+                </tr>
+              ) : (
+                history.map((h) => (
                 <tr key={h.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
                   <td className="py-3 px-3 font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">
                     {h.id}
@@ -996,7 +986,8 @@ export const IngestPage: React.FC<{
                     </span>
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>

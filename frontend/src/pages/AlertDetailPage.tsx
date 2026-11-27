@@ -44,6 +44,7 @@ export const AlertDetailPage: React.FC<AlertDetailPageProps> = ({
   onGoToReports,
   onSaveReport,
   onConfirmed,
+  
 }) => {
   const [confirming, setConfirming] = useState(false);
   const [reanalyzing, setReanalyzing] = useState(false);

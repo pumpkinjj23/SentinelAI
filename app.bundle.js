@@ -24067,40 +24067,17 @@ const IngestPage = ({ alerts, workspaceId, userEmail, onIngestSuccess, onSelectE
             setValidationPreview(`✗ รูปแบบ JSON ไม่ถูกต้อง: ${err instanceof Error ? err.message : 'Syntax Error'}`);
         }
     };
-    const [history, setHistory] = (0, react_1.useState)([
-        {
-            id: 'IMP-0001',
-            timestamp: (0, formatDateTime_1.formatThaiDateTime)(new Date()),
-            sourceType: 'Wazuh Connector',
-            filename: 'sample_wazuh_alerts.json',
-            totalCount: 7,
-            ingestedCount: 7,
-            deduplicatedCount: 0,
-            failedCount: 0,
-            dedupDetails: 'Event ID & SHA-256 Verified (0 Duplicates)',
-            status: 'SUCCESS',
-        },
-        {
-            id: 'IMP-0002',
-            timestamp: (0, formatDateTime_1.formatThaiDateTime)(new Date()),
-            sourceType: 'CSV Upload',
-            filename: 'sample_security_logs.csv',
-            totalCount: 5,
-            ingestedCount: 5,
-            deduplicatedCount: 0,
-            failedCount: 0,
-            dedupDetails: 'Event ID & SHA-256 Verified (0 Duplicates)',
-            status: 'SUCCESS',
-        },
-    ]);
-    const [latestResult, setLatestResult] = (0, react_1.useState)({
-        totalEvents: 7,
-        newEvents: 5,
-        duplicatedEvents: 2,
-        failedEvents: 0,
-        status: 'SUCCESS',
-        filename: 'sample_wazuh_alerts.json (Latest Batch Summary)',
-    });
+    const [history, setHistory] = (0, react_1.useState)([]);
+    const [latestResult, setLatestResult] = (0, react_1.useState)(null);
+    // ล้างผลลัพธ์การนำเข้าและประวัติชั่วคราวอัตโนมัติเมื่อ End Session ลบข้อมูล Alert จนหมด
+    (0, react_1.useEffect)(() => {
+        if (alerts.length === 0) {
+            setHistory([]);
+            setLatestResult(null);
+            setMessage(null);
+            setValidationPreview(null);
+        }
+    }, [alerts.length]);
     const addHistory = (sourceType, filename, ingestedCount, deduplicatedCount, dedupDetails = 'ตรวจสอบ Event ID & SHA-256 Fingerprint', status = 'SUCCESS', failedCount = 0) => {
         const totalCount = ingestedCount + deduplicatedCount + failedCount;
         setLatestResult({
@@ -24416,7 +24393,7 @@ const IngestPage = ({ alerts, workspaceId, userEmail, onIngestSuccess, onSelectE
                         react_1.default.createElement("span", { className: "px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-[11px] font-extrabold shrink-0 inline-flex items-center gap-1" },
                             "\u0E14\u0E39\u0E23\u0E32\u0E22\u0E25\u0E30\u0E40\u0E2D\u0E35\u0E22\u0E14 ",
                             react_1.default.createElement(lucide_react_1.ArrowRight, { className: "w-3 h-3" }))))))))),
-        react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-4" },
+        latestResult && (react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-4" },
             react_1.default.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700/80 pb-3" },
                 react_1.default.createElement("h3", { className: "text-sm font-extrabold text-slate-900 dark:text-white uppercase flex items-center gap-2" },
                     react_1.default.createElement(lucide_react_1.CheckCircle2, { className: "w-4 h-4 text-emerald-600 dark:text-emerald-400" }),
@@ -24443,7 +24420,7 @@ const IngestPage = ({ alerts, workspaceId, userEmail, onIngestSuccess, onSelectE
                     react_1.default.createElement("div", { className: "text-2xl font-extrabold text-rose-700 dark:text-rose-300 mt-0.5 truncate" }, latestResult.failedEvents)),
                 react_1.default.createElement("div", { className: "p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 flex flex-col justify-between min-w-0 overflow-hidden" },
                     react_1.default.createElement("div", { className: "text-xs font-bold text-slate-500 dark:text-slate-400 truncate" }, "Import Status"),
-                    react_1.default.createElement("div", { className: "text-base font-mono font-extrabold text-emerald-700 dark:text-emerald-400 truncate" }, latestResult.status)))),
+                    react_1.default.createElement("div", { className: "text-base font-mono font-extrabold text-emerald-700 dark:text-emerald-400 truncate" }, latestResult.status))))),
         react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-4" },
             react_1.default.createElement("div", { className: "flex flex-wrap items-center justify-between gap-2" },
                 react_1.default.createElement("h3", { className: "text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2" },
@@ -24462,7 +24439,8 @@ const IngestPage = ({ alerts, workspaceId, userEmail, onIngestSuccess, onSelectE
                             react_1.default.createElement("th", { className: "py-2.5 px-3 text-center" }, "Duplicated Events"),
                             react_1.default.createElement("th", { className: "py-2.5 px-3 text-center" }, "Failed Events"),
                             react_1.default.createElement("th", { className: "py-2.5 px-3 text-right" }, "\u0E2A\u0E16\u0E32\u0E19\u0E30\u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32"))),
-                    react_1.default.createElement("tbody", { className: "divide-y divide-slate-200 dark:divide-slate-700/70 text-xs font-medium" }, history.map((h) => (react_1.default.createElement("tr", { key: h.id, className: "hover:bg-slate-50 dark:hover:bg-slate-800/60" },
+                    react_1.default.createElement("tbody", { className: "divide-y divide-slate-200 dark:divide-slate-700/70 text-xs font-medium" }, history.length === 0 ? (react_1.default.createElement("tr", null,
+                        react_1.default.createElement("td", { colSpan: 8, className: "py-6 px-3 text-center text-xs font-semibold text-slate-500 dark:text-slate-400" }, "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E02\u0E49\u0E32\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E43\u0E19 Session \u0E1B\u0E31\u0E08\u0E08\u0E38\u0E1A\u0E31\u0E19 (\u0E40\u0E21\u0E37\u0E48\u0E2D\u0E01\u0E14 End Session \u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14\u0E08\u0E30\u0E16\u0E39\u0E01\u0E25\u0E49\u0E32\u0E07\u0E2D\u0E2D\u0E01\u0E2D\u0E31\u0E15\u0E42\u0E19\u0E21\u0E31\u0E15\u0E34)"))) : (history.map((h) => (react_1.default.createElement("tr", { key: h.id, className: "hover:bg-slate-50 dark:hover:bg-slate-800/60" },
                         react_1.default.createElement("td", { className: "py-3 px-3 font-mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap" }, h.id),
                         react_1.default.createElement("td", { className: "py-3 px-3 font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap" }, h.timestamp),
                         react_1.default.createElement("td", { className: "py-3 px-3 font-bold text-slate-900 dark:text-white whitespace-nowrap" }, h.sourceType),
@@ -24483,7 +24461,7 @@ const IngestPage = ({ alerts, workspaceId, userEmail, onIngestSuccess, onSelectE
                         react_1.default.createElement("td", { className: "py-3 px-3 text-right whitespace-nowrap" },
                             react_1.default.createElement("span", { className: `px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${h.status === 'SUCCESS'
                                     ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40'
-                                    : 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-500/20 dark:text-rose-200 dark:border-rose-400/40'}` }, h.status)))))))))));
+                                    : 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-500/20 dark:text-rose-200 dark:border-rose-400/40'}` }, h.status))))))))))));
 };
 exports.IngestPage = IngestPage;
 
