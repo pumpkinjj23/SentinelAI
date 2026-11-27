@@ -21419,6 +21419,7 @@ const Sidebar_1 = require("./partials/Sidebar");
 const Header_1 = require("./partials/Header");
 const ChartsSection_1 = require("./dashboard/ChartsSection");
 const SeverityBadge_1 = require("./components/SeverityBadge");
+const MagnificationDock_1 = require("./components/MagnificationDock");
 const SecurityAlertsPage_1 = require("./pages/SecurityAlertsPage");
 const AlertDetailPage_1 = require("./pages/AlertDetailPage");
 const IngestPage_1 = require("./pages/IngestPage");
@@ -21670,7 +21671,7 @@ function App() {
                         setSearchQuery(q);
                         setActivePage('workspace');
                     }, latestNotification: latestNotification, onEndSession: handleEndSession, onOpenMobileMenu: () => setMobileMenuOpen(true) }),
-                react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5" },
+                react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5" },
                     activePage === 'dashboard' && (react_1.default.createElement("div", { className: "space-y-5 pt-1" },
                         react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-5" },
                             react_1.default.createElement("div", { className: "space-y-4" },
@@ -21860,9 +21861,195 @@ function App() {
                                 loadData();
                             } }),
                         react_1.default.createElement(AuditTrailPage_1.AuditTrailPage, { logs: auditLogs, workspaceCode: activeWorkspace?.workspace_code, workspaceName: activeWorkspace?.name, userRole: activeWorkspace?.current_user_role }))),
-                    activePage === 'reports' && (react_1.default.createElement(ReportsPage_1.ReportsPage, { summary: summary, alerts: alerts, savedReports: savedReports, onSaveReport: (a, note) => handleSaveReport(a, note), onDeleteSavedReport: handleDeleteSavedReport, onFinishAndClearTemp: handleEndSession, onSelectAlert: (a) => handleInspectAlert(a) })))))));
+                    activePage === 'reports' && (react_1.default.createElement(ReportsPage_1.ReportsPage, { summary: summary, alerts: alerts, savedReports: savedReports, onSaveReport: (a, note) => handleSaveReport(a, note), onDeleteSavedReport: handleDeleteSavedReport, onFinishAndClearTemp: handleEndSession, onSelectAlert: (a) => handleInspectAlert(a) })))),
+            react_1.default.createElement("div", { className: "hidden lg:flex fixed bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none" },
+                react_1.default.createElement(MagnificationDock_1.MagnificationDock, { panelHeight: 66, baseItemSize: 46, magnification: 72, distance: 180, spring: { mass: 0.1, stiffness: 150, damping: 12 }, items: [
+                        {
+                            icon: react_1.default.createElement(lucide_react_1.LayoutDashboard, { className: "w-5 h-5" }),
+                            label: 'Dashboard & Upload',
+                            active: activePage === 'dashboard',
+                            onClick: () => setActivePage('dashboard'),
+                        },
+                        {
+                            icon: react_1.default.createElement(lucide_react_1.ShieldAlert, { className: "w-5 h-5" }),
+                            label: 'Analysis Workspace',
+                            active: activePage === 'workspace',
+                            badge: summary?.total_alerts ?? alerts.length,
+                            onClick: () => setActivePage('workspace'),
+                        },
+                        {
+                            icon: react_1.default.createElement(lucide_react_1.UserCheck, { className: "w-5 h-5" }),
+                            label: 'Analyst Review & Audit',
+                            active: activePage === 'review',
+                            badge: summary?.pending_review_count ?? 0,
+                            onClick: () => setActivePage('review'),
+                        },
+                        {
+                            icon: react_1.default.createElement(lucide_react_1.FileBarChart2, { className: "w-5 h-5" }),
+                            label: 'Report (PDF / CSV)',
+                            active: activePage === 'reports',
+                            badge: savedReports.length,
+                            onClick: () => setActivePage('reports'),
+                        },
+                        {
+                            icon: isCollapsed ? (react_1.default.createElement(lucide_react_1.PanelLeftOpen, { className: "w-5 h-5" })) : (react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5" })),
+                            label: isCollapsed ? 'เปิดแถบด้านข้าง' : 'พับแถบด้านข้าง',
+                            onClick: () => setIsCollapsed((prev) => !prev),
+                        },
+                        {
+                            icon: darkMode ? (react_1.default.createElement(lucide_react_1.Sun, { className: "w-5 h-5 text-amber-400" })) : (react_1.default.createElement(lucide_react_1.Moon, { className: "w-5 h-5 text-blue-900" })),
+                            label: darkMode ? 'สลับเป็น Light Mode' : 'สลับเป็น Dark Mode',
+                            onClick: () => setDarkMode((prev) => !prev),
+                        },
+                        {
+                            icon: react_1.default.createElement(lucide_react_1.Trash2, { className: "w-5 h-5" }),
+                            label: 'End Session (ล้างข้อมูลชั่วคราว)',
+                            className: '!text-rose-600 dark:!text-rose-400 hover:!bg-rose-50 dark:hover:!bg-rose-950/60 !border-rose-300 dark:!border-rose-500/40',
+                            onClick: () => handleEndSession(),
+                        },
+                    ] })))));
 }
 exports.default = App;
+
+});
+defineMod("./components/MagnificationDock", function(module, exports, require) {
+"use strict";
+/**
+ * MagnificationDock Component
+ *
+ * A premium macOS-inspired dock component with fluid magnification effects,
+ * spring physics (mass, stiffness, damping), and floating tooltips.
+ * Adapted for SentinelAI's Deep Navy SOC glassmorphism system without
+ * requiring an external ESM bundler.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MagnificationDock = MagnificationDock;
+const react_1 = __importStar(require("react"));
+function MagnificationDock({ items, className = '', spring = { mass: 0.1, stiffness: 150, damping: 12 }, magnification = 70, distance = 200, panelHeight = 64, baseItemSize = 50, }) {
+    const itemRefs = (0, react_1.useRef)([]);
+    const sizesRef = (0, react_1.useRef)([]);
+    const velocitiesRef = (0, react_1.useRef)([]);
+    const mouseXRef = (0, react_1.useRef)(Infinity);
+    const rafRef = (0, react_1.useRef)(null);
+    const lastTimeRef = (0, react_1.useRef)(0);
+    const [hoveredIndex, setHoveredIndex] = (0, react_1.useState)(null);
+    const mass = spring.mass ?? 0.1;
+    const stiffness = spring.stiffness ?? 150;
+    const damping = spring.damping ?? 12;
+    // Keep internal physics arrays synced with items length
+    if (sizesRef.current.length !== items.length) {
+        sizesRef.current = items.map((_, i) => sizesRef.current[i] ?? baseItemSize);
+        velocitiesRef.current = items.map((_, i) => velocitiesRef.current[i] ?? 0);
+    }
+    const startLoop = () => {
+        if (rafRef.current !== null)
+            return;
+        lastTimeRef.current = performance.now();
+        const step = (now) => {
+            const dt = Math.min((now - lastTimeRef.current) / 1000, 0.032);
+            lastTimeRef.current = now;
+            let moving = false;
+            const mouseX = mouseXRef.current;
+            for (let i = 0; i < items.length; i++) {
+                const el = itemRefs.current[i];
+                if (!el)
+                    continue;
+                let target = baseItemSize;
+                if (Number.isFinite(mouseX)) {
+                    const rect = el.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const dist = Math.abs(mouseX - centerX);
+                    if (dist < distance) {
+                        const ratio = 1 - dist / distance;
+                        target = baseItemSize + (magnification - baseItemSize) * ratio;
+                    }
+                }
+                const current = sizesRef.current[i] ?? baseItemSize;
+                const velocity = velocitiesRef.current[i] ?? 0;
+                // Semi-implicit Euler spring integration matching Framer Motion spring physics
+                const force = -stiffness * (current - target) - damping * velocity;
+                const acc = force / mass;
+                const nextVel = velocity + acc * dt;
+                const nextSize = Math.max(baseItemSize * 0.9, current + nextVel * dt);
+                if (Math.abs(nextSize - target) > 0.08 || Math.abs(nextVel) > 0.08) {
+                    moving = true;
+                    sizesRef.current[i] = nextSize;
+                    velocitiesRef.current[i] = nextVel;
+                }
+                else {
+                    sizesRef.current[i] = target;
+                    velocitiesRef.current[i] = 0;
+                }
+                const finalSize = sizesRef.current[i];
+                el.style.width = `${finalSize}px`;
+                el.style.height = `${finalSize}px`;
+            }
+            if (moving) {
+                rafRef.current = requestAnimationFrame(step);
+            }
+            else {
+                rafRef.current = null;
+            }
+        };
+        rafRef.current = requestAnimationFrame(step);
+    };
+    (0, react_1.useEffect)(() => {
+        return () => {
+            if (rafRef.current !== null) {
+                cancelAnimationFrame(rafRef.current);
+            }
+        };
+    }, []);
+    return (react_1.default.createElement("div", { className: "flex max-w-full items-end justify-center pointer-events-none select-none" },
+        react_1.default.createElement("div", { onMouseMove: (e) => {
+                mouseXRef.current = e.clientX;
+                startLoop();
+            }, onMouseLeave: () => {
+                mouseXRef.current = Infinity;
+                setHoveredIndex(null);
+                startLoop();
+            }, className: `pointer-events-auto flex items-end w-fit gap-2.5 sm:gap-3 rounded-3xl border border-slate-300/90 dark:border-blue-500/30 bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl pb-2 px-3.5 sm:px-4 shadow-2xl shadow-blue-950/20 dark:shadow-black/60 ${className}`, style: { height: panelHeight }, role: "toolbar", "aria-label": "SentinelAI Quick Navigation Dock" }, items.map((item, index) => {
+            const isHovered = hoveredIndex === index;
+            return (react_1.default.createElement("div", { key: index, className: "relative flex flex-col items-center justify-end" },
+                react_1.default.createElement("div", { role: "tooltip", className: `pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-fit whitespace-nowrap rounded-lg border border-slate-200 dark:border-blue-500/35 bg-slate-900 dark:bg-slate-900 text-white px-2.5 py-1 text-[11px] font-bold shadow-lg transition-all duration-150 ${isHovered
+                        ? 'opacity-100 -translate-y-1.5 scale-100'
+                        : 'opacity-0 translate-y-0 scale-95'}` }, item.label),
+                react_1.default.createElement("button", { ref: (el) => {
+                        itemRefs.current[index] = el;
+                    }, type: "button", onClick: item.onClick, onMouseEnter: () => setHoveredIndex(index), onMouseLeave: () => setHoveredIndex((prev) => (prev === index ? null : prev)), onFocus: () => setHoveredIndex(index), onBlur: () => setHoveredIndex((prev) => (prev === index ? null : prev)), style: { width: baseItemSize, height: baseItemSize }, className: `relative inline-flex items-center justify-center rounded-full border shadow-md cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 transition-colors ${item.active
+                        ? 'bg-gradient-to-br from-blue-950 to-blue-800 text-white border-blue-700 shadow-blue-900/40'
+                        : 'bg-slate-50 hover:bg-blue-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300/90 dark:border-slate-700'} ${item.className || ''}`, "aria-label": typeof item.label === 'string' ? item.label : undefined },
+                    react_1.default.createElement("div", { className: "flex items-center justify-center" }, item.icon),
+                    item.badge !== undefined && item.badge > 0 && (react_1.default.createElement("span", { className: "absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-mono font-extrabold flex items-center justify-center shadow border border-white dark:border-slate-950" }, item.badge > 99 ? '99+' : item.badge))),
+                react_1.default.createElement("span", { className: `mt-1 w-1.5 h-1.5 rounded-full transition-opacity duration-200 ${item.active
+                        ? 'opacity-100 bg-blue-900 dark:bg-blue-400'
+                        : 'opacity-0'}` })));
+        }))));
+}
+exports.default = MagnificationDock;
 
 });
 defineMod("./components/SeverityBadge", function(module, exports, require) {

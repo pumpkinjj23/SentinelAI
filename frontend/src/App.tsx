@@ -6,6 +6,13 @@ import {
   ArrowRight,
   Eye,
   UserCheck,
+  LayoutDashboard,
+  FileBarChart2,
+  PanelLeftOpen,
+  PanelLeftClose,
+  Sun,
+  Moon,
+  Trash2,
 } from 'lucide-react';
 import {
   AuditLog,
@@ -27,6 +34,7 @@ import { Sidebar, PageId } from './partials/Sidebar';
 import { Header } from './partials/Header';
 import { ChartsSection } from './dashboard/ChartsSection';
 import { SeverityBadge } from './components/SeverityBadge';
+import { MagnificationDock, DockItemData } from './components/MagnificationDock';
 import { SecurityAlertsPage } from './pages/SecurityAlertsPage';
 import { AlertDetailPage } from './pages/AlertDetailPage';
 import { IngestPage } from './pages/IngestPage';
@@ -345,7 +353,7 @@ export function App() {
             onOpenMobileMenu={() => setMobileMenuOpen(true)}
           />
 
-          <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-6 space-y-4 sm:space-y-5">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5">
             {/* =====================================================================
                 PAGE 1: DASHBOARD & UPLOAD (ภาพรวมและนำเข้าข้อมูลในหน้าเดียว)
                ===================================================================== */}
@@ -819,6 +827,73 @@ export function App() {
               />
             )}
           </main>
+        </div>
+
+        {/* macOS-style Floating Magnification Dock (Desktop Quick Command Dock) */}
+        <div className="hidden lg:flex fixed bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+          <MagnificationDock
+            panelHeight={66}
+            baseItemSize={46}
+            magnification={72}
+            distance={180}
+            spring={{ mass: 0.1, stiffness: 150, damping: 12 }}
+            items={
+              [
+                {
+                  icon: <LayoutDashboard className="w-5 h-5" />,
+                  label: 'Dashboard & Upload',
+                  active: activePage === 'dashboard',
+                  onClick: () => setActivePage('dashboard'),
+                },
+                {
+                  icon: <ShieldAlert className="w-5 h-5" />,
+                  label: 'Analysis Workspace',
+                  active: activePage === 'workspace',
+                  badge: summary?.total_alerts ?? alerts.length,
+                  onClick: () => setActivePage('workspace'),
+                },
+                {
+                  icon: <UserCheck className="w-5 h-5" />,
+                  label: 'Analyst Review & Audit',
+                  active: activePage === 'review',
+                  badge: summary?.pending_review_count ?? 0,
+                  onClick: () => setActivePage('review'),
+                },
+                {
+                  icon: <FileBarChart2 className="w-5 h-5" />,
+                  label: 'Report (PDF / CSV)',
+                  active: activePage === 'reports',
+                  badge: savedReports.length,
+                  onClick: () => setActivePage('reports'),
+                },
+                {
+                  icon: isCollapsed ? (
+                    <PanelLeftOpen className="w-5 h-5" />
+                  ) : (
+                    <PanelLeftClose className="w-5 h-5" />
+                  ),
+                  label: isCollapsed ? 'เปิดแถบด้านข้าง' : 'พับแถบด้านข้าง',
+                  onClick: () => setIsCollapsed((prev) => !prev),
+                },
+                {
+                  icon: darkMode ? (
+                    <Sun className="w-5 h-5 text-amber-400" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-blue-900" />
+                  ),
+                  label: darkMode ? 'สลับเป็น Light Mode' : 'สลับเป็น Dark Mode',
+                  onClick: () => setDarkMode((prev) => !prev),
+                },
+                {
+                  icon: <Trash2 className="w-5 h-5" />,
+                  label: 'End Session (ล้างข้อมูลชั่วคราว)',
+                  className:
+                    '!text-rose-600 dark:!text-rose-400 hover:!bg-rose-50 dark:hover:!bg-rose-950/60 !border-rose-300 dark:!border-rose-500/40',
+                  onClick: () => handleEndSession(),
+                },
+              ] as DockItemData[]
+            }
+          />
         </div>
       </div>
     </div>
