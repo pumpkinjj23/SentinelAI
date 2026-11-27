@@ -203,18 +203,18 @@ export const Header: React.FC<HeaderProps> = ({
           title={darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)'}
           className={`relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${
             darkMode
-              ? 'bg-slate-800 border-slate-600'
-              : 'bg-amber-100 border-amber-300'
+              ? 'bg-slate-900 border-sky-500/40'
+              : 'bg-sky-50 border-sky-200'
           }`}
         >
           <span className="sr-only">Toggle Dark / Light Theme</span>
           <Sun className="w-3.5 h-3.5 text-amber-500 ml-1" />
-          <Moon className="w-3.5 h-3.5 text-emerald-400 ml-auto mr-1" />
+          <Moon className="w-3.5 h-3.5 text-sky-400 ml-auto mr-1" />
           <span
             className={`pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${
               darkMode
-                ? 'translate-x-8 bg-emerald-500 text-slate-950'
-                : 'translate-x-0 bg-white text-amber-500'
+                ? 'translate-x-8 bg-sky-500 text-slate-950'
+                : 'translate-x-0 bg-white text-sky-600'
             }`}
           >
             {darkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}

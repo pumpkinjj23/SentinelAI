@@ -115,7 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   onClick={() => handleNavigate('dashboard')}
                   title="SentinelAI — SOC Intelligence Platform"
-                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 cursor-pointer shrink-0"
+                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                     <path
@@ -142,7 +142,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleNavigate('dashboard')}
                   className="flex items-center gap-3 text-left cursor-pointer min-w-0"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 shrink-0">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"

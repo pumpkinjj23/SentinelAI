@@ -26010,14 +26010,14 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5 shrink-0" }),
                 react_1.default.createElement("span", null, "End Session"))),
             react_1.default.createElement("button", { type: "button", role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode(!darkMode), title: darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)', className: `relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${darkMode
-                    ? 'bg-slate-800 border-slate-600'
-                    : 'bg-amber-100 border-amber-300'}` },
+                    ? 'bg-slate-900 border-sky-500/40'
+                    : 'bg-sky-50 border-sky-200'}` },
                 react_1.default.createElement("span", { className: "sr-only" }, "Toggle Dark / Light Theme"),
                 react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5 text-amber-500 ml-1" }),
-                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-emerald-400 ml-auto mr-1" }),
+                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-sky-400 ml-auto mr-1" }),
                 react_1.default.createElement("span", { className: `pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${darkMode
-                        ? 'translate-x-8 bg-emerald-500 text-slate-950'
-                        : 'translate-x-0 bg-white text-amber-500'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
+                        ? 'translate-x-8 bg-sky-500 text-slate-950'
+                        : 'translate-x-0 bg-white text-sky-600'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
             react_1.default.createElement("div", { className: "relative" },
                 react_1.default.createElement("button", { onClick: () => {
                         setNotificationsOpen(!notificationsOpen);
@@ -26154,14 +26154,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpe
             react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${!mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center' : 'p-3.5'} flex flex-col justify-between overflow-y-auto no-scrollbar` },
                 react_1.default.createElement("div", { className: "w-full" },
                     !mobileOpen && isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
-                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 cursor-pointer shrink-0" },
+                        react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), title: "SentinelAI \u2014 SOC Intelligence Platform", className: "w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0" },
                             react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
                                 react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
                                 react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
                         react_1.default.createElement("button", { onClick: () => setIsCollapsed(false), title: "\u0E02\u0E22\u0E32\u0E22\u0E41\u0E16\u0E1A\u0E40\u0E21\u0E19\u0E39", className: "w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0" },
                             react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5 rotate-180" })))) : (react_1.default.createElement("div", { className: "flex items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700/80" },
                         react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), className: "flex items-center gap-3 text-left cursor-pointer min-w-0" },
-                            react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0" },
+                            react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 shrink-0" },
                                 react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
                                     react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
                                     react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),

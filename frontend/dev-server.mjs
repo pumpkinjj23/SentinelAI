@@ -147,50 +147,122 @@ const INDEX_HTML = `<!doctype html>
         }
       }
 
-      /* High-Contrast Dark & Light Canvas */
+      /* Cybersecurity SOC Command Blue & Cyan Canvas (Inspired by Microsoft Sentinel / CrowdStrike / Wazuh) */
       .theme-bg-dark {
-        background-color: #0b1120;
+        background-color: #050b14;
         background-image:
-          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.14) 0px, transparent 45%),
-          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.12) 0px, transparent 45%),
-          linear-gradient(180deg, #090e1a 0%, #0f172a 100%);
+          radial-gradient(circle at 12% 8%, rgba(6, 182, 212, 0.14) 0px, transparent 42%),
+          radial-gradient(circle at 88% 12%, rgba(37, 99, 235, 0.16) 0px, transparent 45%),
+          linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+          linear-gradient(180deg, #060d18 0%, #091324 50%, #050b14 100%);
+        background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px, 100% 100%;
       }
 
       .theme-bg-light {
-        background-color: #f1f5f9;
+        background-color: #f0f5fa;
         background-image:
-          radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.08) 0px, transparent 45%),
-          radial-gradient(at 90% 15%, rgba(14, 165, 233, 0.08) 0px, transparent 45%),
-          linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
+          radial-gradient(at 10% 8%, rgba(2, 132, 199, 0.09) 0px, transparent 45%),
+          radial-gradient(at 90% 12%, rgba(37, 99, 235, 0.07) 0px, transparent 45%),
+          linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+          linear-gradient(180deg, #f6f9fc 0%, #eaf1f8 100%);
+        background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px, 100% 100%;
       }
 
-      /* Crisp High-Readability Frosted Shell & Cards (No nested backdrop-filter so fixed modals cover full viewport) */
+      /* SOC Command Shell & Glass Cards (No nested backdrop-filter so fixed modals cover full viewport) */
       .sylva-shell {
-        background: rgba(15, 23, 42, 0.94);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.6);
+        background: rgba(8, 15, 28, 0.94);
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.72), 0 0 32px -16px rgba(6, 182, 212, 0.25);
       }
       html:not(.dark) .sylva-shell {
-        background: rgba(255, 255, 255, 0.96);
-        border: 1px solid rgba(203, 213, 225, 0.9);
-        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(203, 213, 225, 0.95);
+        box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.09);
       }
 
       .sylva-glass-card {
-        background: rgba(30, 41, 59, 0.92);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+        background: linear-gradient(180deg, rgba(15, 25, 44, 0.94) 0%, rgba(10, 18, 34, 0.96) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
         transition: all 0.25s var(--sylva-ease);
+      }
+      .sylva-glass-card:hover {
+        border-color: rgba(56, 189, 248, 0.34);
       }
       html:not(.dark) .sylva-glass-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #dbe4f0;
         box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+      }
+      html:not(.dark) .sylva-glass-card:hover {
+        border-color: rgba(2, 132, 199, 0.38);
+      }
+
+      /* Cybersecurity SOC Blue & Cyan Primary Accent Harmonization
+         Keeps Severity badges (CRITICAL=Red, HIGH=Amber, MEDIUM=Sky, LOW=Green) crisp & distinct
+         while unifying all primary UI buttons, active nav, and highlights into Cyber Blue (#0284c7 / #06b6d4). */
+      html:not(.dark) .bg-emerald-600,
+      html:not(.dark) .hover\\:bg-emerald-600:hover {
+        background-color: #0284c7 !important;
+      }
+      html:not(.dark) .hover\\:bg-emerald-500:hover {
+        background-color: #0369a1 !important;
+      }
+      html:not(.dark) .border-emerald-500,
+      html:not(.dark) .hover\\:border-emerald-500:hover,
+      html:not(.dark) .focus\\:border-emerald-500:focus {
+        border-color: #0284c7 !important;
+      }
+      html:not(.dark) .border-emerald-500\\/40,
+      html:not(.dark) .border-emerald-500\\/35 {
+        border-color: rgba(2, 132, 199, 0.35) !important;
+      }
+      html:not(.dark) .text-emerald-700,
+      html:not(.dark) .text-emerald-600 {
+        color: #0369a1 !important;
+      }
+      html:not(.dark) .bg-emerald-50,
+      html:not(.dark) .bg-emerald-50\\/70,
+      html:not(.dark) .hover\\:bg-emerald-50:hover {
+        background-color: #f0f9ff !important;
+      }
+      html:not(.dark) .border-emerald-200 {
+        border-color: #bae6fd !important;
+      }
+
+      /* Dark Mode Cyber Cyan Accents */
+      html.dark .bg-emerald-600,
+      html.dark .hover\\:bg-emerald-600:hover {
+        background-color: #0284c7 !important;
+      }
+      html.dark .hover\\:bg-emerald-500:hover {
+        background-color: #0ea5e9 !important;
+      }
+      html.dark .border-emerald-500,
+      html.dark .hover\\:border-emerald-500:hover,
+      html.dark .focus\\:border-emerald-500:focus {
+        border-color: #06b6d4 !important;
+      }
+      html.dark .border-emerald-500\\/40,
+      html.dark .border-emerald-500\\/35 {
+        border-color: rgba(6, 182, 212, 0.38) !important;
+      }
+      html.dark .dark\\:text-emerald-400,
+      html.dark .text-emerald-400 {
+        color: #38bdf8 !important;
+      }
+      html.dark .shadow-emerald-600\\/25,
+      html.dark .shadow-emerald-600\\/20,
+      html.dark .shadow-emerald-600\\/30,
+      html.dark .shadow-emerald-500\\/20 {
+        --tw-shadow-color: rgba(2, 132, 199, 0.35) !important;
       }
 
       /* Ensure <select> options are always readable in both Dark and Light mode */
       select option {
-        background-color: #1e293b;
+        background-color: #0f172a;
         color: #f8fafc;
       }
       html:not(.dark) select option {
@@ -206,7 +278,7 @@ const INDEX_HTML = `<!doctype html>
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       ::-webkit-scrollbar { width: 6px; height: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+      ::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.38); border-radius: 9999px; }
     </style>
   </head>
   <body class="antialiased selection:bg-emerald-500 selection:text-white">
