@@ -8,8 +8,6 @@ import {
   UserCheck,
   LayoutDashboard,
   FileBarChart2,
-  Sun,
-  Moon,
   Trash2,
 } from 'lucide-react';
 import {
@@ -847,15 +845,6 @@ export function App() {
                   active: activePage === 'reports',
                   badge: savedReports.length,
                   onClick: () => setActivePage('reports'),
-                },
-                {
-                  icon: darkMode ? (
-                    <Sun className="w-5 h-5 text-amber-400" />
-                  ) : (
-                    <Moon className="w-5 h-5 text-blue-900" />
-                  ),
-                  label: darkMode ? 'สลับเป็น Light Mode' : 'สลับเป็น Dark Mode',
-                  onClick: () => setDarkMode((prev) => !prev),
                 },
                 {
                   icon: <Trash2 className="w-5 h-5" />,

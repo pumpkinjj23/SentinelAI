@@ -21888,11 +21888,6 @@ function App() {
                             onClick: () => setActivePage('reports'),
                         },
                         {
-                            icon: darkMode ? (react_1.default.createElement(lucide_react_1.Sun, { className: "w-5 h-5 text-amber-400" })) : (react_1.default.createElement(lucide_react_1.Moon, { className: "w-5 h-5 text-blue-900" })),
-                            label: darkMode ? 'สลับเป็น Light Mode' : 'สลับเป็น Dark Mode',
-                            onClick: () => setDarkMode((prev) => !prev),
-                        },
-                        {
                             icon: react_1.default.createElement(lucide_react_1.Trash2, { className: "w-5 h-5" }),
                             label: 'End Session (ล้างข้อมูลชั่วคราว)',
                             className: '!text-rose-600 dark:!text-rose-400 hover:!bg-rose-50 dark:hover:!bg-rose-950/60 !border-rose-300 dark:!border-rose-500/40',
