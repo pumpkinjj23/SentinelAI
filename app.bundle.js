@@ -21494,14 +21494,6 @@ const SIMULATED_ATTACKS = [
         },
     },
 ];
-const WORKFLOW_STEPS = [
-    { title: '1. นำเข้าข้อมูล (Upload Alerts)', desc: 'Wazuh JSON / CSV / กรอกเอง', targetPage: 'dashboard' },
-    { title: '2. เลือก Alert (Select Alert)', desc: 'เลือกเหตุการณ์ที่ต้องการวิเคราะห์', targetPage: 'workspace' },
-    { title: '3. วิเคราะห์ความเสี่ยง (AI Analysis)', desc: 'Risk Score, AI & MITRE Mapping', targetPage: 'workspace' },
-    { title: '4. ตรวจสอบและยืนยันผล (Analyst Review)', desc: 'เพิ่มหมายเหตุ & ปรับความเสี่ยง', targetPage: 'review' },
-    { title: '5. สร้างรายงาน (Generate Report)', desc: 'ดาวน์โหลด PDF / CSV', targetPage: 'reports' },
-    { title: '6. สิ้นสุดการใช้งาน (End Session)', desc: 'ลบข้อมูลชั่วคราว & Session Audit Log', targetPage: 'reports' },
-];
 function App() {
     const [isCollapsed, setIsCollapsed] = (0, react_1.useState)(false);
     const [mobileMenuOpen, setMobileMenuOpen] = (0, react_1.useState)(false);
@@ -21700,15 +21692,7 @@ function App() {
                                     react_1.default.createElement("div", { className: "text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 whitespace-nowrap" },
                                         react_1.default.createElement(lucide_react_1.Sparkles, { className: "w-3.5 h-3.5 shrink-0" }),
                                         " \u0E08\u0E33\u0E25\u0E2D\u0E07\u0E01\u0E32\u0E23\u0E42\u0E08\u0E21\u0E15\u0E35\u0E2A\u0E14\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E17\u0E14\u0E2A\u0E2D\u0E1A AI Analysis (1-Click Demo):"),
-                                    react_1.default.createElement("div", { className: "flex flex-wrap gap-2" }, SIMULATED_ATTACKS.map((sim, idx) => (react_1.default.createElement("button", { key: idx, disabled: simulating, onClick: () => handleSimulateAttack(idx), className: "px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 transition cursor-pointer whitespace-nowrap" }, sim.label)))))),
-                            react_1.default.createElement("div", { className: "pt-4 border-t border-slate-200 dark:border-slate-700/80" },
-                                react_1.default.createElement("div", { className: "text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5" }, "Workflow \u0E01\u0E32\u0E23\u0E17\u0E33\u0E07\u0E32\u0E19\u0E02\u0E2D\u0E07\u0E23\u0E30\u0E1A\u0E1A SentinelAI (\u0E04\u0E25\u0E34\u0E01\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E44\u0E1B\u0E22\u0E31\u0E07\u0E41\u0E15\u0E48\u0E25\u0E30\u0E02\u0E31\u0E49\u0E19\u0E15\u0E2D\u0E19)"),
-                                react_1.default.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5" }, WORKFLOW_STEPS.map((st, idx) => (react_1.default.createElement("button", { key: st.title, onClick: () => setActivePage(st.targetPage), className: "text-left p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 dark:bg-slate-900/80 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition cursor-pointer min-w-0 overflow-hidden" },
-                                    react_1.default.createElement("div", { className: "text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400" },
-                                        "STEP 0",
-                                        idx + 1),
-                                    react_1.default.createElement("div", { className: "text-xs font-extrabold text-slate-900 dark:text-white truncate mt-0.5" }, st.title),
-                                    react_1.default.createElement("div", { className: "text-[11px] text-slate-500 dark:text-slate-400 truncate" }, st.desc))))))),
+                                    react_1.default.createElement("div", { className: "flex flex-wrap gap-2" }, SIMULATED_ATTACKS.map((sim, idx) => (react_1.default.createElement("button", { key: idx, disabled: simulating, onClick: () => handleSimulateAttack(idx), className: "px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 transition cursor-pointer whitespace-nowrap" }, sim.label))))))),
                         react_1.default.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4" },
                             react_1.default.createElement("div", { onClick: () => {
                                     setSeverityFilter('ALL');

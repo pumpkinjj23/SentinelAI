@@ -111,19 +111,6 @@ const SIMULATED_ATTACKS = [
   },
 ];
 
-const WORKFLOW_STEPS: {
-  title: string;
-  desc: string;
-  targetPage: PageId;
-}[] = [
-  { title: '1. นำเข้าข้อมูล (Upload Alerts)', desc: 'Wazuh JSON / CSV / กรอกเอง', targetPage: 'dashboard' },
-  { title: '2. เลือก Alert (Select Alert)', desc: 'เลือกเหตุการณ์ที่ต้องการวิเคราะห์', targetPage: 'workspace' },
-  { title: '3. วิเคราะห์ความเสี่ยง (AI Analysis)', desc: 'Risk Score, AI & MITRE Mapping', targetPage: 'workspace' },
-  { title: '4. ตรวจสอบและยืนยันผล (Analyst Review)', desc: 'เพิ่มหมายเหตุ & ปรับความเสี่ยง', targetPage: 'review' },
-  { title: '5. สร้างรายงาน (Generate Report)', desc: 'ดาวน์โหลด PDF / CSV', targetPage: 'reports' },
-  { title: '6. สิ้นสุดการใช้งาน (End Session)', desc: 'ลบข้อมูลชั่วคราว & Session Audit Log', targetPage: 'reports' },
-];
-
 export function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -406,32 +393,6 @@ export function App() {
                           </button>
                         ))}
                       </div>
-                    </div>
-                  </div>
-
-                  {/* System Workflow Pipeline (Section 5) */}
-                  <div className="pt-4 border-t border-slate-200 dark:border-slate-700/80">
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
-                      Workflow การทำงานของระบบ SentinelAI (คลิกเพื่อไปยังแต่ละขั้นตอน)
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-                      {WORKFLOW_STEPS.map((st, idx) => (
-                        <button
-                          key={st.title}
-                          onClick={() => setActivePage(st.targetPage)}
-                          className="text-left p-3 rounded-xl bg-slate-50 hover:bg-emerald-50 dark:bg-slate-900/80 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition cursor-pointer min-w-0 overflow-hidden"
-                        >
-                          <div className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                            STEP 0{idx + 1}
-                          </div>
-                          <div className="text-xs font-extrabold text-slate-900 dark:text-white truncate mt-0.5">
-                            {st.title}
-                          </div>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                            {st.desc}
-                          </div>
-                        </button>
-                      ))}
                     </div>
                   </div>
                 </div>
