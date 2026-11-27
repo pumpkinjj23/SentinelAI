@@ -72,7 +72,7 @@ export const MetricsOverview: React.FC<{ summary: DashboardSummary | null }> = (
         <div className="p-5 pb-2">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 rounded-2xl bg-sky-100 text-sky-700 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-400/30">
+              <div className="p-2.5 rounded-2xl bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
@@ -84,7 +84,7 @@ export const MetricsOverview: React.FC<{ summary: DashboardSummary | null }> = (
                 </p>
               </div>
             </div>
-            <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40">
+            <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40">
               {summary.reviewed_count} Reviewed
             </span>
           </div>
@@ -103,8 +103,8 @@ export const MetricsOverview: React.FC<{ summary: DashboardSummary | null }> = (
           <svg className="w-full h-20" viewBox="0 0 389 80" preserveAspectRatio="none">
             <defs>
               <linearGradient id="sylvaTealGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.32" />
-                <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0.34" />
+                <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0.0" />
               </linearGradient>
             </defs>
             <path
@@ -114,7 +114,7 @@ export const MetricsOverview: React.FC<{ summary: DashboardSummary | null }> = (
             <path
               d="M0,55 L55,42 L110,48 L165,28 L220,34 L275,20 L330,26 L389,12"
               fill="none"
-              stroke="#0ea5e9"
+              stroke="#1d4ed8"
               strokeWidth="2.5"
             />
           </svg>

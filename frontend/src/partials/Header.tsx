@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {latestNotification && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40 text-xs font-bold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40 text-xs font-bold">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate max-w-xs">{latestNotification}</span>
           </div>
@@ -203,18 +203,18 @@ export const Header: React.FC<HeaderProps> = ({
           title={darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)'}
           className={`relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${
             darkMode
-              ? 'bg-slate-900 border-sky-500/40'
-              : 'bg-sky-50 border-sky-200'
+              ? 'bg-slate-900 border-blue-600/50'
+              : 'bg-blue-50 border-blue-200'
           }`}
         >
           <span className="sr-only">Toggle Dark / Light Theme</span>
           <Sun className="w-3.5 h-3.5 text-amber-500 ml-1" />
-          <Moon className="w-3.5 h-3.5 text-sky-400 ml-auto mr-1" />
+          <Moon className="w-3.5 h-3.5 text-blue-400 ml-auto mr-1" />
           <span
             className={`pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${
               darkMode
-                ? 'translate-x-8 bg-sky-500 text-slate-950'
-                : 'translate-x-0 bg-white text-sky-600'
+                ? 'translate-x-8 bg-blue-800 text-white'
+                : 'translate-x-0 bg-white text-blue-900'
             }`}
           >
             {darkMode ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}

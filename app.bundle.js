@@ -22157,12 +22157,12 @@ const MetricsOverview = ({ summary }) => {
             react_1.default.createElement("div", { className: "p-5 pb-2" },
                 react_1.default.createElement("div", { className: "flex items-center justify-between mb-3" },
                     react_1.default.createElement("div", { className: "flex items-center gap-2.5" },
-                        react_1.default.createElement("div", { className: "p-2.5 rounded-2xl bg-sky-100 text-sky-700 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-400/30" },
+                        react_1.default.createElement("div", { className: "p-2.5 rounded-2xl bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40" },
                             react_1.default.createElement(lucide_react_1.Clock, { className: "w-5 h-5" })),
                         react_1.default.createElement("div", null,
                             react_1.default.createElement("h2", { className: "text-sm font-bold text-slate-900 dark:text-white" }, "Human-in-the-Loop Queue"),
                             react_1.default.createElement("p", { className: "text-[11px] font-medium text-slate-600 dark:text-slate-300" }, "Module 6: Analyst Decision Support"))),
-                    react_1.default.createElement("span", { className: "text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40" },
+                    react_1.default.createElement("span", { className: "text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40" },
                         summary.reviewed_count,
                         " Reviewed")),
                 react_1.default.createElement("div", { className: "flex items-baseline gap-2.5 mt-1" },
@@ -22172,10 +22172,10 @@ const MetricsOverview = ({ summary }) => {
                 react_1.default.createElement("svg", { className: "w-full h-20", viewBox: "0 0 389 80", preserveAspectRatio: "none" },
                     react_1.default.createElement("defs", null,
                         react_1.default.createElement("linearGradient", { id: "sylvaTealGrad", x1: "0", y1: "0", x2: "0", y2: "1" },
-                            react_1.default.createElement("stop", { offset: "0%", stopColor: "#0ea5e9", stopOpacity: "0.32" }),
-                            react_1.default.createElement("stop", { offset: "100%", stopColor: "#0ea5e9", stopOpacity: "0.0" }))),
+                            react_1.default.createElement("stop", { offset: "0%", stopColor: "#1e3a8a", stopOpacity: "0.34" }),
+                            react_1.default.createElement("stop", { offset: "100%", stopColor: "#1e3a8a", stopOpacity: "0.0" }))),
                     react_1.default.createElement("path", { d: "M0,55 L55,42 L110,48 L165,28 L220,34 L275,20 L330,26 L389,12 L389,80 L0,80 Z", fill: "url(#sylvaTealGrad)" }),
-                    react_1.default.createElement("path", { d: "M0,55 L55,42 L110,48 L165,28 L220,34 L275,20 L330,26 L389,12", fill: "none", stroke: "#0ea5e9", strokeWidth: "2.5" })))),
+                    react_1.default.createElement("path", { d: "M0,55 L55,42 L110,48 L165,28 L220,34 L275,20 L330,26 L389,12", fill: "none", stroke: "#1d4ed8", strokeWidth: "2.5" })))),
         react_1.default.createElement("div", { className: "flex flex-col justify-between col-span-full sm:col-span-6 xl:col-span-4 sylva-glass-card rounded-[24px] p-5" },
             react_1.default.createElement("div", null,
                 react_1.default.createElement("div", { className: "flex items-center justify-between mb-3" },
@@ -25967,7 +25967,7 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 react_1.default.createElement("span", { className: "truncate max-w-[140px]" }, currentUser.email),
                 react_1.default.createElement("span", { className: "px-1.5 py-0.2 rounded bg-emerald-600 text-white font-mono text-[10px]" }, activeWorkspace?.current_user_role || 'OWNER'),
                 react_1.default.createElement("span", { className: "text-[10px] underline ml-0.5" }, "\u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u0E2D\u0E35\u0E40\u0E21\u0E25"))),
-            latestNotification && (react_1.default.createElement("div", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 border border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40 text-xs font-bold" },
+            latestNotification && (react_1.default.createElement("div", { className: "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40 text-xs font-bold" },
                 react_1.default.createElement(lucide_react_1.CheckCircle2, { className: "w-3.5 h-3.5 shrink-0" }),
                 react_1.default.createElement("span", { className: "truncate max-w-xs" }, latestNotification)))),
         react_1.default.createElement("div", { className: "flex items-center gap-2.5" },
@@ -25981,14 +25981,14 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
                 react_1.default.createElement(lucide_react_1.Trash2, { className: "w-3.5 h-3.5 shrink-0" }),
                 react_1.default.createElement("span", null, "End Session"))),
             react_1.default.createElement("button", { type: "button", role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode(!darkMode), title: darkMode ? 'สลับเป็นโหมดสว่าง (Light Mode)' : 'สลับเป็นโหมดมืด (Dark Mode)', className: `relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border transition-colors duration-200 ease-in-out items-center px-1 ${darkMode
-                    ? 'bg-slate-900 border-sky-500/40'
-                    : 'bg-sky-50 border-sky-200'}` },
+                    ? 'bg-slate-900 border-blue-600/50'
+                    : 'bg-blue-50 border-blue-200'}` },
                 react_1.default.createElement("span", { className: "sr-only" }, "Toggle Dark / Light Theme"),
                 react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5 text-amber-500 ml-1" }),
-                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-sky-400 ml-auto mr-1" }),
+                react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5 text-blue-400 ml-auto mr-1" }),
                 react_1.default.createElement("span", { className: `pointer-events-none absolute top-1 left-1 inline-flex h-6 w-6 transform items-center justify-center rounded-full shadow-md transition duration-200 ease-in-out ${darkMode
-                        ? 'translate-x-8 bg-sky-500 text-slate-950'
-                        : 'translate-x-0 bg-white text-sky-600'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
+                        ? 'translate-x-8 bg-blue-800 text-white'
+                        : 'translate-x-0 bg-white text-blue-900'}` }, darkMode ? react_1.default.createElement(lucide_react_1.Moon, { className: "w-3.5 h-3.5" }) : react_1.default.createElement(lucide_react_1.Sun, { className: "w-3.5 h-3.5" }))),
             react_1.default.createElement("div", { className: "relative" },
                 react_1.default.createElement("button", { onClick: () => {
                         setNotificationsOpen(!notificationsOpen);
@@ -26109,7 +26109,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpe
             subtitle: 'สร้างและดาวน์โหลดรายงาน PDF/CSV',
             icon: react_1.default.createElement(lucide_react_1.FileBarChart2, { className: "w-5 h-5" }),
             badge: savedReportsCount > 0 ? savedReportsCount : undefined,
-            badgeStyle: 'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40',
+            badgeStyle: 'bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40',
         },
     ];
     const handleNavigate = (id) => {
@@ -26125,14 +26125,14 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen = false, setMobileOpe
             react_1.default.createElement("div", { className: `sylva-glass-card h-full rounded-[24px] ${!mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center overflow-visible' : 'p-3.5 overflow-y-auto no-scrollbar'} flex flex-col justify-between` },
                 react_1.default.createElement("div", { className: "w-full" },
                     !mobileOpen && isCollapsed ? (react_1.default.createElement("div", { className: "flex flex-col items-center pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80" },
-                        react_1.default.createElement("button", { type: "button", onClick: () => setIsCollapsed(false), "aria-label": "\u0E40\u0E1B\u0E34\u0E14\u0E41\u0E16\u0E1A\u0E14\u0E49\u0E32\u0E19\u0E02\u0E49\u0E32\u0E07", className: "group relative w-11 h-11 rounded-full bg-gradient-to-br from-sky-600 to-cyan-500 hover:from-slate-200 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-slate-800 flex items-center justify-center shadow-md shadow-sky-500/25 hover:shadow-none border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer shrink-0 transition-all duration-200" },
+                        react_1.default.createElement("button", { type: "button", onClick: () => setIsCollapsed(false), "aria-label": "\u0E40\u0E1B\u0E34\u0E14\u0E41\u0E16\u0E1A\u0E14\u0E49\u0E32\u0E19\u0E02\u0E49\u0E32\u0E07", className: "group relative w-11 h-11 rounded-full bg-gradient-to-br from-blue-950 to-blue-800 hover:from-slate-200 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-slate-800 flex items-center justify-center shadow-md shadow-blue-900/30 hover:shadow-none border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer shrink-0 transition-all duration-200" },
                             react_1.default.createElement("svg", { className: "w-5 h-5 transition-opacity duration-150 group-hover:opacity-0", viewBox: "0 0 24 24", fill: "none" },
                                 react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
                                 react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" })),
                             react_1.default.createElement(lucide_react_1.PanelLeftOpen, { className: "w-5 h-5 text-slate-800 dark:text-slate-100 absolute opacity-0 group-hover:opacity-100 transition-opacity duration-150" }),
                             react_1.default.createElement("span", { className: "pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-14 top-1/2 -translate-y-1/2 z-50 px-3.5 py-1.5 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold whitespace-nowrap shadow-xl" }, "\u0E40\u0E1B\u0E34\u0E14\u0E41\u0E16\u0E1A\u0E14\u0E49\u0E32\u0E19\u0E02\u0E49\u0E32\u0E07")))) : (react_1.default.createElement("div", { className: "flex items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700/80" },
                         react_1.default.createElement("button", { onClick: () => handleNavigate('dashboard'), className: "flex items-center gap-3 text-left cursor-pointer min-w-0" },
-                            react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 shrink-0" },
+                            react_1.default.createElement("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-800 flex items-center justify-center shadow-md shadow-blue-900/30 shrink-0" },
                                 react_1.default.createElement("svg", { className: "w-5 h-5", viewBox: "0 0 24 24", fill: "none" },
                                     react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
                                     react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),

@@ -77,7 +77,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: <FileBarChart2 className="w-5 h-5" />,
       badge: savedReportsCount > 0 ? savedReportsCount : undefined,
       badgeStyle:
-        'bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-400/40',
+        'bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-800/30 dark:text-blue-200 dark:border-blue-500/40',
     },
   ];
 
@@ -117,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   type="button"
                   onClick={() => setIsCollapsed(false)}
                   aria-label="เปิดแถบด้านข้าง"
-                  className="group relative w-11 h-11 rounded-full bg-gradient-to-br from-sky-600 to-cyan-500 hover:from-slate-200 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-slate-800 flex items-center justify-center shadow-md shadow-sky-500/25 hover:shadow-none border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer shrink-0 transition-all duration-200"
+                  className="group relative w-11 h-11 rounded-full bg-gradient-to-br from-blue-950 to-blue-800 hover:from-slate-200 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-slate-800 flex items-center justify-center shadow-md shadow-blue-900/30 hover:shadow-none border border-transparent hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer shrink-0 transition-all duration-200"
                 >
                   {/* โลโก้ปกติ (ซ่อนเมื่อ Hover) */}
                   <svg
@@ -149,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={() => handleNavigate('dashboard')}
                   className="flex items-center gap-3 text-left cursor-pointer min-w-0"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-800 flex items-center justify-center shadow-md shadow-blue-900/30 shrink-0">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"
