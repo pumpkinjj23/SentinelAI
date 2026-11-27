@@ -248,7 +248,7 @@ export const AlertDetailPage: React.FC<AlertDetailPageProps> = ({
                     หลักฐานอ้างอิงจาก Alert ที่ AI ใช้ประกอบการวิเคราะห์ (Evidence Citations — {an.evidence_citations.length} รายการ)
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-100 text-sky-800 dark:bg-sky-500/20 dark:text-sky-200 border border-sky-300 dark:border-sky-400/40">
-                    Evidence-Grounded · Zero Hallucination
+                    Evidence-Grounded · Reduced Hallucination Risk
                   </span>
                 </div>
                 <ul className="space-y-2">

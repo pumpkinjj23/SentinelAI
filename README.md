@@ -65,9 +65,9 @@
 ## 4. สถาปัตยกรรม AI ที่ใช้ในระบบ (Hybrid Evidence-Grounded AI Engine)
 
 > **สรุปชัดเจน (ระบบนี้ใช้ AI อะไรเป็นตัวหลัก?):**
-> ระบบ **SentinelAI** ใช้ **`Built-in Deterministic Evidence AI Engine` (ระบบผู้เชี่ยวชาญแบบอ้างอิงหลักฐาน หรือ Rule-Based Expert System AI ที่พัฒนาขึ้นเองในไฟล์ [analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py))** เป็น **เอนจินหลักที่ทำงานอยู่จริง 100% ในปัจจุบัน** โดยทำงานร่วมกับ **`Rule-Based Risk Scoring`** ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py))
-> - **ทำไมถึงใช้ตัวนี้เป็นตัวหลัก:** ทำงานในเครื่องได้ทันทีโดยไม่ต้องต่ออินเทอร์เน็ต ไม่ต้องเสียเงินค่า API Key และไม่มีปัญหา AI มโนข้อมูลหรือคำนวณคะแนนเพี้ยน (Zero Hallucination)
-> - **ส่วน LLM ภายนอกอีก 3 ตัว (`Google Gemini`, `OpenAI`, `Ollama`):** เป็นเพียง **"ส่วนขยายเสริม (Optional Plug-in API)"** ที่เขียนโค้ดรองรับเตรียมไว้ เผื่อในอนาคตผู้ดูแลระบบต้องการนำ API Key มาเชื่อมต่อเพิ่มเติม
+> ระบบ **SentinelAI** ใช้ **`Built-in Deterministic Evidence AI Engine` (ระบบกฎและหลักฐานที่พัฒนาขึ้นเอง — Rule-Based Expert System ไม่ใช่ LLM ในไฟล์ [analyzer.py](file:///d:/fightikeeee/backend/app/ai_engine/analyzer.py))** เป็น **เอนจินหลักที่ทำงานอยู่จริงในโหมดเริ่มต้น (`mock`)** โดยทำงานร่วมกับ **`Rule-Based Risk Scoring`** ([evaluator.py](file:///d:/fightikeeee/backend/app/rule_engine/evaluator.py))
+> - **ทำไมถึงใช้ตัวนี้เป็นตัวหลัก:** ทำงานในเครื่องได้ทันทีโดยไม่ต้องต่ออินเทอร์เน็ต ไม่ต้องเสียเงินค่า API Key และช่วย **ลดความเสี่ยงจากการสร้างข้อมูลที่ไม่มีหลักฐานรองรับ (Evidence-Grounded / Reduced Hallucination Risk)** (หมายเหตุ: ระบบที่ใช้กฎยังมีโอกาสจำแนกเหตุการณ์คลาดเคลื่อนได้ในกรณี Edge Case จึงออกแบบให้มี Human-in-the-Loop Analyst Review กำกับเสมอ)
+> - **ส่วน LLM ภายนอกอีก 3 ตัว (`Google Gemini`, `OpenAI`, `Ollama`):** เป็น **"ส่วนขยายเสริม (Optional Plug-in API)"** ที่เตรียมโค้ดเชื่อมต่อไว้ สามารถเปิดใช้งานจริงได้เมื่อกำหนด API Key หรือรัน Ollama Server และควรทดสอบการเชื่อมต่อจริงก่อนนำขึ้นใช้งานจริง
 
 | สถานะการใช้งานในระบบ | โหมด (`AI_PROVIDER`) | เอนจิน / โมเดลที่ใช้ | รายละเอียดการทำงานและการตั้งค่า |
 | :--- | :--- | :--- | :--- |
