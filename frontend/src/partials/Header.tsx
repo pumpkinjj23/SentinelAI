@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
   Menu,
+  PanelLeft,
 } from 'lucide-react';
 import { SecurityAlert, SOCUserIdentity, WorkspaceInfo } from '../types';
 import { SeverityBadge } from '../components/SeverityBadge';
@@ -30,6 +31,7 @@ interface HeaderProps {
   onOpenAccess?: () => void;
   onEndSession?: () => void;
   onOpenMobileMenu?: () => void;
+  onToggleSidebar?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -45,6 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccess,
   onEndSession,
   onOpenMobileMenu,
+  onToggleSidebar,
 }) => {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -106,10 +109,24 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={onOpenMobileMenu}
-            title="เปิดเมนูนำทาง"
-            className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0"
+            title="Toggle sidebar"
+            className="lg:hidden p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0"
           >
             <Menu className="w-4 h-4" />
+          </button>
+        )}
+
+        {onToggleSidebar && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            aria-label="Toggle sidebar"
+            className="hidden lg:inline-flex group relative items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 transition cursor-pointer shrink-0"
+          >
+            <PanelLeft className="w-4 h-4" />
+            <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-11 top-1/2 -translate-y-1/2 z-50 px-3 py-1.5 rounded-full bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold whitespace-nowrap shadow-xl border border-slate-700">
+              Toggle sidebar
+            </span>
           </button>
         )}
 

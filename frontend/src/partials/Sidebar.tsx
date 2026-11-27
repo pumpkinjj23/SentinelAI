@@ -4,7 +4,7 @@ import {
   BrainCircuit,
   UserCheck,
   FileBarChart2,
-  PanelLeftClose,
+  PanelLeft,
   X,
 } from 'lucide-react';
 
@@ -97,25 +97,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Desktop Sidebar & Mobile/Tablet Slide-Over Drawer */}
       <aside
-        className={`sylva-transition shrink-0 flex flex-col justify-between overflow-hidden ${
+        className={`sylva-transition shrink-0 flex flex-col justify-between ${
           mobileOpen
-            ? 'fixed inset-y-3 left-3 z-50 w-72 flex'
-            : 'hidden lg:flex'
+            ? 'fixed inset-y-3 left-3 z-50 w-72 flex overflow-hidden'
+            : 'hidden lg:flex overflow-visible z-30'
         } ${!mobileOpen && (isCollapsed ? 'lg:w-[76px] lg:mr-3' : 'lg:w-72 lg:mr-4')}`}
       >
         <div
           className={`sylva-glass-card h-full rounded-[24px] ${
-            !mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center' : 'p-3.5'
-          } flex flex-col justify-between overflow-y-auto no-scrollbar`}
+            !mobileOpen && isCollapsed ? 'px-2.5 py-4 items-center overflow-visible' : 'p-3.5 overflow-y-auto no-scrollbar'
+          } flex flex-col justify-between`}
         >
           <div className="w-full">
             {/* Top Brand: SentinelAI / SOC Intelligence Platform */}
             {!mobileOpen && isCollapsed ? (
               <div className="flex flex-col items-center gap-3 pb-4 mb-3 border-b border-slate-200 dark:border-slate-700/80">
                 <button
-                  onClick={() => setIsCollapsed(false)}
-                  title="คลิกเพื่อขยายแถบเมนูด้านข้าง"
-                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0 hover:scale-105 transition"
+                  onClick={() => handleNavigate('dashboard')}
+                  title="SentinelAI — SOC Intelligence Platform"
+                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 flex items-center justify-center shadow-md shadow-sky-500/25 cursor-pointer shrink-0"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
                     <path
@@ -129,11 +129,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setIsCollapsed(false)}
-                  title="ขยายแถบเมนู"
-                  className="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0"
+                  aria-label="Toggle sidebar"
+                  className="group relative w-11 h-11 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0"
                 >
-                  <PanelLeftClose className="w-5 h-5 rotate-180" />
+                  <PanelLeft className="w-5 h-5" />
+                  <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-14 top-1/2 -translate-y-1/2 z-50 px-3 py-1.5 rounded-full bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold whitespace-nowrap shadow-xl border border-slate-700">
+                    Toggle sidebar
+                  </span>
                 </button>
               </div>
             ) : (
@@ -179,11 +183,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => setIsCollapsed(true)}
-                    title="ย่อแถบเมนู"
-                    className="hidden lg:inline-flex p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0"
+                    title="Toggle sidebar"
+                    aria-label="Toggle sidebar"
+                    className="hidden lg:inline-flex p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer shrink-0"
                   >
-                    <PanelLeftClose className="w-4 h-4" />
+                    <PanelLeft className="w-4 h-4" />
                   </button>
                 )}
               </div>
