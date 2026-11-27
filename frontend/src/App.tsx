@@ -8,8 +8,6 @@ import {
   UserCheck,
   LayoutDashboard,
   FileBarChart2,
-  PanelLeftOpen,
-  PanelLeftClose,
   Sun,
   Moon,
   Trash2,
@@ -30,8 +28,8 @@ import {
   fetchWorkspaces,
   ingestJsonAlerts,
 } from './services/api';
-import { Sidebar, PageId } from './partials/Sidebar';
 import { Header } from './partials/Header';
+import type { PageId } from './partials/Sidebar';
 import { ChartsSection } from './dashboard/ChartsSection';
 import { SeverityBadge } from './components/SeverityBadge';
 import { MagnificationDock, DockItemData } from './components/MagnificationDock';
@@ -120,8 +118,6 @@ const SIMULATED_ATTACKS = [
 ];
 
 export function App() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [activePage, setActivePage] = useState<PageId>('dashboard');
 
@@ -324,20 +320,7 @@ export function App() {
       } text-slate-900 dark:text-slate-100 sylva-transition`}
     >
       <div className="sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative">
-        {/* MAIN MENU SIDEBAR (Desktop Sidebar + Tablet/Mobile Drawer + Bottom Nav) */}
-        <Sidebar
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
-          mobileOpen={mobileMenuOpen}
-          setMobileOpen={setMobileMenuOpen}
-          activePage={activePage}
-          setActivePage={setActivePage}
-          pendingCount={summary?.pending_review_count ?? 0}
-          totalAlerts={summary?.total_alerts ?? alerts.length}
-          savedReportsCount={savedReports.length}
-        />
-
-        {/* Main Content */}
+        {/* Main Content (Full-Width Workspace — Navigation via Floating MagnificationDock) */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
           <Header
             darkMode={darkMode}
@@ -350,7 +333,6 @@ export function App() {
             }}
             latestNotification={latestNotification}
             onEndSession={handleEndSession}
-            onOpenMobileMenu={() => setMobileMenuOpen(true)}
           />
 
           <main className="flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5">
@@ -829,8 +811,8 @@ export function App() {
           </main>
         </div>
 
-        {/* macOS-style Floating Magnification Dock (Desktop Quick Command Dock) */}
-        <div className="hidden lg:flex fixed bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+        {/* macOS-style Floating Magnification Dock (Primary Navigation Command Dock) */}
+        <div className="flex fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
           <MagnificationDock
             panelHeight={66}
             baseItemSize={46}
@@ -865,15 +847,6 @@ export function App() {
                   active: activePage === 'reports',
                   badge: savedReports.length,
                   onClick: () => setActivePage('reports'),
-                },
-                {
-                  icon: isCollapsed ? (
-                    <PanelLeftOpen className="w-5 h-5" />
-                  ) : (
-                    <PanelLeftClose className="w-5 h-5" />
-                  ),
-                  label: isCollapsed ? 'เปิดแถบด้านข้าง' : 'พับแถบด้านข้าง',
-                  onClick: () => setIsCollapsed((prev) => !prev),
                 },
                 {
                   icon: darkMode ? (

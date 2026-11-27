@@ -21415,7 +21415,6 @@ exports.App = App;
 const react_1 = __importStar(require("react"));
 const lucide_react_1 = require("lucide-react");
 const api_1 = require("./services/api");
-const Sidebar_1 = require("./partials/Sidebar");
 const Header_1 = require("./partials/Header");
 const ChartsSection_1 = require("./dashboard/ChartsSection");
 const SeverityBadge_1 = require("./components/SeverityBadge");
@@ -21496,8 +21495,6 @@ const SIMULATED_ATTACKS = [
     },
 ];
 function App() {
-    const [isCollapsed, setIsCollapsed] = (0, react_1.useState)(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = (0, react_1.useState)(false);
     const [darkMode, setDarkMode] = (0, react_1.useState)(false);
     const [activePage, setActivePage] = (0, react_1.useState)('dashboard');
     const [currentUser] = (0, react_1.useState)({
@@ -21665,12 +21662,11 @@ function App() {
     const pendingAlertsList = alerts.filter((a) => a.status === 'PENDING_REVIEW');
     return (react_1.default.createElement("div", { className: `min-h-screen lg:h-screen w-screen overflow-x-hidden lg:overflow-hidden p-1.5 sm:p-3 lg:p-4 flex flex-col ${darkMode ? 'theme-bg-dark' : 'theme-bg-light'} text-slate-900 dark:text-slate-100 sylva-transition` },
         react_1.default.createElement("div", { className: "sylva-shell flex-1 rounded-[20px] sm:rounded-[26px] lg:rounded-[30px] p-2 sm:p-3 lg:p-4 flex overflow-hidden relative" },
-            react_1.default.createElement(Sidebar_1.Sidebar, { isCollapsed: isCollapsed, setIsCollapsed: setIsCollapsed, mobileOpen: mobileMenuOpen, setMobileOpen: setMobileMenuOpen, activePage: activePage, setActivePage: setActivePage, pendingCount: summary?.pending_review_count ?? 0, totalAlerts: summary?.total_alerts ?? alerts.length, savedReportsCount: savedReports.length }),
             react_1.default.createElement("div", { className: "flex-1 flex flex-col overflow-hidden min-w-0" },
                 react_1.default.createElement(Header_1.Header, { darkMode: darkMode, setDarkMode: setDarkMode, alerts: alerts, onSelectAlert: (a) => handleInspectAlert(a), onQuickSearch: (q) => {
                         setSearchQuery(q);
                         setActivePage('workspace');
-                    }, latestNotification: latestNotification, onEndSession: handleEndSession, onOpenMobileMenu: () => setMobileMenuOpen(true) }),
+                    }, latestNotification: latestNotification, onEndSession: handleEndSession }),
                 react_1.default.createElement("main", { className: "flex-1 overflow-y-auto overflow-x-hidden pr-0.5 sm:pr-1 pb-24 lg:pb-24 space-y-4 sm:space-y-5" },
                     activePage === 'dashboard' && (react_1.default.createElement("div", { className: "space-y-5 pt-1" },
                         react_1.default.createElement("div", { className: "sylva-glass-card rounded-[26px] p-6 space-y-5" },
@@ -21862,7 +21858,7 @@ function App() {
                             } }),
                         react_1.default.createElement(AuditTrailPage_1.AuditTrailPage, { logs: auditLogs, workspaceCode: activeWorkspace?.workspace_code, workspaceName: activeWorkspace?.name, userRole: activeWorkspace?.current_user_role }))),
                     activePage === 'reports' && (react_1.default.createElement(ReportsPage_1.ReportsPage, { summary: summary, alerts: alerts, savedReports: savedReports, onSaveReport: (a, note) => handleSaveReport(a, note), onDeleteSavedReport: handleDeleteSavedReport, onFinishAndClearTemp: handleEndSession, onSelectAlert: (a) => handleInspectAlert(a) })))),
-            react_1.default.createElement("div", { className: "hidden lg:flex fixed bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none" },
+            react_1.default.createElement("div", { className: "flex fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 pointer-events-none" },
                 react_1.default.createElement(MagnificationDock_1.MagnificationDock, { panelHeight: 66, baseItemSize: 46, magnification: 72, distance: 180, spring: { mass: 0.1, stiffness: 150, damping: 12 }, items: [
                         {
                             icon: react_1.default.createElement(lucide_react_1.LayoutDashboard, { className: "w-5 h-5" }),
@@ -21890,11 +21886,6 @@ function App() {
                             active: activePage === 'reports',
                             badge: savedReports.length,
                             onClick: () => setActivePage('reports'),
-                        },
-                        {
-                            icon: isCollapsed ? (react_1.default.createElement(lucide_react_1.PanelLeftOpen, { className: "w-5 h-5" })) : (react_1.default.createElement(lucide_react_1.PanelLeftClose, { className: "w-5 h-5" })),
-                            label: isCollapsed ? 'เปิดแถบด้านข้าง' : 'พับแถบด้านข้าง',
-                            onClick: () => setIsCollapsed((prev) => !prev),
                         },
                         {
                             icon: darkMode ? (react_1.default.createElement(lucide_react_1.Sun, { className: "w-5 h-5 text-amber-400" })) : (react_1.default.createElement(lucide_react_1.Moon, { className: "w-5 h-5 text-blue-900" })),
@@ -26135,10 +26126,15 @@ const Header = ({ darkMode, setDarkMode, alerts, onSelectAlert, onQuickSearch, l
         react_1.default.createElement("div", { className: "flex flex-wrap items-center gap-2 sm:gap-3 min-w-0" },
             onOpenMobileMenu && (react_1.default.createElement("button", { type: "button", onClick: onOpenMobileMenu, title: "\u0E40\u0E1B\u0E34\u0E14\u0E40\u0E21\u0E19\u0E39\u0E19\u0E33\u0E17\u0E32\u0E07", className: "lg:hidden p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer shrink-0" },
                 react_1.default.createElement(lucide_react_1.Menu, { className: "w-4 h-4" }))),
-            react_1.default.createElement("span", { className: "text-sm font-extrabold text-slate-900 dark:text-white tracking-tight" },
-                "Sentinel",
-                react_1.default.createElement("span", { className: "text-emerald-600 dark:text-emerald-400" }, "AI"),
-                react_1.default.createElement("span", { className: "hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5" }, "\u00B7 AI-Assisted Security Alert Analysis")),
+            react_1.default.createElement("div", { className: "flex items-center gap-2.5" },
+                react_1.default.createElement("div", { className: "w-8 h-8 rounded-xl bg-gradient-to-br from-blue-950 to-blue-800 flex items-center justify-center shadow-sm shadow-blue-900/30 shrink-0" },
+                    react_1.default.createElement("svg", { className: "w-4 h-4", viewBox: "0 0 24 24", fill: "none" },
+                        react_1.default.createElement("path", { d: "M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z", stroke: "#ffffff", strokeWidth: "2", fill: "rgba(255,255,255,0.18)" }),
+                        react_1.default.createElement("circle", { cx: "12", cy: "11.5", r: "2.5", fill: "#ffffff" }))),
+                react_1.default.createElement("span", { className: "text-sm font-extrabold text-slate-900 dark:text-white tracking-tight" },
+                    "Sentinel",
+                    react_1.default.createElement("span", { className: "text-emerald-600 dark:text-emerald-400" }, "AI"),
+                    react_1.default.createElement("span", { className: "hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5" }, "\u00B7 AI-Assisted Security Alert Analysis"))),
             react_1.default.createElement("div", { className: "hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold" },
                 react_1.default.createElement("span", { className: "w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" }),
                 react_1.default.createElement("span", null, "\u0E2A\u0E16\u0E32\u0E19\u0E30\u0E23\u0E30\u0E1A\u0E1A: Online")),

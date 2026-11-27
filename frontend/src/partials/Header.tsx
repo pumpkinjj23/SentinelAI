@@ -113,12 +113,25 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         )}
 
-        <span className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span>
-          <span className="hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5">
-            · AI-Assisted Security Alert Analysis
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-950 to-blue-800 flex items-center justify-center shadow-sm shadow-blue-900/30 shrink-0">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2L4 5.5V11.5C4 16.8 7.4 21.6 12 23C16.6 21.6 20 16.8 20 11.5V5.5L12 2Z"
+                stroke="#ffffff"
+                strokeWidth="2"
+                fill="rgba(255,255,255,0.18)"
+              />
+              <circle cx="12" cy="11.5" r="2.5" fill="#ffffff" />
+            </svg>
+          </div>
+          <span className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Sentinel<span className="text-emerald-600 dark:text-emerald-400">AI</span>
+            <span className="hidden xl:inline font-medium text-xs text-slate-500 dark:text-slate-400 ml-1.5">
+              · AI-Assisted Security Alert Analysis
+            </span>
           </span>
-        </span>
+        </div>
 
         <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/40 text-xs font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
